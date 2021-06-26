@@ -1,0 +1,18 @@
+---
+title: '`r paste0(heading, " RNA-Seq")`'
+author: "icervenka"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: paper
+---
+
+```{r}
+# Set knitr options to allow duplicate labels (needed for the subpages)
+options(knitr.duplicate.label = 'allow')
+```
+
+```{r child = 'flex_subpage.Rmd'}
+```

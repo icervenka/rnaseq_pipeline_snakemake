@@ -1,0 +1,47 @@
+---
+title: '`r paste0(experiment_name, " RNA-Seq")`'
+author: "icervenka"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: paper
+---
+
+# Overview
+
+Column {data-width=300}
+-------------------------------------
+
+```{r child = 'fc_summary_flex.Rmd', eval = T}
+```
+
+```{r child = 'pca.Rmd', eval = T}
+```
+
+
+Column {data-width=300}
+-------------------------------------
+
+```{r child = 'sample_heatmap.Rmd', eval = T}
+```
+
+```{r child = 'sts.Rmd', eval = T}
+```
+
+
+Column {data-width=300}
+-------------------------------------
+
+```{r child = 'sample_heatmap_diffexp.Rmd', eval = T}
+```
+
+```{r child = 'venn.Rmd', eval = T}
+```
+
+```{r child = 'render_subpages.Rmd', eval = T}
+```
+
+
+`r paste(knitr::knit_child(text = out), collapse = '')`

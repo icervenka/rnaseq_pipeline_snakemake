@@ -1,0 +1,34 @@
+##### extra parameters for aligning #####
+align:
+  # optimized extra parameters for tophat
+  tophat_extra:
+    "-N 18
+    --read-edit-dist 18 "
+  # optimized extra parameters for star
+  star_extra:
+    "--outFilterMismatchNmax 33
+    --alignEndsType Local
+    --alignSJoverhangMin 8
+    --outFilterScoreMinOverLread 0
+    --outFilterMatchNminOverLread 0
+    --outFilterMatchNmin 0
+    --seedSearchStartLmax 12 "
+  # optimized extra parameters for hisat
+  hisat_extra:
+    "--mp 1,0
+    --sp 3,1
+    --pen-noncansplice 15 "
+  # extra parameters for kallisto, if unknown, leave these defaults
+  kallisto_extra:
+    read_length_mean: 41
+    read_length_variance: 10
+
+#### extra parameters for individual counting packages #####
+
+#### extra parameters for individual diffexp packages #####
+diffexp:
+  # deseq2 lfc shrink algorithm type
+  # apeglm is not yet implemented
+  deseq_lfc_shrink: "ashr"
+  # classic or glm contrasts approach
+  edger_analysis_type: "classic"

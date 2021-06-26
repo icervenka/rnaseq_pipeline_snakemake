@@ -1,0 +1,63 @@
+### Expression data
+
+```{r expression, fig.width = 10, fig.height = 6, echo=F}
+suppressMessages(library(DESeq2))
+suppressMessages(library(rmarkdown))
+suppressMessages(library(flexdashboard))
+suppressMessages(library(DT))
+suppressMessages(library(plotly))
+suppressMessages(library(heatmaply))
+library(crosstalk)
+library(htmltools)
+suppressMessages(library(gridExtra))
+suppressMessages(library(UpSetR))
+suppressMessages(library(viridis))
+suppressMessages(library(stringr))
+# suppressMessages(library(tidyr))
+suppressMessages(library(tibble))
+suppressMessages(library(stringr))
+# suppressMessages(library(purrr))
+#suppressMessages(library(dplyr))
+suppressMessages(library(tidyverse))
+
+set_values <- function(w, sharedData, values) {
+  script <- sprintf(
+    "HTMLWidgets.addPostRenderHandler(function() { return crosstalk.group('%s').var('%s').set(%s); })",
+    sharedData$groupName(), "filter", jsonlite::toJSON(values)
+  )
+  # TODO: attach htmlwidgets dependency to w?
+  browsable(tagList(
+    tags$head(tags$script(script)), w
+  ))
+}
+
+dds = readRDS("~/programming/rnaseq_pipeline/diffexp/deseq_default/dds.rds")
+result_array = readRDS("~/programming/rnaseq_pipeline/diffexp/deseq_default/result_array.rds")
+result_array_ids = readRDS("~/programming/rnaseq_pipeline/diffexp/deseq_default/result_array_ids.rds")
+
+contrast_conditions = strsplit("alpha1_gfp", split = "_")[[1]]
+
+normalized_counts = counts(dds, normalized = T) %>%
+  as_tibble(rownames = "ENSEMBL")
+
+col_data = colData(dds) %>%
+  tidyr::as_tibble() %>%
+  dplyr::select(sample, condition) %>%
+  dplyr::filter(condition %in% contrast_conditions)
+
+gene_exprs = result_array_ids[[1]] %>%
+  dplyr::filter(padj < 0.05) %>%
+  dplyr::select(ENSEMBL, ENTREZID, SYMBOL) %>%
+  left_join(normalized_counts) %>% 
+  pivot_longer(-c(ENSEMBL, ENTREZID, SYMBOL), names_to = "sample") %>%
+  right_join(col_data)
+
+shared = highlight_key(gene_exprs)
+p = ggplot(shared, aes(x = condition, y = value, text = sample)) + geom_jitter() + theme_minimal()
+filter = bscols(
+  list(
+    set_values(filter_select("id", "Select a gene", shared, ~SYMBOL, multiple = F), shared, rownames(gene_exprs)[1:12]),
+    ggplotly(p, tooltip = "text", dynamicTicks = T, height = 500))
+)
+filter
+```

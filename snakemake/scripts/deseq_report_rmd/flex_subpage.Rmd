@@ -1,0 +1,68 @@
+`r paste0("# ", contrast)`
+`r shiny::tags$h1(contrast, style="text-align:left")`
+
+
+Column {data-width=300}
+-------------------------------------
+
+```{r child = 'fc_ma_single.Rmd', eval = T}
+```
+
+### Upregulated genes
+
+```{r}
+valueBox(genes_up, 
+         color = "#FF7F7F", 
+         icon = "fa-arrow-up")
+```
+
+Column {data-width=300}
+-------------------------------------
+
+```{r child = 'volcano_single.Rmd', eval = T}
+```
+
+### Downregulated genes
+
+```{r}
+valueBox(genes_down,
+         color = "#66CCFF", 
+         icon = "fa-arrow-down")
+```
+
+
+Column {data-width=400}
+-------------------------------------
+
+### Differentially expressed genes
+
+```{r, eval = T}
+show_table = result_ids %>% 
+  dplyr::filter(padj <= fdr) %>%
+  dplyr::select(ENSEMBL, ENTREZID, SYMBOL, GENENAME, baseMean, log2FoldChange, pvalue, padj) %>%
+  dplyr::mutate(ENTREZID = paste0('<a href="https://www.ncbi.nlm.nih.gov/gene/', ENTREZID, '" target="_blank">', ENTREZID,'</a>'),
+                ENSEMBL = paste0('<a href="https://www.ensembl.org/Mus_musculus/Gene/Summary?g=', ENSEMBL, '" target="_blank">', ENSEMBL,'</a>'),
+                SYMBOL = paste0('<span title="', GENENAME, '">', SYMBOL,'</span>')) %>%
+  dplyr::select(-GENENAME)
+
+DT::datatable(show_table,
+              escape = F,
+              rownames = F,
+              filter = "top",
+              extensions = c("Buttons", "Scroller"),
+              style="bootstrap",
+              class="compact  stripe",
+              width="100%",
+              options = list(
+                dom = "Blrtip",  # specify content (search box, etc)
+                deferRender = FALSE,
+                scrollY = 600,
+                scroller = TRUE,
+                buttons = list(
+                  I("colvis"),
+                  "csv",  # download as .csv
+                  "excel"  # download as .xlsx
+                ))) %>%
+  formatRound(columns = c(4, 5, 6, 7), digits=4)
+```
+

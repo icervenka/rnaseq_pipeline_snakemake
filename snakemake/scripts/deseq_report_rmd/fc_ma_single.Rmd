@@ -1,0 +1,18 @@
+### MA plot
+
+```{r fc2, echo=FALSE, warning=F, out.width="100%"}
+# plot log fold change vs normalized counts
+result_ids = result_ids %>% 
+  mutate(significant = case_when(padj < fdr ~ "yes", TRUE ~ "no"))
+
+p = ggplot(result_ids, aes(x = log2(baseMean), y=log2FoldChange, color = significant, text = SYMBOL)) +
+  geom_point(size=0.7) +
+  xlab("Log mean expression value") +
+  ylab("Log 2 Fold Change") +
+  coord_cartesian(ylim = c(-5,5)) +
+  theme_bw() +
+  scale_color_manual(values = c("grey80", viridis(1))) +
+  theme(plot.title = element_text(size=16))
+
+ggplotly(p, tooltip = "text") %>% toWebGL()
+```

@@ -1,0 +1,24 @@
+### MA plots
+
+```{r fc2, fig.width = 12, fig.height = 4, echo=FALSE}
+df = result_array_ids
+
+b=list()
+# plot log fold change vs normalized counts
+for(x in names(df)) {
+
+  p = ggplot(df[[x]], aes(x = log2(baseMean), y=log2FoldChange, color = padj < 0.05 & !is.na(padj), text = SYMBOL)) +
+    geom_point(size=0.7) +
+    ggtitle(paste0("MA plot - ", x)) +
+    xlab("Log mean expression value") + 
+    ylab("Log 2 Fold Change") + 
+    coord_cartesian(ylim = c(-5,5)) +
+    theme_bw() +
+    scale_color_manual(values = viridis(2))
+    theme(legend.position = "none", plot.title = element_text(size=16))
+  
+  b[[x]] = ggplotly(p, tooltip = "text")
+}
+
+htmltools::tagList(b)
+```

@@ -1,0 +1,89 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+description: snakemake configuration file
+
+type: object
+
+properties:
+  experiment_name:
+    type: string
+
+  metadata:
+    type: string
+
+  index:
+    type: string
+
+  gtf:
+    type: string
+
+  threads:
+    type: integer
+
+  count:
+    type: object
+    properties:
+      program:
+        type: string
+      stranded:
+        type: string
+      genome_bed:
+        type: string
+      multimap:
+        type: string
+      overlap:
+        type: string
+      extra:
+        type: string
+
+  diffexp:
+    type: object
+    properties:
+      program:
+        type: string
+      outdir:
+        type: string
+      design:
+        type: string
+      ref_level:
+        type: string
+      contrasts:
+        type: [object, string]
+      fdr:
+        type: number
+      min_count:
+        type: integer
+      lfc_shrink:
+        type: string
+
+  report:
+    type: object
+    properties:
+      layout:
+        type: string
+      individual:
+        type: boolean
+      sample_heatmap:
+        type: object
+        properties:
+          mode:
+            type: string
+          n_genes:
+            type: integer
+          cluster_metric_col:
+            type: string
+          luster_metric_row:
+            type: object
+          annotation_col:
+            type: string
+
+
+required:
+  - experiment_name
+  - metadata
+  - index
+  - gtf
+  - threads
+  - count
+  - diffexp
+  - report

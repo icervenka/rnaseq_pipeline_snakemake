@@ -1,0 +1,32 @@
+### Volcano plots
+
+```{r volcano, echo=FALSE, fig.align = "center", results='asis', fig.width = 10, fig.height=length(result_array_ids)*5}
+plots = list()
+plots = lapply(names(result_array_ids), function(a) {
+  
+  b = result_array_ids[[a]] %>% 
+    mutate(sig = case_when(TRUE ~ "ns", 
+                           padj < fdr & abs(log2FoldChange) > 0.6 ~ "high FC", 
+                           padj < fdr & abs(log2FoldChange) < 0.6 ~ "low FC"))
+  
+  p = b %>%
+    ggplot(aes(x = log2FoldChange, y = -log10(pvalue), color = sig, text = SYMBOL)) +
+    geom_point() +
+    labs(x ="Log 2 Fold Change", y = "-log10(p-value)") + 
+    theme_bw() + 
+    theme(legend.position='none')
+  
+  return(ggplotly(p, tooltip = "text", width = 900, height = 900) %>% 
+           layout(annotations = list(text = a,   
+                                     xref = "paper",
+                                     yref = "paper",
+                                     yanchor = "bottom",
+                                     xanchor = "center",
+                                     align = "center",
+                                     x = 0.5,
+                                     y = 1,
+                                     showarrow = FALSE)))
+}
+)
+subplot(plots, nrows = length(result_array_ids)/2, margin = 0.07, titleX = T, titleY = T)
+```

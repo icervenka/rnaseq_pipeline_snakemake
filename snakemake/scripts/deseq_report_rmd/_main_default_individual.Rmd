@@ -1,0 +1,19 @@
+---
+title: '`r paste0(heading, " RNA-Seq")`'
+author: "icervenka"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    toc: false
+    mathjax: NULL
+    self_contained: false
+    lib_dir: '`r paste0(outdir, " libs")`'
+---
+
+```{r include = F}
+# Set knitr options to allow duplicate labels (needed for the subpages)
+options(knitr.duplicate.label = 'allow')
+```
+
+```{r child = 'default_subpage.Rmd'}
+```

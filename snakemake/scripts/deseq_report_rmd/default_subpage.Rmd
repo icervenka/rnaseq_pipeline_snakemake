@@ -1,0 +1,10 @@
+`r paste0('\n\n', '### ', heading)`
+
+```{r child = 'fc_ma_single.Rmd', eval = T}
+```
+
+```{r child = 'volcano_single.Rmd', eval = T}
+```
+
+```{r child = 'deg_table_single.Rmd', eval = T}
+```

@@ -1,0 +1,47 @@
+---
+title: '`r paste0(experiment_name, " RNA-Seq")`'
+author: "icervenka"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    toc: false
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+# Set knitr options to allow duplicate labels (needed for the subpages)
+options(knitr.duplicate.label = 'allow')
+```
+
+## Identification of differentially expressed genes
+
+```{r child = 'init.Rmd', eval = F}
+```
+
+```{r child = 'fc_summary.Rmd', eval = T}
+```
+
+```{r child = 'pca.Rmd', eval = T}
+```
+
+```{r child = 'cook.Rmd', eval = T}
+```
+
+```{r child = 'sample_heatmap.Rmd', eval = T}
+```
+
+```{r child = 'sts.Rmd', eval = T}
+```
+
+```{r child = 'venn.Rmd', eval = T}
+```
+
+```{r child = 'render_subpages.Rmd', eval = T}
+```
+
+```{r, echo = F, results='asis'}
+if(individual == FALSE) {
+  cat('\n\n## Data for individual samples\n\n')
+}
+cat(unlist(out), sep = '\n')
+```
+

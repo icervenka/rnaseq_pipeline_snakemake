@@ -1,0 +1,47 @@
+```{css, include=FALSE}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.5/css/jquery.dataTables.min.css">
+<script src="http://code.jquery.com/jquery-2.1.2.min.js"></script>
+<script src="http://cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+         $(document).ready(function() {
+             $("table").DataTable();
+         } );
+</script>
+
+```{r packages, include=FALSE, echo = F}
+# suppressMessages(library(knitr))
+# suppressMessages(library(DESeq2))
+# suppressMessages(library(pheatmap))
+# suppressMessages(library(RColorBrewer))
+# suppressMessages(library(ggplot2))
+# suppressMessages(library(gridExtra))
+# suppressMessages(library(purrr))
+# suppressMessages(library(kableExtra))
+# suppressMessages(library(DT))
+# suppressMessages(library(rbokeh, lib.loc="~/R/x86_64-pc-linux-gnu-library/3.4"))
+# suppressMessages(library(UpSetR))
+```
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+# options(knitr.table.format = "html")
+#knitr::opts_knit$set(root.dir = outdir)
+
+# You need this code to conduct the magic dependences attaching...
+DT::datatable(matrix())
+
+```
+
+```{r initialization, include=FALSE}
+# volPallete <- c("#B0B0B0", "#377EB8", "#E41A1C", "#4DAF4A", "#984EA3", "#FF7F00", "#FFFF33")
+```

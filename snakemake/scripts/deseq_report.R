@@ -1,0 +1,123 @@
+#!/usr/bin/Rscript
+suppressMessages(library(DESeq2))
+suppressMessages(library(rmarkdown))
+suppressMessages(library(flexdashboard))
+suppressMessages(library(DT))
+suppressMessages(library(plotly))
+suppressMessages(library(heatmaply))
+suppressMessages(library(gridExtra))
+suppressMessages(library(UpSetR))
+suppressMessages(library(viridis))
+suppressMessages(library(stringr))
+suppressMessages(library(tibble))
+suppressMessages(library(tidyverse))
+suppressMessages(library(Glimma))
+suppressMessages(library(clusterProfiler))
+
+source("snakemake/scripts/common.R")
+
+experiment_name = snakemake@params[["experiment_name"]]
+fdr = snakemake@params[["fdr"]]
+individual = snakemake@params[["individual"]]
+pca_groups = snakemake@params[["pca_groups"]]
+heatmap_mode = snakemake@params[["heatmap_mode"]]
+heatmap_n_genes = snakemake@params[["heatmap_n_genes"]]
+heatmap_cluster_metric_col = snakemake@params[["heatmap_cluster_metric_col"]]
+heatmap_cluster_metric_row = snakemake@params[["heatmap_cluster_metric_row"]]
+annotation_heatmap = snakemake@params[["annotation_heatmap"]]
+annotation_sts = snakemake@params[["annotation_sts"]]
+upset_maxgroups = snakemake@params[["upset_maxgroups"]]
+upset_min_group_size = snakemake@params[["upset_min_group_size"]]
+species = snakemake@params[["species"]]
+type_in = snakemake@params[["gene_ids_in"]]
+group = snakemake@params[["mdplot_group"]]
+
+dds = readRDS(snakemake@input[[1]])
+rld = rlog(dds, blind = F)
+result_array = readRDS(snakemake@input[[2]])
+result_array_ids = readRDS(snakemake@input[[3]])
+
+report_layout = paste0("_main_", snakemake@params[["report_layout"]])
+outdir = paste0("../../../", snakemake@params[["outdir"]])
+
+knitr_output_options = list(
+  mathjax = NULL,
+  self_contained = FALSE,
+  lib_dir = paste0(outdir, "/libs")
+)
+# render html document
+# todo figure out a nicer way to point to output
+render(paste0("snakemake/scripts/deseq_report_rmd/", report_layout,".Rmd"),
+       output_file = paste0(snakemake@output[[1]]),
+       output_dir = snakemake@params[["outdir"]],
+       output_options = knitr_output_options,
+       output_format = "all")
+
+# Glimma MDS plot
+glMDSPlot(dds,
+          path = snakemake@params[["outdir"]],
+          folder = "",
+          html = "mds-plot",
+          launch = FALSE)
+
+# Glimma Volcano-Expression XY plots
+no_contrasts = length(result_array)
+walk(1:no_contrasts, function(x) {
+  lfc_res = result_array[[x]]
+  contrast = names(result_array)[x]
+
+  lfc_res = lfc_res[complete.cases(lfc_res),]
+
+  counts = counts(dds, normalized = TRUE)
+  counts = counts[rownames(counts) %in% rownames(lfc_res), ]
+  counts = counts[match(rownames(lfc_res), rownames(counts)), ]
+
+  annotation = translate_gene_ids(rownames(lfc_res),
+                                  get_species_info(species),
+                                  from_type = type_in,
+                                  drop = F)
+  annotation = annotation[match(rownames(lfc_res), annotation[[type_in]]),]
+
+  status = as.numeric(lfc_res$padj < fdr)
+  status = status * sign(lfc_res$log2FoldChange)
+
+  glXYPlot(x = lfc_res$log2FoldChange,
+           y = -log10(lfc_res$pvalue + .Machine$double.xmin), # takes care of pvalues being 0 and transformed to Inf
+           xlab = "log2FoldChange",
+           ylab = "-log10(pvalue)",
+           status = status,
+           counts = counts,
+           anno = data.frame(GeneID = annotation$ENSEMBL,
+                             Symbol = annotation$SYMBOL,
+                             Name = annotation$GENENAME),
+           groups = dds[["group"]],
+           samples = dds[["sample"]],
+           main = contrast,
+           side.main = "Symbol",
+           path = snakemake@params[["outdir"]],
+           folder = "",
+           html = paste0(contrast, "_expression"),
+           launch = F
+  )
+})
+
+# experiment_name = "Test experiment"
+# fdr = 0.05
+# heatmap_mode = "variance"
+# heatmap_n_genes = 100
+# heatmap_cluster_metric_col = "euclidean"
+# heatmap_cluster_metric_row = "euclidean"
+# annotation_col = "condition"
+# 
+# dds = readRDS("~/programming/rnaseq_pipeline/diffexp/deseq_default/dds.rds")
+# rld <- rlog(dds, blind=FALSE)
+# 
+# result_array = readRDS("~/programming/rnaseq_pipeline/diffexp/deseq_default/result_array.rds")
+# result_array_ids = readRDS("~/programming/rnaseq_pipeline/diffexp/deseq_default/result_array_ids.rds")
+# 
+# report_layout = paste0("_main_", "flex")
+# 
+# individual = FALSE
+# render(paste0("~/programming/rnaseq_pipeline/snakemake/scripts/deseq_report_rmd/",report_layout,".Rmd"),
+#        output_file = paste0("~/programming/rnaseq_pipeline/diffexp/test_flex/report.html"),
+#        output_format = "all")

@@ -1,0 +1,32 @@
+`r paste0("# ", pc_name)`
+
+Column {data-width=500}
+-------------------------------------
+
+### Top/Bottom loadings
+
+```{r fig.width = 10, eval = T}
+hi_loadings(pca_obj, 
+            topN = top_gene_loadings, 
+            whichpc = pc_no, 
+            annotation = anno_df_orgdb,
+            title = "")
+```
+
+Column {data-width=500}
+-------------------------------------
+
+### Enriched Gene ontology pathways in top loadings
+
+```{r eval = T}
+default_dt(subpage_data$posLoad) %>% 
+  formatRound(columns = c(5), digits=4)
+```
+
+### Enriched Gene ontology pathways in bottom loadings
+
+```{r eval = T}
+default_dt(subpage_data$negLoad) %>% 
+  formatRound(columns = c(5), digits=4)
+```
+

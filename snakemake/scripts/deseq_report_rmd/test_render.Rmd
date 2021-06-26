@@ -1,0 +1,14 @@
+---
+title: "Untitled"
+author: "icervenka"
+date: "22/07/2020"
+output: html_document
+---
+
+```{r setup}
+
+```
+
+```{r}
+  mpg %>% ggplot(aes(x = cty, y = hwy)) + geom_point()
+```
