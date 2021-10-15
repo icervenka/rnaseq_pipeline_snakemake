@@ -15,7 +15,7 @@ include: "snakemake/rules/pipelines.smk"
 # config
 configfile: "config.yaml"
 validate(config, schema="snakemake/schema/config.schema.yaml")
-config_extra = load_configfile("snakemake/rules/config_extra.yaml")
+config_extra = load_configfile("config_extra.yaml")
 
 # metadata
 Metadata = pd.read_table(config["metadata"], dtype=str)
@@ -32,7 +32,8 @@ DIFFEXP_ANALYSIS = "{}_{}/".format(
 ##### top level snakemake rule #####
 rule all:
     input:
-        LOG_DIR + "sra.completed",
+        #LOG_DIR + "sra.completed",
+        expand(FASTQ_DIR + "{file}", file=Metadata.fq),
         LOG_DIR + "qc.completed",
         LOG_DIR + "align.completed",
         LOG_DIR + "count.completed",

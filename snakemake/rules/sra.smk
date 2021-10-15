@@ -1,14 +1,12 @@
 ruleorder: fastq_dump_paired > fastq_dump_single
 # uses prefetch-validate combo because fasterq-dump has no way of
 # checking if the file was downloaded correctly due to network errors
-# TODO optional renaming of files according to fq
-
 
 rule sra_download:
     input:
         config['metadata']
     output:
-        SRA_DIR + "{sra}"
+        temp(SRA_DIR + "{sra}")
     params:
         get_sra
     threads:
@@ -77,8 +75,8 @@ rule compress_fastq:
             "{input} "
         )
 
-rule all_sra:
-    input:
-        expand(FASTQ_DIR + "{file}", file=Metadata.fq)
-    output:
-        touch(LOG_DIR + "sra.completed")
+# rule all_sra:
+#     input:
+#         expand(FASTQ_DIR + "{file}", file=Metadata.fq)
+#     output:
+#         touch(LOG_DIR + "sra.completed")

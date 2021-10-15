@@ -24,6 +24,8 @@ align:
     read_length_variance: 10
 
 #### extra parameters for individual counting packages #####
+count:
+  extra: ""
 
 #### extra parameters for individual diffexp packages #####
 diffexp:

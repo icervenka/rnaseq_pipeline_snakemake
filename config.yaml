@@ -18,17 +18,17 @@ trim: "no"
 # should bedgraph and tdf files be generated for bam files
 coverage: "no"
 
-# align options ----------------------------------------------------------------
-align:
-  # extra parameters passed to aligning program
-  extra: ""
-
 # counting options -------------------------------------------------------------
+# for extra parameters to be passed to counting programs, see config_extra.yaml
 count:
+  # protocol for library preparation,
+  # accepts following values: "no", "yes", "reverse"
+  stranded: "no"
+  # if multimapping reads should be counted
   multimap: "no"
+  # if reads belonging to the overlapping genes should be counted
+  # for extra parameters to specify the counting scores use config_extra.yaml
   overlap: "yes"
-  # extra parameters passed to counting program
-  extra: ""
 
 # differential expression options ----------------------------------------------
 diffexp:
