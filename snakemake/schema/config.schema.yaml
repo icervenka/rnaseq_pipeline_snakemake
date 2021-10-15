@@ -33,8 +33,6 @@ properties:
         type: string
       overlap:
         type: string
-      extra:
-        type: string
 
   diffexp:
     type: object

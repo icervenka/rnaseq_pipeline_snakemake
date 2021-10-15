@@ -1,13 +1,14 @@
 OUTDIR = DIFFEXP_OUTDIR + DIFFEXP_ANALYSIS
 DEGFILES_OUTDIR = OUTDIR + "degfiles/"
 REPORTS_OUTDIR = OUTDIR + "reports/"
+DDS_OUTDIR = OUTDIR + "dds/"
 
 rule diffexp_init:
     input:
         count_data="counts/counts.tsv",
         col_data="metadata.tsv"
     output:
-        OUTDIR + "dds.rds"
+        DDS_OUTDIR + "dds.rds"
     params:
         design=config['diffexp']["design"],
         ref_levels=config['diffexp']["ref_levels"],
@@ -22,7 +23,7 @@ rule diffexp_results:
         dds=rules.diffexp_init.output,
         col_data=rules.diffexp_init.input.col_data
     output:
-        OUTDIR + "result_array.rds",
+        DDS_OUTDIR + "result_array.rds",
     params:
         contrast_type=config['diffexp']["contrast_type"],
         contrasts=config['diffexp']["contrasts"],
@@ -39,9 +40,9 @@ rule diffexp_save:
         result_array=rules.diffexp_results.output[0]
     output:
         sample_expression=DEGFILES_OUTDIR + "sample_expression.csv",
-        image_file=OUTDIR + \
-            "{}.RData".format(config["experiment_name"]),
-        result_array_ids=OUTDIR + "result_array_ids.rds",
+        # image_file=OUTDIR + \
+        #     "{}.RData".format(config["experiment_name"]),
+        result_array_ids=DDS_OUTDIR + "result_array_ids.rds",
     params:
         # contrasts=rules.diffexp_results.output[1],
         outdir=DEGFILES_OUTDIR,
@@ -58,7 +59,7 @@ rule diffexp_report:
         rules.diffexp_save.output.result_array_ids
     output:
         REPORTS_OUTDIR + "report.html",
-        REPORTS_OUTDIR + "mds-plot.html"
+        REPORTS_OUTDIR + "mds_plot.html"
     params:
         experiment_name=config["experiment_name"],
         outdir=REPORTS_OUTDIR,
@@ -109,12 +110,14 @@ rule diffexp_copy_config:
 
 rule all_diffexp:
     input:
-        OUTDIR + "result_array.rds",
+        DDS_OUTDIR + "dds.rds",
+        DDS_OUTDIR + "result_array.rds",
+        DDS_OUTDIR + "result_array_ids.rds",
         OUTDIR + "analysis_params/config.yaml",
         OUTDIR + "analysis_params/metadata.tsv",
         DEGFILES_OUTDIR + "sample_expression.csv",
         REPORTS_OUTDIR + "report.html",
         REPORTS_OUTDIR + "pca.html",
-        REPORTS_OUTDIR + "mds-plot.html"
+        REPORTS_OUTDIR + "mds_plot.html"
     output:
         touch(LOG_DIR + DIFFEXP_ANALYSIS + "diffexp.completed")

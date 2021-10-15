@@ -34,13 +34,22 @@ rule all:
     input:
         #LOG_DIR + "sra.completed",
         expand(FASTQ_DIR + "{file}", file=Metadata.fq),
-        LOG_DIR + "qc.completed",
-        LOG_DIR + "align.completed",
+        # for fastqc rule
+        LOG_DIR + "qc/{fq}.html",
+        LOG_DIR + "qc/{fq}_fastqc.zip",
+        # for multiqc rule
+        # multiqc has problems finding some files
+        LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
+        #LOG_DIR + "align.completed",
+        expand(ALIGN_OUTDIR+"{sample}/"+COMMON_BAM_NAME+".bam", sample=Samples),
+        # TODO this will only work for star logs, package other logs into function probably
+        expand(ALIGN_LOG_OUTDIR+"{sample}/{log}", sample=Samples, log=STAR_LOGFILES),
         LOG_DIR + "count.completed",
         LOG_DIR + DIFFEXP_ANALYSIS + "diffexp.completed"
 
 ##### load remaining pipleline rules #####
 include: "snakemake/rules/sra.smk"
+include: "snakemake/rules/fastqc.smk"
 
 # TODO
 if config['trim'] == "yes":
@@ -53,7 +62,7 @@ if config['coverage'] == "yes":
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
 
+include: "snakemake/rules/multiqc.smk"
+
 if config['result_archive'] == "yes":
     include: "snakemake/rules/result_archive.smk"
-
-include: "snakemake/rules/qc.smk"
