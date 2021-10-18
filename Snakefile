@@ -32,28 +32,7 @@ DIFFEXP_ANALYSIS = "{}_{}/".format(
     pipelines[config['pipeline']][-1], config["diffexp"]["outdir"])
 NOW = str(datetime.datetime.now())
 
-print(expand(FASTQ_DIR + "{file}", file=Metadata.fq))
-##### top level snakemake rule #####
-rule all:
-    input:
-        #LOG_DIR + "sra.completed",
-        expand(FASTQ_DIR + "{file}", file=Metadata.fq),
-        # for fastqc rule
-        expand(LOG_DIR + "qc/{file}.html", file=Metadata.fq),
-        expand(LOG_DIR + "qc/{file}_fastqc.zip", file=Metadata.fq),
-        # # for multiqc rule
-        # # multiqc has problems finding some files
-        # LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
-        # #LOG_DIR + "align.completed",
-        expand(ALIGN_OUTDIR+"{sample}/"+COMMON_BAM_NAME+".bam", sample=Samples),
-        # # TODO this will only work for star logs, package other logs into function probably
-        expand(ALIGN_LOG_OUTDIR+"{sample}/{log}", sample=Samples, log=STAR_LOGFILES),
-        LOG_DIR + "count.completed",
-        LOG_DIR + DIFFEXP_ANALYSIS + "diffexp.completed",
-        # # for result archive
-        "archive/" + config["experiment_name"] + "_result_archive.tar.gz"
-
-##### load remaining pipleline rules #####
+##### load pipleline rules #####
 include: "snakemake/rules/sra.smk"
 include: "snakemake/rules/fastqc.smk"
 
@@ -71,5 +50,24 @@ for rule in pipelines[config['pipeline']]:
 #include: "snakemake/rules/multiqc.smk"
 include: "snakemake/rules/result_archive.smk"
 
-# if config['result_archive'] == "yes":
-#     include: "snakemake/rules/result_archive.smk"
+##### top level snakemake rule #####
+rule all:
+    input:
+        #LOG_DIR + "sra.completed",
+        expand(FASTQ_DIR + "{file}", file=Metadata.fq),
+        # fastqc output files
+        expand(LOG_DIR + "qc/{file}.html", file=Metadata.fq),
+        expand(LOG_DIR + "qc/{file}_fastqc.zip", file=Metadata.fq),
+        # # multiqc output files
+        # # multiqc has problems finding some files
+        # LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
+        # align output files
+        expand(ALIGN_OUTDIR+"{sample}/"+COMMON_BAM_NAME+".bam", sample=Samples),
+        get_align_log_files,
+        # count output files
+        get_count_output_files,
+        get_count_log_files,
+        # diffexp output files
+        # get_diffexp_files,
+        # result archive output files
+        "archive/" + config["experiment_name"] + "_result_archive.tar.gz"

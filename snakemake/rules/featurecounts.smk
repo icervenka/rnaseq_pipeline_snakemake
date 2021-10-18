@@ -1,3 +1,9 @@
+def get_count_output_files(wildcards):
+    return [COUNT_OUTDIR + "gene_counts.txt", COUNT_OUTDIR + "counts.tsv"]
+
+def get_count_log_files(wildcards):
+    return COUNT_LOG_OUTDIR + "gene_counts.txt.summary"
+
 rule count:
     input:
         bam=expand(rules.rename_bam.output, sample=Samples),
@@ -39,10 +45,10 @@ rule move_count_log:
     shell:
         "mv {input} {output}"
 
-rule all_count:
-    input:
-        COUNT_OUTDIR + "gene_counts.txt",
-        COUNT_OUTDIR + "counts.tsv",
-        COUNT_LOG_OUTDIR + "gene_counts.txt.summary"
-    output:
-        touch(LOG_DIR + "count.completed")
+# rule all_count:
+#     input:
+#         COUNT_OUTDIR + "gene_counts.txt",
+#         COUNT_OUTDIR + "counts.tsv",
+#         COUNT_LOG_OUTDIR + "gene_counts.txt.summary"
+#     output:
+#         touch(LOG_DIR + "count.completed")

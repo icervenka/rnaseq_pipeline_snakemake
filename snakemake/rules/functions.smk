@@ -25,14 +25,6 @@ def extract_name(parsed_filename):
 def extract_extension(parsed_filename):
     return(parsed_filename[1])
 
-# def read_command(filename):
-#     if(filename.endswith(".bz2")):
-#         return("bunzip2 -c")
-#     elif(filename.endswith(".gz")):
-#         return("zcat")
-#     else:
-#         return("cat")
-
 def get_fq(wildcards):
     m = Metadata.loc[Metadata["sample"] == wildcards.sample, :].dropna()
     m["fq"] = FASTQ_DIR + m.fq

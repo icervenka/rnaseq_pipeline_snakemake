@@ -1,3 +1,6 @@
+def get_align_log_files(wildcards):
+    return expand(ALIGN_LOG_OUTDIR+"{sample}/{log}", sample=Samples, log=STAR_LOGFILES)
+
 rule align:
     input:
         sample=get_fq,
