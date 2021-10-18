@@ -54,4 +54,4 @@ sample_expression = merge(ids, sample_expression, by.x = ids_in, by.y = 'gene')
 write.table(sample_expression, file=snakemake@output[["sample_expression"]], quote = F, row.names = F, sep = "\t")
 
 saveRDS(result_array, file=snakemake@output[["result_array_ids"]])
-save.image(paste0(snakemake@output[["image_file"]]))
+#save.image(paste0(snakemake@output[["image_file"]]))

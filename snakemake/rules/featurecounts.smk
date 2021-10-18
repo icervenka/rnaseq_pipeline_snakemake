@@ -44,11 +44,3 @@ rule move_count_log:
         COUNT_LOG_OUTDIR + "gene_counts.txt.summary"
     shell:
         "mv {input} {output}"
-
-# rule all_count:
-#     input:
-#         COUNT_OUTDIR + "gene_counts.txt",
-#         COUNT_OUTDIR + "counts.tsv",
-#         COUNT_LOG_OUTDIR + "gene_counts.txt.summary"
-#     output:
-#         touch(LOG_DIR + "count.completed")

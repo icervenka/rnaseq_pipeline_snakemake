@@ -3,6 +3,17 @@ DEGFILES_OUTDIR = OUTDIR + "degfiles/"
 REPORTS_OUTDIR = OUTDIR + "reports/"
 DDS_OUTDIR = OUTDIR + "dds/"
 
+def get_diffexp_output_files(wildcards):
+    return [DDS_OUTDIR + "dds.rds",
+        DDS_OUTDIR + "result_array.rds",
+        DDS_OUTDIR + "result_array_ids.rds",
+        OUTDIR + "analysis_params/config.yaml",
+        OUTDIR + "analysis_params/metadata.tsv",
+        DEGFILES_OUTDIR + "sample_expression.csv",
+        REPORTS_OUTDIR + "report.html",
+        REPORTS_OUTDIR + "pca.html",
+        REPORTS_OUTDIR + "mds_plot.html"]
+
 rule diffexp_init:
     input:
         count_data="counts/counts.tsv",
@@ -40,8 +51,6 @@ rule diffexp_save:
         result_array=rules.diffexp_results.output[0]
     output:
         sample_expression=DEGFILES_OUTDIR + "sample_expression.csv",
-        # image_file=OUTDIR + \
-        #     "{}.RData".format(config["experiment_name"]),
         result_array_ids=DDS_OUTDIR + "result_array_ids.rds",
     params:
         outdir=DEGFILES_OUTDIR,
@@ -106,17 +115,3 @@ rule diffexp_copy_config:
         metadata=OUTDIR + "analysis_params/metadata.tsv"
     shell:
         "cp {input.config} {output.config}; cp {input.metadata} {output.metadata}"
-
-rule all_diffexp:
-    input:
-        DDS_OUTDIR + "dds.rds",
-        DDS_OUTDIR + "result_array.rds",
-        DDS_OUTDIR + "result_array_ids.rds",
-        OUTDIR + "analysis_params/config.yaml",
-        OUTDIR + "analysis_params/metadata.tsv",
-        DEGFILES_OUTDIR + "sample_expression.csv",
-        REPORTS_OUTDIR + "report.html",
-        REPORTS_OUTDIR + "pca.html",
-        REPORTS_OUTDIR + "mds_plot.html"
-    output:
-        touch(LOG_DIR + DIFFEXP_ANALYSIS + "diffexp.completed")

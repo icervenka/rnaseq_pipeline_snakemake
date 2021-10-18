@@ -1,3 +1,6 @@
+def get_align_output_files(wildcards):
+    return expand(ALIGN_OUTDIR+"{sample}/"+COMMON_BAM_NAME+".bam", sample=Samples)
+
 def get_align_log_files(wildcards):
     return expand(ALIGN_LOG_OUTDIR+"{sample}/{log}", sample=Samples, log=STAR_LOGFILES)
 
@@ -34,10 +37,3 @@ rule move_align_log:
         outdir=ALIGN_LOG_OUTDIR + "{sample}"
     shell:
         "mv {input} {params.outdir}"
-
-rule all_align:
-    input:
-        expand(ALIGN_OUTDIR+"{sample}/"+COMMON_BAM_NAME+".bam", sample=Samples),
-        expand(ALIGN_LOG_OUTDIR+"{sample}/{log}", sample=Samples, log=STAR_LOGFILES)
-    output:
-        touch(LOG_DIR + "align.completed")

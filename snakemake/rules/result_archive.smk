@@ -1,12 +1,13 @@
-
-# TODO change input to something more dynamic and "complete"
 rule result_archive:
     input:
-        LOG_DIR + DIFFEXP_ANALYSIS + "diffexp.completed"
+        get_align_log_files,
+        get_count_output_files,
+        get_count_log_files,
+        get_diffexp_output_files
     output:
         # "archive/" + NOW + "_" + \
         #     config["experiment_name"] + "_result_archive.tar.gz"
-        "archive/" + config["experiment_name"] + "_result_archive.tar.gz"
+        "archive/" + NOW + "_" + config["experiment_name"] + "_result_archive.tar.gz"
     params:
         "diffexp/" + DIFFEXP_OUTDIR
     shell:

@@ -45,8 +45,8 @@ knitr_output_options = list(
   self_contained = FALSE,
   lib_dir = paste0(outdir, "/libs")
 )
+
 # render html document
-# todo figure out a nicer way to point to output
 render(paste0("snakemake/scripts/deseq_report_rmd/", report_layout,".Rmd"),
        output_file = paste0(snakemake@output[[1]]),
        output_dir = snakemake@params[["outdir"]],
@@ -108,15 +108,15 @@ walk(1:no_contrasts, function(x) {
 # heatmap_cluster_metric_col = "euclidean"
 # heatmap_cluster_metric_row = "euclidean"
 # annotation_col = "condition"
-# 
+#
 # dds = readRDS("~/programming/rnaseq_pipeline/diffexp/deseq_default/dds.rds")
 # rld <- rlog(dds, blind=FALSE)
-# 
+#
 # result_array = readRDS("~/programming/rnaseq_pipeline/diffexp/deseq_default/result_array.rds")
 # result_array_ids = readRDS("~/programming/rnaseq_pipeline/diffexp/deseq_default/result_array_ids.rds")
-# 
+#
 # report_layout = paste0("_main_", "flex")
-# 
+#
 # individual = FALSE
 # render(paste0("~/programming/rnaseq_pipeline/snakemake/scripts/deseq_report_rmd/",report_layout,".Rmd"),
 #        output_file = paste0("~/programming/rnaseq_pipeline/diffexp/test_flex/report.html"),

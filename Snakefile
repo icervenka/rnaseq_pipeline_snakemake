@@ -30,7 +30,7 @@ Fqs = list(Metadata["fq"].unique())
 #SAMPLES_BASENAME = [extract_name(parse_filename(x)) for x in Samples]
 DIFFEXP_ANALYSIS = "{}_{}/".format(
     pipelines[config['pipeline']][-1], config["diffexp"]["outdir"])
-NOW = str(datetime.datetime.now())
+NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 
 ##### load pipleline rules #####
 include: "snakemake/rules/sra.smk"
@@ -53,7 +53,7 @@ include: "snakemake/rules/result_archive.smk"
 ##### top level snakemake rule #####
 rule all:
     input:
-        #LOG_DIR + "sra.completed",
+        # check if fastq files are present otherwise download sra
         expand(FASTQ_DIR + "{file}", file=Metadata.fq),
         # fastqc output files
         expand(LOG_DIR + "qc/{file}.html", file=Metadata.fq),
@@ -62,12 +62,12 @@ rule all:
         # # multiqc has problems finding some files
         # LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
         # align output files
-        expand(ALIGN_OUTDIR+"{sample}/"+COMMON_BAM_NAME+".bam", sample=Samples),
+        get_align_output_files,
         get_align_log_files,
         # count output files
         get_count_output_files,
         get_count_log_files,
         # diffexp output files
-        # get_diffexp_files,
-        # result archive output files
-        "archive/" + config["experiment_name"] + "_result_archive.tar.gz"
+        get_diffexp_output_files,
+        # result archive compressed output
+        "archive/" + NOW + "_" + config["experiment_name"] + "_result_archive.tar.gz"
