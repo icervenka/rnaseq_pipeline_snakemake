@@ -1,6 +1,3 @@
-# TODO: create functions for output files from final rules for individual programs
-# to avoid x.completed
-
 def is_tool(name):
     """Check whether `name` is on PATH and marked as executable."""
 

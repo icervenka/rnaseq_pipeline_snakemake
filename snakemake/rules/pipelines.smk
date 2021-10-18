@@ -12,6 +12,6 @@ pipelines = {
     "limma" : ['star', 'featurecounts', 'limma'],
     "limma-alt" : ['hisat', 'featurecounts', 'limma'],
     "kallisto" : ['kallisto', 'sleuth'],
-    "only_download_sra" : ['skip_align', 'skip_count', 'skip_deg'],
-    "download_align" : ['star', 'skip_count', 'skip_deg']
+    "only_download_sra" : ['skip_align', 'skip_count', 'skip_diffexp'],
+    "download_align" : ['star', 'skip_count', 'skip_diffexp']
 }

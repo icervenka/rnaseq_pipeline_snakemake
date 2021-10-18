@@ -22,6 +22,7 @@ config_extra = load_configfile("config_extra.yaml")
 # metadata
 Metadata = pd.read_table(config["metadata"], dtype=str)
 validate(Metadata, schema="snakemake/schema/metadata.schema.yaml")
+Metadata = Metadata.sort_values(by=['sample', 'lane', 'read'])
 
 Samples = list(Metadata["sample"].unique())
 Fqs = list(Metadata["fq"].unique())
@@ -47,7 +48,7 @@ if config['coverage'] == "yes":
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
 
-#include: "snakemake/rules/multiqc.smk"
+include: "snakemake/rules/multiqc.smk"
 include: "snakemake/rules/result_archive.smk"
 
 ##### top level snakemake rule #####
@@ -58,9 +59,9 @@ rule all:
         # fastqc output files
         expand(LOG_DIR + "qc/{file}.html", file=Metadata.fq),
         expand(LOG_DIR + "qc/{file}_fastqc.zip", file=Metadata.fq),
-        # # multiqc output files
-        # # multiqc has problems finding some files
-        # LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
+        # multiqc output files
+        # multiqc has problems finding some files
+        LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
         # align output files
         get_align_output_files,
         get_align_log_files,

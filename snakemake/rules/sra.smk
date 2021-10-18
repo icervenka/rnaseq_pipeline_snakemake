@@ -74,9 +74,3 @@ rule compress_fastq:
             "{run_threads} "
             "{input} "
         )
-
-# rule all_sra:
-#     input:
-#         expand(FASTQ_DIR + "{file}", file=Metadata.fq)
-#     output:
-#         touch(LOG_DIR + "sra.completed")
