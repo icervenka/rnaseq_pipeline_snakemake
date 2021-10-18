@@ -11,10 +11,10 @@ rule diffexp_init:
         DDS_OUTDIR + "dds.rds"
     params:
         design=config['diffexp']["design"],
-        ref_levels=config['diffexp']["ref_levels"],
+        ref_levels=config['diffexp']["reference_levels"],
         min_count=config['diffexp']["gene_min_readcount"],
         contrast_type=config['diffexp']["contrast_type"],
-        lfc_shrink=extra_config['diffexp']["deseq_lfc_shrink"],
+        lfc_shrink=config_extra['diffexp']["deseq_lfc_shrink"],
     script:
         "../scripts/deseq_init.R"
 
@@ -27,7 +27,7 @@ rule diffexp_results:
     params:
         contrast_type=config['diffexp']["contrast_type"],
         contrasts=config['diffexp']["contrasts"],
-        lfc_shrink=extra_config['diffexp']["deseq_lfc_shrink"],
+        lfc_shrink=config_extra['diffexp']["deseq_lfc_shrink"],
         fdr=config['diffexp']["fdr"]
     script:
         "../scripts/deseq_results.R"
@@ -44,7 +44,6 @@ rule diffexp_save:
         #     "{}.RData".format(config["experiment_name"]),
         result_array_ids=DDS_OUTDIR + "result_array_ids.rds",
     params:
-        # contrasts=rules.diffexp_results.output[1],
         outdir=DEGFILES_OUTDIR,
         species=config["species"],
         gene_ids_in=config['diffexp']["input_gene_ids"],

@@ -6,7 +6,7 @@ rule align:
         bam=temp(ALIGN_OUTDIR + "{sample}/" + STAR_BAM_NAME + ".bam"),
         log=expand(ALIGN_OUTDIR + "{{sample}}/{log}", log=STAR_LOGFILES),
     params:
-        extra=extra_config['align']['star_extra'],
+        extra=config_extra['align']['star_extra'],
         metadata=Metadata,
         fastq_dir = FASTQ_DIR
     threads:
