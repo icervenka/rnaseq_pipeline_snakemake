@@ -2,6 +2,7 @@
 RULES_DIR = "snakemake/rules/"
 SRA_DIR = "sra/"
 FASTQ_DIR = "fastq/"
+TRIMMED_DIR = "trimmed/"
 LOG_DIR = "logs/"
 ALIGN_OUTDIR = "align/"
 ALIGN_LOG_OUTDIR= LOG_DIR + ALIGN_OUTDIR

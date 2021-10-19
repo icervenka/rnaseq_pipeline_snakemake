@@ -43,6 +43,18 @@ def get_paired_end_sra(wildcards):
     m = m.query('sra == @wildcards.sra')
     return SRA_DIR + m.sra
 
+##### functions for getting names of fastq files for trimming #####
+
+def get_single_end_cutadapt(wildcards):
+    m = Metadata[~Metadata.duplicated(subset=['sample', 'lane'], keep=False).astype(bool)]
+    m = m.query('fq == @wildcards.fq')
+    return FASTQ_DIRR + m.fq
+
+def get_paired_end_cutadapt(wildcards):
+    m = Metadata[Metadata.duplicated(subset=['sample', 'lane']).astype(bool)]
+    m = m.query('fq == @wildcards.fq')
+    return FASTQ_DIR + m.fq
+
 ##### input function for retrieving fastq files  #####
 
 def get_fq(wildcards):
@@ -71,17 +83,7 @@ def featurecount_stranded(stranded):
     return stranded_switch(stranded)
 
 def featurecounts_params(wildcards):
-    # def stranded_switch(x):
-    #     select = {
-    #         "no": "-s 0 ",
-    #         "yes": "-s 1 ",
-    #         "reverse": "-s 2 "
-    #     }
-    #     return(select.get(x, "-s 0"))
-
-    #params = config["count"]
     param_string = ""
-    #param_string += stranded_switch(params["stranded"])
     param_string += "-M " if config["count"]["multimap"] == "yes" else ""
     param_string += "-O " if config["count"]["overlap"] == "yes" else ""
     param_string += config_extra["count"]["extra"]

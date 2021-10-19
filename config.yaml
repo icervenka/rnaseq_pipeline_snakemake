@@ -12,18 +12,24 @@ fasta: "/shared/genome/grcm38/fasta/grcm38.fa"
 # see README for list of available pipelines
 pipeline: "deseq"
 
-# should reads be trimmed for adapters and/or quality
-trim: "no"
+# trimming ---------------------------------------------------------------------
+# should reads be trimmed for adapters and/or quality, uses cutadapt
+trim:
+  # see https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
+  adapters_single: ""
+  adapters_paired: ""
+  # see https://cutadapt.readthedocs.io/en/stable/guide.html#quality-trimming
+  quality: ""
+  extra: ""
 
+# coverage ---------------------------------------------------------------------
 # should bedgraph and tdf files be generated for bam files
 coverage: "no"
 
 # counting options -------------------------------------------------------------
+# strandedness is specified in the metadata.tsv file
 # for extra parameters to be passed to counting programs, see config_extra.yaml
 count:
-  # protocol for library preparation,
-  # accepts following values: "no", "yes", "reverse"
-  stranded: "no"
   # if multimapping reads should be counted
   multimap: "no"
   # if reads belonging to the overlapping genes should be counted
