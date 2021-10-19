@@ -60,21 +60,31 @@ def read_command(filename):
     else:
         return("cat")
 
-def featurecounts_params(wildcards):
+def featurecount_stranded(stranded):
     def stranded_switch(x):
         select = {
-            "no": "-s 0 ",
-            "yes": "-s 1 ",
-            "reverse": "-s 2 "
+            "no": "0",
+            "yes": "1",
+            "reverse": "2"
         }
-        return(select.get(x, "-s 0"))
+        return(select.get(x, "0"))
+    return stranded_switch(stranded)
 
-    params = config["count"]
+def featurecounts_params(wildcards):
+    # def stranded_switch(x):
+    #     select = {
+    #         "no": "-s 0 ",
+    #         "yes": "-s 1 ",
+    #         "reverse": "-s 2 "
+    #     }
+    #     return(select.get(x, "-s 0"))
+
+    #params = config["count"]
     param_string = ""
-    param_string += stranded_switch(params["stranded"])
-    param_string += "-M " if params["multimap"] == "yes" else ""
-    param_string += "-O " if params["overlap"] == "yes" else ""
-    param_string += params["extra"]
+    #param_string += stranded_switch(params["stranded"])
+    param_string += "-M " if config["count"]["multimap"] == "yes" else ""
+    param_string += "-O " if config["count"]["overlap"] == "yes" else ""
+    param_string += config_extra["count"]["extra"]
     return(param_string)
 
 def kallisto_params(wildcards):

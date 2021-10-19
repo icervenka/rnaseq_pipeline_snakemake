@@ -18,11 +18,16 @@ rule count:
     threads:
         config["threads"]
     run:
+        stranded_str = [ featurecount_stranded(Metadata.query('sample == @x').
+            stranded.dropna().unique()[0]) for x in Samples ]
+        stranded_str = ','.join(stranded_str)
+
         shell(
             "featureCounts "
             "-a {input.gtf} "
             "-o {output.counts} "
             "-T {threads} "
+            "-s {stranded_str} "
             "{params.extra} "
             "{input.bam} "
             "2> {log}"
@@ -35,7 +40,7 @@ rule counts_to_matrix:
         counts_tsv=COUNT_OUTDIR + "counts.tsv"
     shell:
         # | awk '{{gsub("bam/","",$0); print}}'
-        "cat {input.counts} | head -n -1 | cut -f 1,7-  > {output.counts_tsv}"
+        "cat {input.counts} | head -n -1 | cut -f 1,7- > {output.counts_tsv}"
 
 rule move_count_log:
     input:
