@@ -37,16 +37,16 @@ NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 include: "snakemake/rules/sra.smk"
 include: "snakemake/rules/fastqc.smk"
 
-# TODO
 if config['trim'] == "yes":
     include: "snakemake/rules/trim.smk"
 
-# TODO
-if config['coverage'] == "yes":
-    include: "snakemake/rules/coverage.smk"
-
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
+
+include: "snakemake/rules/bam_index.smk"
+
+if config['coverage']['calculate'] == "yes":
+    include: "snakemake/rules/coverage.smk"
 
 include: "snakemake/rules/multiqc.smk"
 include: "snakemake/rules/result_archive.smk"

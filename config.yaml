@@ -24,7 +24,15 @@ trim:
 
 # coverage ---------------------------------------------------------------------
 # should bedgraph and tdf files be generated for bam files
-coverage: "no"
+# possible choices for normalization: RPKM, CPM, BPM, RPGC, None
+# RPGC normalization requires the --effectiveGenomeSize to be specified in extra
+# https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html
+coverage:
+  calulate: "no"
+  split_strands: "no"
+  bin_size: "10"
+  normalize_using: "BPM"
+  extra: ""
 
 # counting options -------------------------------------------------------------
 # strandedness is specified in the metadata.tsv file
