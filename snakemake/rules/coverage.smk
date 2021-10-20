@@ -1,3 +1,9 @@
+def get_coverage_files(wildcards):
+    config['coverage']['split_strands'] == "no":
+        return expand(COVERAGE_OUTDIR + "{sample}.bedgraph", sample=Samples)
+    elif config['coverage']['split_strands'] == "yes":
+        return expand(COVERAGE_OUTDIR + "{sample}_{strand}.bedgraph",
+            sample=Samples, strand=['forward', 'reverse'])
 
 if config['coverage']['split_strands'] == "no"
     rule bam_coverage:

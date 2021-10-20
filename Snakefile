@@ -36,9 +36,7 @@ NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 ##### load pipleline rules #####
 include: "snakemake/rules/sra.smk"
 include: "snakemake/rules/fastqc.smk"
-
-if config['trim'] == "yes":
-    include: "snakemake/rules/trim.smk"
+include: "snakemake/rules/trim.smk"
 
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
@@ -47,6 +45,8 @@ include: "snakemake/rules/bam_index.smk"
 
 if config['coverage']['calculate'] == "yes":
     include: "snakemake/rules/coverage.smk"
+else:
+    include: "snakemake/rules/skip_coverage.smk"
 
 include: "snakemake/rules/multiqc.smk"
 include: "snakemake/rules/result_archive.smk"
@@ -65,6 +65,9 @@ rule all:
         # align output files
         get_align_output_files,
         get_align_log_files,
+        get_bam_index_files,
+        # coverage get_align_output_files
+        get_coverage_files,
         # count output files
         get_count_output_files,
         get_count_log_files,

@@ -14,6 +14,7 @@ pipeline: "deseq"
 
 # trimming ---------------------------------------------------------------------
 # should reads be trimmed for adapters and/or quality, uses cutadapt
+# if no trimming parameters are specified, trimming will be skipped
 trim:
   # see https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
   adapters_single: ""
