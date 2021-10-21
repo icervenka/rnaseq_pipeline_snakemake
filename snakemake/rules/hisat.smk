@@ -1,12 +1,21 @@
+def get_align_output_files(wildcards):
+    return expand(ALIGN_OUTDIR + "{sample}/" +
+           COMMON_BAM_NAME + ".bam", sample=Samples)
+
+def get_align_log_files(wildcards):
+    return expand(ALIGN_LOG_OUTDIR + "{sample}/hisat.log", sample=Samples)
+
 rule align:
     input:
-        sample = get_fq,
-        index = config["index"]
+        sample=get_fq,
+        index=config["index"]
     output:
-        sam = temp(ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".sam"),
-        log = ALIGN_LOG_OUTDIR + "{sample}/hisat.log"
+        sam=temp(ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".sam"),
+        log=ALIGN_LOG_OUTDIR + "{sample}/hisat.log"
     params:
-        extra = config['align']['hisat_extra']
+        metadata=Metadata,
+        fastq_dir=FASTQ_DIR
+        extra=config_extra['align']['star_extra'],
     threads:
         config["threads"]
     script:
@@ -18,8 +27,8 @@ rule sort_sam:
     output:
         ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".bam",
     params:
-        compression = 9
-        flag = "0x2"
+        compression=9
+        flag="0x2"
     threads:
         config['threads']
     run:
@@ -44,10 +53,10 @@ rule move_log:
     shell:
         "mv {input} {output}"
 
-rule all_align:
-    input:
-        expand(ALIGN_OUTDIR + "{sample}/" +
-               COMMON_BAM_NAME + ".bam", sample=Samples),
-        expand(ALIGN_LOG_OUTDIR + "{sample}/hisat.log", sample=Samples)
-    output:
-        touch(ALIGN_LOG_OUTDIR + "align.completed")
+# rule all_align:
+#     input:
+#         expand(ALIGN_OUTDIR + "{sample}/" +
+#                COMMON_BAM_NAME + ".bam", sample=Samples),
+#         expand(ALIGN_LOG_OUTDIR + "{sample}/hisat.log", sample=Samples)
+#     output:
+#         touch(ALIGN_LOG_OUTDIR + "align.completed")

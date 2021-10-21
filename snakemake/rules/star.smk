@@ -14,7 +14,7 @@ rule align:
     params:
         extra=config_extra['align']['star_extra'],
         metadata=Metadata,
-        fastq_dir = FASTQ_DIR
+        fastq_dir=FASTQ_DIR
     threads:
         config["threads"]
     script:
