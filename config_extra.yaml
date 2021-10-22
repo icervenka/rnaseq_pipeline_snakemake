@@ -22,6 +22,7 @@ align:
   kallisto_extra:
     read_length_mean: 41
     read_length_variance: 10
+    extra: ""
 
 #### extra parameters for individual counting packages #####
 count:

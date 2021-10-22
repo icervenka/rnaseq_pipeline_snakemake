@@ -55,12 +55,19 @@ def get_paired_end_cutadapt(wildcards):
     m = m.query('fq == @wildcards.fq')
     return FASTQ_DIR + m.fq
 
-##### input function for retrieving fastq files  #####
+##### functions for retrieving fastq file names  #####
 
 def get_fq(wildcards):
     m = Metadata.loc[Metadata["sample"] == wildcards.sample, :].dropna()
     m["fq"] = FASTQ_DIR + m.fq
     return m.fq
+
+def arrange_fq_for_align(samples, metadata, fastq_dir):
+    metadata['fq_full'] = fastq_dir + metadata['fq']
+    fq_meta = metadata[metadata['fq_full'].isin(samples)]
+    input_arr = fq_meta.groupby(['read'])['fq_full'].apply(lambda x: x.to_list())
+    #input_arr = [','.join(x) for x in input_arr.to_list()]
+    return input_arr
 
 ##### functions for parsing parameters from various tools  #####
 
@@ -104,13 +111,14 @@ def kallisto_params(wildcards):
     param_string += params["extra"]
     return(param_string)
 
-def kallisto_stranded(x):
+def kallisto_stranded(wildcards):
     select = {
         "no": " ",
         "yes": "--fr-stranded ",
         "reverse": "--rf-stranded "
     }
-    return(select.get(x, " "))
+    stranded = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()
+    return(select.get(stranded, " "))
 
 def stringtie_params(wildcards):
     def stranded_switch(x):
