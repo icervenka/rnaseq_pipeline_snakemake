@@ -79,7 +79,7 @@ def read_command(filename):
     else:
         return("cat")
 
-def featurecount_stranded(stranded):
+def featurecounts_stranded(stranded):
     def stranded_switch(x):
         select = {
             "no": "0",
@@ -93,7 +93,16 @@ def featurecounts_params(wildcards):
     param_string = ""
     param_string += "-M " if config["count"]["multimap"] == "yes" else ""
     param_string += "-O " if config["count"]["overlap"] == "yes" else ""
-    param_string += config_extra["count"]["extra"]
+    param_string += config_extra["count"]["extra"] + " "
+    return(param_string)
+
+def htseq_params(wildcards):
+    param_string = ""
+    if config["count"]["overlap"] == "yes":
+        param_string += "--nonunique=all "
+        if config["count"]["multimap"] == "no":
+            param_string += "--secondary-alignments=ignore "
+    param_string += config_extra["count"]["extra"] + " "
     return(param_string)
 
 def kallisto_params(wildcards):
