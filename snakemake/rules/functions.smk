@@ -66,7 +66,6 @@ def arrange_fq_for_align(samples, metadata, fastq_dir):
     metadata['fq_full'] = fastq_dir + metadata['fq']
     fq_meta = metadata[metadata['fq_full'].isin(samples)]
     input_arr = fq_meta.groupby(['read'])['fq_full'].apply(lambda x: x.to_list())
-    #input_arr = [','.join(x) for x in input_arr.to_list()]
     return input_arr
 
 ##### functions for parsing parameters from various tools  #####

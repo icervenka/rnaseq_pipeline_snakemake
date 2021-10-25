@@ -25,10 +25,15 @@ from snakemake.shell import shell
 # else:
 #     input_str = "-1 " + input_str_fq1 + " -2 " + ",".join(fq2)
 
-meta = snakemake.params.metadata
-meta['fq_full'] = snakemake.params.fastq_dir + meta['fq']
-fq_meta = snakemake.params.metadata[snakemake.params.metadata['fq_full'].isin(snakemake.input.sample)]
-input_arr = fq_meta.groupby(['read'])['fq_full'].apply(lambda x: x.to_list())
+input_arr = arrange_fq_for_align(
+    snakemake.input.sample,
+    snakemake.params.metadata,
+    snakemake.params.fastq_dir)
+
+# meta = snakemake.params.metadata
+# meta['fq_full'] = snakemake.params.fastq_dir + meta['fq']
+# fq_meta = snakemake.params.metadata[snakemake.params.metadata['fq_full'].isin(snakemake.input.sample)]
+# input_arr = fq_meta.groupby(['read'])['fq_full'].apply(lambda x: x.to_list())
 input_arr = [','.join(x) for x in input_arr.to_list()]
 
 if len(input_arr) == 1:
