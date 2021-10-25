@@ -15,8 +15,6 @@ rule count:
     threads:
         config["threads"]
     run:
-        stranded = Metadata.query('sample == @wildcards.sample')stranded.dropna().unique()[0]
-
         shell(
             "htseq-count "
             "-n {threads} "

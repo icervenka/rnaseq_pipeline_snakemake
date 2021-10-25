@@ -1,4 +1,10 @@
-# TODO strandedness --rf --fr
+def get_count_output_files(wildcards):
+    return [expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples) +
+            expand(COUNT_OUTDIR + "{sample}/final.gtf", sample=Samples) +
+            [COUNT_OUTDIR + "merged.gtf", DIFFEXP_OUTDIR + DIFFEXP_ANALYSIS + "/{sample}/final.gtf"]]
+
+def get_count_log_files(wildcards):
+    return COUNT_OUTDIR + "gtf_assembly.txt",
 
 rule count:
     input:
@@ -24,7 +30,7 @@ rule assemble:
     input:
         expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples)
     output:
-        COUNT_OUTDIR + MERGE_OUTDIR + "gtf_assembly.txt"
+        COUNT_OUTDIR + "gtf_assembly.txt"
     shell:
         "printf '%s\n' {input} >> {output}"
 
@@ -33,13 +39,16 @@ rule merge:
 		merged=rules.assemble.output,
 		gtf=config['gtf']
     output:
-		COUNT_OUTDIR + MERGE_OUTDIR + "merged.gtf"
+		COUNT_OUTDIR + "merged.gtf"
+    params:
+        extra=config_extra['count']['stringtie_merge_extra']
     threads:
         config['threads']
     run:
         shell(
             "stringtie "
 			"--merge "
+            "{params.extra} "
             "-p {threads} "
             "-G {input.gtf} "
             "-o {output} "
@@ -52,24 +61,17 @@ rule count_merged:
 		merged=rules.merge.output
     output:
 		DIFFEXP_OUTDIR + DIFFEXP_ANALYSIS + "/{sample}/final.gtf"
+    params:
+        extra=config_extra['count']['stringtie_merge_count_extra']
     threads:
         config['threads']
     run:
         shell(
             "stringtie "
-			"-e "
 			"-B "
+            "{params.extra} "
             "-p {threads} "
             "-G {input.merged} "
             "-o {output} "
             "{input.bam} "
         )
-
-rule all_count:
-    input:
-        expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples),
-		expand(COUNT_OUTDIR + "{sample}/final.gtf", sample=Samples),
-        COUNT_OUTDIR + MERGE_OUTDIR + "gtf_assembly.txt",
-        COUNT_OUTDIR + MERGE_OUTDIR + "merged.gtf"
-    output:
-        touch(LOG_DIR + "count.completed")

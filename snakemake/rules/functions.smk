@@ -92,16 +92,18 @@ def featurecounts_params(wildcards):
     param_string = ""
     param_string += "-M " if config["count"]["multimap"] == "yes" else ""
     param_string += "-O " if config["count"]["overlap"] == "yes" else ""
-    param_string += config_extra["count"]["extra"] + " "
+    param_string += config_extra["count"]["featurecounts_extra"] + " "
     return(param_string)
 
 def htseq_params(wildcards):
+    s = Metadata.query('sample == @wildcards.sample')stranded.dropna().unique()[0]
     param_string = ""
+    param_string += s + " "
     if config["count"]["overlap"] == "yes":
         param_string += "--nonunique=all "
         if config["count"]["multimap"] == "no":
             param_string += "--secondary-alignments=ignore "
-    param_string += config_extra["count"]["extra"] + " "
+    param_string += config_extra["count"]["htseq_extra"] + " "
     return(param_string)
 
 def kallisto_params(wildcards):
@@ -137,9 +139,11 @@ def stringtie_params(wildcards):
         }
         return(select.get(x, ""))
 
-    params = config["count"]
+    s = Metadata.query('sample == @wildcards.sample')stranded.dropna().unique()[0]
+
     param_string = ""
-    param_string += stranded_switch(params["stranded"])
+    param_string += stranded_switch(s)
+    param_string += config_extra["count"]["stringtie_extra"] + " "
     return(param_string)
 
 def cufflinks_params(wildcards):
@@ -185,5 +189,3 @@ def get_cuffdiff_data():
     files_str = " ".join(files)
 
     return (labels_str, files_str)
-
-##### programmatic output functions from rules  #####

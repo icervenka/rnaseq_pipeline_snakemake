@@ -27,6 +27,11 @@ align:
 #### extra parameters for individual counting packages #####
 count:
   extra: ""
+  featurecounts_extra: ""
+  htseq_extra: ""
+  stringtie_extra: ""
+  stringtie_merge_extra: ""
+  stringtie_merge_count_extra "-e "
 
 #### extra parameters for individual diffexp packages #####
 diffexp:
