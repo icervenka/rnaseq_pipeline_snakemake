@@ -1,8 +1,8 @@
 def get_count_output_files(wildcards):
-    return [COUNT_LOG_OUTDIR + "htseq_count.log", COUNT_OUTDIR + "counts.tsv"]
+    return COUNT_OUTDIR + "counts.tsv"
 
 def get_count_log_files(wildcards):
-    return COUNT_LOG_OUTDIR + "gene_counts.txt.summary"
+    return COUNT_LOG_OUTDIR + "htseq_count.log"
 
 rule count:
     input:
@@ -20,7 +20,6 @@ rule count:
             "-n {threads} "
             "-f bam "
             "-r pos "
-            "-s {stranded} "
             "{params.extra} "
             "{input.bam} "
             "{input.gtf} "
