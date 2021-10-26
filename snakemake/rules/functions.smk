@@ -107,28 +107,19 @@ def htseq_params(wildcards):
     return(param_string)
 
 def kallisto_params(wildcards):
-    # def stranded_switch(x):
-    #     select = {
-    #         "no": " ",
-    #         "yes": "--fr-stranded ",
-    #         "reverse": "--rf-stranded "
-    #     }
-    #     return(select.get(x, " "))
+    def stranded_switch(x):
+        select = {
+            "no": " ",
+            "yes": "--fr-stranded ",
+            "reverse": "--rf-stranded "
+        }
+        return(select.get(x, " "))
 
-    params = config["count"]
+    s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()
     param_string = ""
-    # param_string += stranded_switch(params["stranded"])
-    param_string += params["extra"]
+    param_string += stranded_switch(s)
+    param_string += config_extra['align']['kallisto_extra']
     return(param_string)
-
-def kallisto_stranded(wildcards):
-    select = {
-        "no": " ",
-        "yes": "--fr-stranded ",
-        "reverse": "--rf-stranded "
-    }
-    stranded = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()
-    return(select.get(stranded, " "))
 
 def stringtie_params(wildcards):
     def stranded_switch(x):

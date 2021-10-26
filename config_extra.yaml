@@ -19,19 +19,18 @@ align:
     --sp 3,1
     --pen-noncansplice 15 "
   # extra parameters for kallisto, if unknown, leave these defaults
+  kallisto_single_extra:
+    "-l 41 -s 10 "
   kallisto_extra:
-    read_length_mean: 41
-    read_length_variance: 10
-    extra: ""
+    ""
 
 #### extra parameters for individual counting packages #####
 count:
-  extra: ""
   featurecounts_extra: ""
   htseq_extra: ""
   stringtie_extra: ""
   stringtie_merge_extra: ""
-  stringtie_merge_count_extra "-e "
+  stringtie_merge_count_extra: "-e "
 
 #### extra parameters for individual diffexp packages #####
 diffexp:

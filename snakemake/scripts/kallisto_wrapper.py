@@ -18,8 +18,7 @@ input_arr = arrange_fq_for_align(
 
 if len(input_arr) == 1:
     input_str = "--single " + " ".join(input_arr[0])
-    fragment_info = "-l " + str(snakemake.params.length_mean) +
-        " -s " + str(snakemake.params.length_variance)
+    fragment_info = snakemake.params.single_extra
 elif len(input_arr) == 2:
     input_str = " ".join(zip(input_arr[0], input_arr[1]))
     fragment_info = ""
@@ -44,8 +43,6 @@ shell(
     "-g {snakemake.input.gtf} "
     "-i {snakemake.input.index} "
     "-o {ALIGN_OUTDIR}{snakemake.wildcards.sample} "
-    "{fragment_info} "
-    "{snakemake.params.stranded} "
     "{snakemake.params.extra} "
     "{input_str} "
 )

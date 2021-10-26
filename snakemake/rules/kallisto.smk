@@ -18,10 +18,12 @@ rule kallisto_quant:
         tsv=ALIGN_OUTDIR + "{sample}/" + KALLISTO_BAM_NAME + ".tsv",
         log=ALIGN_OUTDIR + "{sample}/" + "run_info.json"
     params:
-        stranded=kallisto_stranded,
-        length_mean=config_extra['align']['kallisto_extra']['read_length_mean'],
-        length_variance=config_extra['align']['kallisto_extra']['read_length_variance'],
-        extra=config_extra['align']['kallisto_extra']['extra']
+        single_extra=config_extra['align']['kallisto_single_extra'],
+        extra=kallisto_params
+        # stranded=kallisto_stranded,
+        # length_mean=config_extra['align']['kallisto_extra']['read_length_mean'],
+        # length_variance=config_extra['align']['kallisto_extra']['read_length_variance'],
+        # extra=config_extra['align']['kallisto_extra']['extra']
     threads:
         config['threads']
     script:
