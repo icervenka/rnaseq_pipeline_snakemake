@@ -19,10 +19,10 @@ align:
     --sp 3,1
     --pen-noncansplice 15 "
   # extra parameters for kallisto, if unknown, leave these defaults
-  kallisto_single_extra:
-    "-l 41 -s 10 "
   kallisto_extra:
     ""
+  kallisto_single_extra:
+    "-l 41 -s 10 "
 
 #### extra parameters for individual counting packages #####
 count:
@@ -31,6 +31,8 @@ count:
   stringtie_extra: ""
   stringtie_merge_extra: ""
   stringtie_merge_count_extra: "-e "
+  cufflinks_extra: "--multi-read-correct --upper-quartile-norm "
+  cuffmerge_extra: "--multi-read-correct --upper-quartile-norm "
 
 #### extra parameters for individual diffexp packages #####
 diffexp:

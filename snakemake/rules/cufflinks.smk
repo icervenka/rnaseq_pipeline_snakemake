@@ -1,21 +1,27 @@
-# TODO needs fasta index to be present: samtools faidx
+def get_count_output_files(wildcards):
+    return expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples) +
+        [ COUNT_OUTDIR + "merged.gtf" ]
+
+def get_count_log_files(wildcards):
+    return COUNT_OUTDIR + "gtf_assembly.txt"
 
 rule count:
     input:
-        bam = rules.rename_bam.output,
-        gtf = config["gtf"],
-        fasta = config["fasta"]
+        bam=rules.rename_bam.output,
+        gtf=config["gtf"],
+        fasta=config["fasta"]
     output:
-        counts = COUNT_OUTDIR + "{sample}/transcripts.gtf"
+        counts=COUNT_OUTDIR + "{sample}/transcripts.gtf"
+    params:
+        extra=cufflinks_params
     threads:
         config["threads"]
     run:
         shell(
             "cufflinks "
             "-G {input.gtf} "
-            "--multi-read-correct "
-            "--upper-quartile-norm "
             "--frag-bias-correct {input.fasta} "
+            "{params.extra} "
             "-o {COUNT_OUTDIR}{sample} "
             "{input.bam} "
         )
@@ -24,16 +30,18 @@ rule assemble:
     input:
         expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples)
     output:
-        COUNT_OUTDIR + MERGE_OUTDIR + "gtf_assembly.txt"
+        COUNT_OUTDIR + "gtf_assembly.txt"
     shell:
         "printf '%s\n' {input} >> {output}"
 
 rule merge:
     input:
-        merged = rules.assemble.output,
-        gtf = config['gtf']
+        merged=rules.assemble.output,
+        gtf=config['gtf']
     output:
-        COUNT_OUTDIR + MERGE_OUTDIR + "merged.gtf"
+        COUNT_OUTDIR + "merged.gtf"
+    params:
+        extra=cuffmerge_params
     threads:
         config['threads']
     run:
@@ -42,16 +50,9 @@ rule merge:
             "source /usr/local/bin/miniconda3/etc/profile.d/conda.sh; "
             "conda activate tophat; "
             "cuffmerge "
-            "-o {COUNT_OUTDIR}{MERGE_OUTDIR} "
             "-p {threads} "
             "-g {input.gtf} "
+            "{params.extra} "
+            "-o {COUNT_OUTDIR} "
             "{input.merged} "
         )
-
-rule all_count:
-    input:
-        expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples),
-        COUNT_OUTDIR + MERGE_OUTDIR + "gtf_assembly.txt",
-        COUNT_OUTDIR + MERGE_OUTDIR + "merged.gtf"
-    output:
-        touch(LOG_DIR + "count.completed")

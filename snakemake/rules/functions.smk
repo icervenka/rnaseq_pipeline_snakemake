@@ -154,6 +154,9 @@ def cufflinks_params(wildcards):
     param_string += params["extra"]
     return(param_string)
 
+def cuffmerge_params(wildcards):
+    pass
+
 ##### input function for creating cuffdiff data payloads  #####
 
 def get_cuffdiff_data():

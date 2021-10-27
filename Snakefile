@@ -34,6 +34,7 @@ DIFFEXP_ANALYSIS = "{}_{}/".format(
 NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 
 ##### load pipleline rules #####
+include: "snakemake/rules/preprocess.smk"
 include: "snakemake/rules/sra.smk"
 include: "snakemake/rules/fastqc.smk"
 include: "snakemake/rules/trim.smk"
@@ -52,6 +53,9 @@ include: "snakemake/rules/result_archive.smk"
 ##### top level snakemake rule #####
 rule all:
     input:
+        # check if genomic fasta index file exists
+        # needed for rsem and cufflinks
+        config['fasta'] + ".fai",
         # check if fastq files are present otherwise download sra
         expand(FASTQ_DIR + "{file}", file=Metadata.fq),
         # fastqc output files
