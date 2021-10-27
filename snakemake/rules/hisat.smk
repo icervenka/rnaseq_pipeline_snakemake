@@ -53,10 +53,4 @@ rule move_log:
     shell:
         "mv {input} {output}"
 
-# rule all_align:
-#     input:
-#         expand(ALIGN_OUTDIR + "{sample}/" +
-#                COMMON_BAM_NAME + ".bam", sample=Samples),
-#         expand(ALIGN_LOG_OUTDIR + "{sample}/hisat.log", sample=Samples)
-#     output:
-#         touch(ALIGN_LOG_OUTDIR + "align.completed")
+include: "bam_index.smk"

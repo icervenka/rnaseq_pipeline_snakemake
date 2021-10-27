@@ -37,3 +37,5 @@ rule move_align_log:
         outdir=ALIGN_LOG_OUTDIR + "{sample}"
     shell:
         "mv {input} {params.outdir}"
+
+include: "bam_index.smk"

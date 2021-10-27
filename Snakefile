@@ -41,8 +41,6 @@ include: "snakemake/rules/trim.smk"
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
 
-include: "snakemake/rules/bam_index.smk"
-
 if config['coverage']['calculate'] == "yes":
     include: "snakemake/rules/coverage.smk"
 else:

@@ -38,3 +38,5 @@ rule move_log:
         ALIGN_LOG_OUTDIR + "{sample}/align_summary.txt"
     shell:
         "mv {input} {output}"
+
+include: "bam_index.smk"
