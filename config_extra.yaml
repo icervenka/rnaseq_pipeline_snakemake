@@ -28,9 +28,9 @@ align:
 count:
   featurecounts_extra: ""
   htseq_extra: ""
-  stringtie_extra: ""
+  stringtie_assemble_extra: ""
   stringtie_merge_extra: ""
-  stringtie_merge_count_extra: "-e "
+  stringtie_count_extra: ""
   cufflinks_extra: "--multi-read-correct --upper-quartile-norm "
   cuffmerge_extra: "--multi-read-correct --upper-quartile-norm "
 
