@@ -19,3 +19,4 @@ STAR_LOGFILES = ['Log.out', 'Log.final.out', 'Log.progress.out']
 TOPHAT_BAM_NAME = "accepted_hits"
 KALLISTO_BAM_NAME = "abundance"
 COMMON_BAM_NAME = "aligned_sorted"
+BALLGOWN_INPUT_FILES = ["e_data", "i_data", "t_data", "e2t", "i2t"]

@@ -1,7 +1,12 @@
 def get_count_output_files(wildcards):
     return expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples) +
         expand(COUNT_OUTDIR + "{sample}/gene_counts.gtf", sample=Samples) +
-        [COUNT_OUTDIR + "merged.gtf"]
+        expand(COUNT_OUTDIR + "{sample}/{ballgown}.ctab", sample=Samples,
+            ballgown=BALLGOWN_INPUT_FILES) +
+        [COUNT_OUTDIR + "merged.gtf",
+            COUNT_OUTDIR + "counts.tsv",
+            COUNT_OUTDIR + "fpkm.tsv",
+            COUNT_OUTDIR + "samples_combined.tsv"]
 
 def get_count_log_files(wildcards):
     return []
@@ -74,8 +79,8 @@ rule counts_to_matrix:
     input:
         expand(rules.count.output.counts, sample=Samples)
     output:
-        COUNT_OUTDIR + "counts.tsv"
-    log:
-        COUNT_LOG_OUTDIR + "stringtie_count.log"
+        counts=COUNT_OUTDIR + "counts.tsv",
+        fpkm=COUNT_OUTDIR + "fpkm.tsv",
+        samples_combined=COUNT_OUTDIR + "samples_combined.tsv"
     script:
-        "../scripts/stringtie_count_gather.py"
+        "../scripts/stringtie_count_gather.R"

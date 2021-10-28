@@ -1,3 +1,5 @@
+# TODO add cuffnorm
+
 def get_count_output_files(wildcards):
     return expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples) +
         [ COUNT_OUTDIR + "merged.gtf" ]
