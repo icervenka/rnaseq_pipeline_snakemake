@@ -31,8 +31,11 @@ count:
   stringtie_assemble_extra: ""
   stringtie_merge_extra: ""
   stringtie_count_extra: ""
-  cufflinks_extra: "--multi-read-correct --upper-quartile-norm "
-  cuffmerge_extra: "--multi-read-correct --upper-quartile-norm "
+  # type of cufflinks assembly to perform. One of 'classic', 'guided', 'denovo'
+  # differs in usage of refernce gtf file to perform assembly
+  cufflinks_mode: "classic"
+  cufflinks_extra: "--multi-read-correct "
+  cuffmerge_extra: "--multi-read-correct "
 
 #### extra parameters for individual diffexp packages #####
 diffexp:

@@ -130,6 +130,7 @@ def stringtie_stranded(wildcards):
     s = Metadata.query('sample == @wildcards.sample')stranded.dropna().unique()[0]
     return(select.get(s, ""))
 
+# TODO change numbers for yes/no/reverse
 def cufflinks_params(wildcards):
     def stranded_switch(x):
         select = {
@@ -141,14 +142,17 @@ def cufflinks_params(wildcards):
         }
         return(select.get(x, "ff-firststrand"))
 
-    params = config["count"]
+    s = Metadata.query('sample == @wildcards.sample')stranded.dropna().unique()[0]
+
     param_string = ""
-    param_string += "--library-type" + stranded_switch(params["stranded"])
-    param_string += params["extra"]
+    param_string += "--library-type" + stranded_switch(s)
+    param_string += config_extra['count']['cufflinks_extra']
     return(param_string)
 
 def cuffmerge_params(wildcards):
-    pass
+    param_string = ""
+    param_string += config_extra['count']['cuffmerge_extra']
+    return(param_string)
 
 ##### input function for creating cuffdiff data payloads  #####
 

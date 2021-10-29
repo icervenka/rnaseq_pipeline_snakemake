@@ -5,40 +5,50 @@ def get_count_output_files(wildcards):
         [ COUNT_OUTDIR + "merged.gtf" ]
 
 def get_count_log_files(wildcards):
-    return COUNT_OUTDIR + "gtf_assembly.txt"
+    return [ COUNT_LOG_OUTDIR + "gtf_assembly.txt" ]
 
-rule count:
+rule assemble:
     input:
         bam=rules.rename_bam.output,
         gtf=config["gtf"],
         fasta=config["fasta"]
     output:
-        counts=COUNT_OUTDIR + "{sample}/transcripts.gtf"
+        COUNT_OUTDIR + "{sample}/transcripts.gtf"
     params:
         extra=cufflinks_params
     threads:
         config["threads"]
     run:
+        if config_extra['count']['cufflinks_mode'] == "classic":
+            mode="-G {input.gtf} "
+        elif config_extra['count']['cufflinks_mode'] == "guided":
+            mode="-g {input.gtf} "
+        elif config_extra['count']['cufflinks_mode'] == "denovo":
+            mode=""
+        else:
+            mode="-G {input.gtf} "
+
         shell(
             "cufflinks "
-            "-G {input.gtf} "
+            "{mode} "
             "--frag-bias-correct {input.fasta} "
             "{params.extra} "
             "-o {COUNT_OUTDIR}{sample} "
             "{input.bam} "
         )
 
-rule assemble:
+rule gather_gtf:
     input:
-        expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples)
+        expand(rules.assemble.output, sample=Samples)
     output:
-        COUNT_OUTDIR + "gtf_assembly.txt"
+        COUNT_LOG_OUTDIR + "gtf_assembly.txt"
     shell:
         "printf '%s\n' {input} >> {output}"
 
+# TODO check if gtf should be specified also for denovo assembly
 rule merge:
     input:
-        merged=rules.assemble.output,
+        gathered=rules.gather_gtf.output,
         gtf=config['gtf']
     output:
         COUNT_OUTDIR + "merged.gtf"
@@ -56,5 +66,5 @@ rule merge:
             "-g {input.gtf} "
             "{params.extra} "
             "-o {COUNT_OUTDIR} "
-            "{input.merged} "
+            "{input.gathered} "
         )

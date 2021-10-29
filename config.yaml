@@ -10,6 +10,8 @@ fasta: "/shared/genome/grcm38/fasta/grcm38.fa"
 # pipeline ---------------------------------------------------------------------
 # pipelines are defined in snakemake/rules/pipelines.smk
 # see README for list of available pipelines
+# TODO think about running the list of pipelines to separate directories in one
+# run
 pipeline: "deseq"
 
 # trimming ---------------------------------------------------------------------
