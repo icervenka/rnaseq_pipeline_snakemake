@@ -19,12 +19,14 @@ rule count:
         gtf=COUNT_OUTDIR + "{sample}/transcripts.gtf",
         counts=COUNT_OUTDIR + "{sample}/gene_counts.tsv"
 	params:
-		extra=stringtie_params
+		stranded=stringtie_stranded,
+        extra=config_extra['count']['stringtie_count_extra']
     threads:
         config['threads']
     run:
         shell(
             "stringtie "
+            "{params.stranded} "
 			"{params.extra} "
             "-p {threads} "
             "-G {input.gtf} "

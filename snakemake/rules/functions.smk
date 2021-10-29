@@ -121,21 +121,14 @@ def kallisto_params(wildcards):
     param_string += config_extra['align']['kallisto_extra']
     return(param_string)
 
-def stringtie_params(wildcards):
-    def stranded_switch(x):
-        select = {
-            "no": "",
-            "yes": "--rf ",
-            "reverse": "--fr "
-        }
-        return(select.get(x, ""))
-
+def stringtie_stranded(wildcards):
+    select = {
+        "no": "",
+        "yes": "--rf ",
+        "reverse": "--fr "
+    }
     s = Metadata.query('sample == @wildcards.sample')stranded.dropna().unique()[0]
-
-    param_string = ""
-    param_string += stranded_switch(s)
-    param_string += config_extra["count"]["stringtie_extra"] + " "
-    return(param_string)
+    return(select.get(s, ""))
 
 def cufflinks_params(wildcards):
     def stranded_switch(x):

@@ -1,3 +1,4 @@
+# requires that the directory with genomic fasta is writable
 rule fasta_index:
     input:
         config['fasta']

@@ -17,12 +17,14 @@ rule assemble_transcripts:
     output:
         COUNT_OUTDIR + "{sample}/transcripts.gtf"
 	params:
-		extra=stringtie_assemble_params
+		stranded=stringtie_stranded,
+        extra=config_extra['count']['stringtie_assemble_extra']
     threads:
         config['threads']
     run:
         shell(
             "stringtie "
+            "{params.stranded} "
 			"{params.extra} "
             "-p {threads} "
             "-l {wildcards.sample} "
@@ -37,13 +39,15 @@ rule merge:
     output:
 		COUNT_OUTDIR + "merged.gtf"
     params:
-        extra=stringtie_merge_params
+        stranded=stringtie_stranded,
+        extra=config_extra['count']['stringtie_merge_extra']
     threads:
         config['threads']
     run:
         shell(
             "stringtie "
 			"--merge "
+            "{params.stranded} "
             "{params.extra} "
             "-p {threads} "
             "-o {output} "
@@ -59,7 +63,8 @@ rule count:
 		gtf=COUNT_OUTDIR + "{sample}/transcripts.gtf",
         counts=COUNT_OUTDIR + "{sample}/gene_counts.tsv"
     params:
-        extra=stringtie_count_params
+        stranded=stringtie_stranded,
+        extra=config_extra['count']['stringtie_count_extra']
     threads:
         config['threads']
     run:
@@ -67,6 +72,7 @@ rule count:
             "stringtie "
 			"-B "
             "-e "
+            "{params.stranded} "
             "{params.extra} "
             "-p {threads} "
             "-G {input.merged} "

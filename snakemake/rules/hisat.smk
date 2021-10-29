@@ -28,7 +28,7 @@ rule sort_sam:
         ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".bam",
     params:
         compression=9
-        flag="0x2"
+        # flag="0x2"
     threads:
         config['threads']
     run:
