@@ -29,6 +29,7 @@ rule diffexp_init:
     script:
         "../scripts/deseq_init.R"
 
+# TODO save file with all the contrasts to read by save and gsea
 rule diffexp_results:
     input:
         dds=rules.diffexp_init.output,

@@ -111,6 +111,8 @@ report:
     min_group_size: 3
   mdplot_group: "group"
 
+gsea:
+  ranking: "sign_fc_pval"
 # additional miscellaneous options ---------------------------------------------
 # create tar.gz archive with results for differentially expressed genes, counts and logs
 result_archive: "no"

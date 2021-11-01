@@ -12,6 +12,7 @@ MERGE_OUTDIR = "merged/"
 COUNT_LOG_OUTDIR = LOG_DIR + COUNT_OUTDIR
 DIFFEXP_OUTDIR = "diffexp/"
 DIFFEXP_LOG_OUTDIR = LOG_DIR + DIFFEXP_OUTDIR
+GSEA_INPUT_OUTDIR = "gsea_input/"
 
 # string constants of filenames created by different programs
 STAR_BAM_NAME = "Aligned.sortedByCoord.out"

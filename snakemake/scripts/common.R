@@ -63,9 +63,9 @@ get_species_info = function(species_identifier) {
 
 translate_gene_ids = function(gene_ids, sp_info, from_type, to_type = c("ENTREZID", "ENSEMBL", "SYMBOL", "GENENAME"), method = "bitr", drop = TRUE, fill = TRUE) {
   if(method == "bitr") {
-    ids = suppressMessages(bitr(gene_ids, 
-                                fromType=from_type, 
-                                toType=to_type, 
+    ids = suppressMessages(bitr(gene_ids,
+                                fromType=from_type,
+                                toType=to_type,
                                 OrgDb=sp_info["orgdb"],
                                 drop = drop))
     #   mutate(ENTREZID = as.numeric(ENTREZID)) %>%
@@ -80,18 +80,18 @@ translate_gene_ids = function(gene_ids, sp_info, from_type, to_type = c("ENTREZI
     }
     ids = ids[!duplicated(ids[[from_type]]), ]
   } else if(method == "biomart") {
-    
+
     # TODO default to_type
     suppressMessages(library(biomaRt))
     mart = useMart('ensembl', paste0(sp_info[["abbreviation"]], '_gene_ensembl'))
-    ids = getBM(filters = "ensembl_gene_id", 
-                attributes = c("entrezgene_id", "ensembl_gene_id", paste0(sp_info[["symbol"]], '_symbol')), 
-                values = gene_ids, 
+    ids = getBM(filters = "ensembl_gene_id",
+                attributes = c("entrezgene_id", "ensembl_gene_id", paste0(sp_info[["symbol"]], '_symbol')),
+                values = gene_ids,
                 mart = mart) %>%
       dplyr::rename(c("ENTREZID", "ENSEMBL", "SYMBOL"))
-    
+
     ids = ids[!duplicated(ids$ENSEMBL), ]
-    
+
     if(drop == T) {
       ids = ids %>% na.omit
     }
@@ -102,14 +102,14 @@ translate_gene_ids = function(gene_ids, sp_info, from_type, to_type = c("ENTREZI
 add_idcolnames = function(d, sp_info, id_column_name = "ENSEMBL", id_type = "ENSEMBL", required_colnames = c("ENTREZID", "ENSEMBL", "SYMBOL", "GENENAME")) {
   d = d %>% dplyr::rename(!!id_type := all_of(id_column_name))
   data_colnames = names(d)
-  
+
   columns_in = required_colnames %in% data_colnames
-  
+
   if(!any(columns_in)) {
     stop(paste0("No ID types present in the file. Has to be one of:\n",
                 paste(required_colnames, collapse = " ")))
   }
-  
+
   if(!all(columns_in)) {
     id_column = required_colnames[columns_in][1]
     ids = translate_gene_ids(d[, id_column], sp_info, id_column, to_type = c(required_colnames))
@@ -127,19 +127,19 @@ default_dt = function(x, opts = NULL) {
     dom = "Blrtip",  # specify content (search box, etc)
     deferRender = TRUE,
     scrollY = 600,
-    scroller = TRUE, 
+    scroller = TRUE,
     buttons = list(
       I("colvis"),
       "csv",
       "excel"))
-  
-  DT::datatable(x, 
+
+  DT::datatable(x,
                 rownames = T,
                 escape = F,
                 filter = "top",
                 extensions = c("Buttons", "Scroller"),
-                style="bootstrap", 
-                class="compact stripe", 
+                style="bootstrap",
+                class="compact stripe",
                 width="100%",
                 options=c(def_opts, opts))
 }
@@ -155,31 +155,4 @@ get_order_func = function(mode) {
     print("Order function for heatmap not recognized, ordering by row variance.")
     return(rowVars)
   }
-}
-
-dds_to_gsea_norm = function(dds, group, filename) {
-  cnts = counts(dds, normalized = T) %>%
-    as_tibble(rownames = "NAME") %>%
-    dplyr::mutate(DESCRIPTION = "NA") %>%
-    dplyr::select(NAME, DESCRIPTION, everything())
-  
-  no_classes = colData(dds)[[group]] %>% unique %>% length
-  class_labels = colData(dds)[[group]] %>% unique %>% as.character %>% rev
-  no_samples = length(colData(dds)$sample)
-  sample_labels = colData(dds)[[group]] %>% as.character %>% rev
-  
-  sink(paste0(filename, ".cls"))
-  cat(paste(no_samples, no_classes, 1, sep = " "))
-  cat('\n')
-  cat(paste("#", paste(class_labels, collapse = " "), sep = " "))
-  cat('\n')
-  cat(paste(sample_labels, collapse = " "))
-  cat('\n')
-  sink()
-  
-  write.table(cnts, paste0(filename, ".txt"), quote = F, sep = '\t', row.names = F)
-}
-
-dds_to_gsea_ranked = function(dds, group, filename) {
-
 }
