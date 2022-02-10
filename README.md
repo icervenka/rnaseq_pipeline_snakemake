@@ -1,3 +1,42 @@
+# Bulk RNASeq processing (Snakemake pipeline)
+
+This pipeline will process bulk RNASeq sequencing data from fastq files, bam
+files or raw count matrices. Several most common aligning, read-counting programs
+as well as programs for differential gene expression. In addition, tools for generating
+QC reports, trimming and downloading SRA archives are implemented. Possibility of
+defining simple custom workflows exists as well.
+
+## Usage
+You will need to copy or link fastq files in the `fastq` directory as well as provide
+`metadata.tsv` with several required columns (See Input section).
+
+Next the `config.yaml` file needs to be edited to reflect your desired output and
+analysis parameters. Please see the parameter section of the readme file for detailed
+description. `config_extra.yaml` file contains specific extra parameters that will be
+passed to individual programs (aligners, read-counters etc.)
+
+Run the snakemake pipeline by navigating to the folder with `Snakefile` and executing
+it by command `snakemake`. One can optionally perform a test dry-run to see if pipeline
+was correcly configured by running `snakemake -n`
+
+Please see the documentation to [Snakemake pipeline language](https://snakemake.github.io/)
+for detailed introduction how to run the program.
+
+## Input
+Fastq files with sequenced reads
+
+`metadata.tsv` with several required columns:
+- `sample` - sample name that represents one or more fastq files
+- `fq` - name of fastq file, can be compressed
+- `lane` - lane where the sample was one, multiple ones are allowed per sample
+- `read` - '_R1' or '_R2' string at the end of the file basename in case the reads are paired
+- `stranded` - indication whether stranded or unstranded protocols were used when
+generating libraries. Values 'yes', 'no' and 'reverse' are accepted
+- `group` - experimental group of a sample
+
+Pipeline will merge files that are spread across multiple lanes and pair them correctly
+if necessary.
+<!---
 # align options ----------------------------------------------------------------
 # sra archive download
 # requires that the column sra with SRA accession is present in metadata file
@@ -36,3 +75,4 @@
 #   eg. comparison1: [-1, 1, 0, 0, 1]
 # - type 'D' - full and reduced model formula in a list (sleuth only)
 # - type 'E' - link to file with design matrix
+--->
