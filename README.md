@@ -34,8 +34,57 @@ Fastq files with sequenced reads
 generating libraries. Values 'yes', 'no' and 'reverse' are accepted
 - `group` - experimental group of a sample
 
-Pipeline will merge files that are spread across multiple lanes and pair them correctly
-if necessary.
+Pipeline will merge files that are spread across multiple lanes and pair them correctly if necessary.
+
+## Output
+When run starting from fastq files, several output directories are created
+- `align` contains aligned bam files
+- `count` contains read counts
+- `diffexp` contains data with differential expression divided into sub-analyses
+- `logs` contains logs for all run processes as well as quality control reports
+
+Note: Due to the fact that differential expression analysis usually needs more tailoring
+based on experiment data, it is possible to add additional analyses without the need
+to re-run alignment and read counting. It is sufficient to change the `diffexp: outdir`
+parameter in the `config.yaml` file, change the parameters of DEG analysis such as
+FDR or groups and it will be saved to its own `diffexp` subfolder. Parameters of the
+analysis will be stored alongside.
+
+## Configuration and Paramters
+
+### Pipelines
+Pipelines are defined in `snakemake/rules/pipelines.smk` file. New pipelines from
+existing rules can be constructed if the output:input files of subsequent rules match.
+Differential gene expression rules has to be defined as last. Skipping rules can be
+achieved by specifying `skip_<process>.smk` in the pipelines.
+
+Currently, following pipeline names are accepted, followed by applied rules
+- cuffdiff: tophat, cufflinks, cuffdiff
+- cuffdiff-denovo: star, cufflinks-denovo, cuffdiff
+- stringtie: hisat, stringtie, ballgown
+- deseq: star, featurecounts, deseq
+- deseq-alt: hisat, featurecounts, deseq
+- edger: star, featurecounts, edger
+- limma: star, featurecounts, limma
+- kallisto: kallisto, seluth
+- only_download_sra: skips align, count and dge
+
+### De-novo and guided assembly
+
+
+
+## Other features
+
+### Downloading SRA archives
+
+### Creating coverage plots
+
+### Trimming
+
+### Quality control
+
+## Issues
+
 <!---
 # align options ----------------------------------------------------------------
 # sra archive download
