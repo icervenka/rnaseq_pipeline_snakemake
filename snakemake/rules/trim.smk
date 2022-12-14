@@ -43,22 +43,22 @@ rule cutadapt_pe:
     log:
         LOG_DIR + "trim/{fq}.txt"
     run:
-    if params.adapters == "" and params.quality == "" and params.extra == "":
-        shell(
-            "ln -s {input[0]} {output[0]}; "
-            "ln -s {input[1]} {output[1]}; "
-            "printf 'No trimming performed\n' > {output.qc}"
-        )
-    else:
-        shell(
-            "cutadapt "
-            "{params.adapters} "
-            "{params.quality} "
-            "{params.extra} "
-            "-j {threads} "
-            "-o {output[0]} "
-            "-p {output[1]} "
-            "{input[0]} "
-            "{input[1]} "
-            "> {output.qc} "
-        )
+        if params.adapters == "" and params.quality == "" and params.extra == "":
+            shell(
+                "ln -s {input[0]} {output[0]}; "
+                "ln -s {input[1]} {output[1]}; "
+                "printf 'No trimming performed\n' > {output.qc}"
+            )
+        else:
+            shell(
+                "cutadapt "
+                "{params.adapters} "
+                "{params.quality} "
+                "{params.extra} "
+                "-j {threads} "
+                "-o {output[0]} "
+                "-p {output[1]} "
+                "{input[0]} "
+                "{input[1]} "
+                "> {output.qc} "
+            )

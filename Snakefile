@@ -36,18 +36,20 @@ NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 ##### load pipleline rules #####
 include: "snakemake/rules/preprocess.smk"
 include: "snakemake/rules/sra.smk"
-include: "snakemake/rules/fastqc.smk"
+#include: "snakemake/rules/fastqc.smk"
 include: "snakemake/rules/trim.smk"
 
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
+
+include: "snakemake/rules/bam_index.smk"
 
 if config['coverage']['calculate'] == "yes":
     include: "snakemake/rules/coverage.smk"
 else:
     include: "snakemake/rules/skip_coverage.smk"
 
-include: "snakemake/rules/multiqc.smk"
+#include: "snakemake/rules/multiqc.smk"
 include: "snakemake/rules/result_archive.smk"
 
 ##### top level snakemake rule #####
@@ -58,16 +60,14 @@ rule all:
         config['fasta'] + ".fai",
         # check if fastq files are present otherwise download sra
         expand(FASTQ_DIR + "{file}", file=Metadata.fq),
+        # get_sra_download_files,
         # fastqc output files
-        expand(LOG_DIR + "qc/{file}.html", file=Metadata.fq),
-        expand(LOG_DIR + "qc/{file}_fastqc.zip", file=Metadata.fq),
-        # multiqc output files
-        # multiqc has problems finding some files
-        LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
+        #expand(LOG_DIR + "qc/{file}.html", file=Metadata.fq),
+        #expand(LOG_DIR + "qc/{file}_fastqc.zip", file=Metadata.fq),
         # align output files
         get_align_output_files,
         get_align_log_files,
-        get_bam_index_files,
+        # get_bam_index_files,
         # coverage get_align_output_files
         get_coverage_files,
         # count output files
@@ -75,5 +75,8 @@ rule all:
         get_count_log_files,
         # diffexp output files
         get_diffexp_output_files,
+        # multiqc output files
+        # multiqc has problems finding some files
+        #LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
         # result archive compressed output
         "archive/" + NOW + "_" + config["experiment_name"] + "_result_archive.tar.gz"

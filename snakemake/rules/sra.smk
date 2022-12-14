@@ -2,6 +2,9 @@ ruleorder: fastq_dump_paired > fastq_dump_single
 # uses prefetch-validate combo because fasterq-dump has no way of
 # checking if the file was downloaded correctly due to network errors
 
+# def get_sra_download_files(wildcards):
+#     Metadata.sra.dropna().unique()
+
 rule sra_download:
     input:
         config['metadata']
@@ -54,7 +57,7 @@ rule fastq_dump_paired:
             "-e {threads} "
             "-3 "
             "{input} "
-            "-o " + FASTQ_DIR + "{wildcards.sra}.fastq"
+            "-O " + FASTQ_DIR + " "
         )
 
 rule compress_fastq:

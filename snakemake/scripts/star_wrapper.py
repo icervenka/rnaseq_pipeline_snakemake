@@ -1,23 +1,6 @@
+from functions import read_command, arrange_fq_for_align
 import os
 from snakemake.shell import shell
-
-# def is_tool(name):
-#     """Check whether `name` is on PATH and marked as executable."""
-#
-#     from shutil import which
-#     return which(name)
-
-# def read_command(filename):
-#     if(filename.endswith(".bz2")):
-#         return("bunzip2 -c")
-#     elif(filename.endswith(".gz")):
-#         if(is_tool("pigz") is not None):
-#             return(f"pigz -d -p {snakemake.threads} -c")
-#         else:
-#             return("zcat")
-#     else:
-#         return("cat")
-
 
 input_arr = arrange_fq_for_align(
     snakemake.input.sample,
@@ -32,7 +15,8 @@ input_arr = [','.join(x) for x in input_arr.to_list()]
 input_str = " ".join(input_arr)
 
 outprefix = os.path.dirname(snakemake.output.bam) + "/"
-read_cmd = read_command(fq_meta["fq"].iloc[0])
+print(input_arr)
+read_cmd = read_command(input_arr[0])
 
 shell(
     "STAR "

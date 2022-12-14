@@ -2,4 +2,7 @@
 .gitignore
 .snakemake/
 fastq/
+align/
+logs/
 __pycache__/
+test_configs/

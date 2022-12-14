@@ -3,15 +3,17 @@
 # last item in the list is always script for differential gene expression
 pipelines = {
     "cuffdiff" : ['tophat', 'cufflinks', 'cuffdiff'],
-    "cuffdiff-denovo: ['star', 'cufflinks-denovo', 'cuffdiff']"
+    "cuffdiff_denovo: ['star', 'cufflinks-denovo', 'cuffdiff']"
     "stringtie" : ['hisat', 'stringtie', 'ballgown'],
     "deseq" : ['star', 'featurecounts', 'deseq'],
-    "deseq-alt" : ['hisat', 'featurecounts', 'deseq'],
+    "deseq_alt" : ['hisat', 'featurecounts', 'deseq'],
     "edger" : ['star', 'featurecounts', 'edger'],
-    "edger-alt" : ['hisat', 'featurecounts', 'edger'],
+    "edger_alt" : ['hisat', 'featurecounts', 'edger'],
     "limma" : ['star', 'featurecounts', 'limma'],
-    "limma-alt" : ['hisat', 'featurecounts', 'limma'],
+    "limma_alt" : ['hisat', 'featurecounts', 'limma'],
     "kallisto" : ['kallisto', 'sleuth'],
-    "only_download_sra" : ['skip_align', 'skip_count', 'skip_diffexp'],
-    "download_align" : ['star', 'skip_count', 'skip_diffexp']
+    "download_only" : ['skip_align', 'skip_count', 'skip_diffexp'],
+    "star_only" : ['star', 'skip_count', 'skip_diffexp'],
+    "featurecounts_only": ['skip_align', 'featurecounts', 'skip_diffexp'],
+    "deseq_only": ['skip_align', 'featurecounts', 'deseq'],
 }

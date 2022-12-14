@@ -1,5 +1,5 @@
 def get_bam_index_files(wildcards):
-    expand(ALIGN_OUTDIR+"{sample}/"+COMMON_BAM_NAME+".bam.bai", sample=Samples)
+    return expand(ALIGN_OUTDIR+"{sample}/"+COMMON_BAM_NAME+".bam.bai", sample=Samples)
 
 rule bam_index:
     input:
