@@ -12,7 +12,7 @@ rule align:
         bam=temp(ALIGN_OUTDIR + "{sample}/" + STAR_BAM_NAME + ".bam"),
         log=expand(ALIGN_OUTDIR + "{{sample}}/{log}", log=STAR_LOGFILES),
     params:
-        extra=config_extra['align']['star_extra'],
+        extra=config_extra['align'][config['align']['extra']],
         metadata=Metadata,
         fastq_dir=FASTQ_DIR
     threads:
@@ -38,4 +38,3 @@ rule move_align_log:
     shell:
         "mv {input} {params.outdir}"
 
-include: "bam_index.smk"

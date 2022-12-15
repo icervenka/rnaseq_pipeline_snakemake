@@ -4,6 +4,5 @@ def get_align_output_files(wildcards):
 def get_align_log_files(wildcards):
     return []
     
-# rule all_align:
-#     output:
-#         touch(LOG_DIR + "align.completed")
+def get_bam_index_files(wildcards):
+    return []

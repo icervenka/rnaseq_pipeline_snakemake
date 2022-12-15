@@ -4,31 +4,7 @@ def is_tool(name):
     from shutil import which
     return which(name)
 
-##### functions for manipulating/filtering filenames and extensions #####
-
-def parse_filename(string):
-    path = os.path.dirname(string)
-    filename = os.path.basename(string)
-    split1 = os.path.splitext(filename)
-    split2 = os.path.splitext(split1[0])
-    if(split2[1] == ".fastq"):
-        return(split2[0], split1[1][1:])
-    else:
-        return(split1[0], split1[1][1:])
-
-def extract_name(parsed_filename):
-    return(parsed_filename[0])
-
-def extract_extension(parsed_filename):
-    return(parsed_filename[1])
-
-def get_fq(wildcards):
-    m = Metadata.loc[Metadata["sample"] == wildcards.sample, :].dropna()
-    m["fq"] = FASTQ_DIR + m.fq
-    return m.fq
-
 ##### functions for retrieving and dumping sra files #####
-
 def get_sra(wildcards):
     sra = Metadata.query('sra == @wildcards.sra').sra.dropna().unique()
     return sra
@@ -44,19 +20,18 @@ def get_paired_end_sra(wildcards):
     return SRA_DIR + m
 
 ##### functions for getting names of fastq files for trimming #####
-
 def get_single_end_cutadapt(wildcards):
     m = Metadata[~Metadata.duplicated(subset=['sample', 'lane'], keep=False).astype(bool)]
-    m = m.query('fq == @wildcards.fq')
+    m = m.query('sample == @wildcards.sample')
     return FASTQ_DIR + m.fq
 
 def get_paired_end_cutadapt(wildcards):
     m = Metadata[Metadata.duplicated(subset=['sample', 'lane']).astype(bool)]
-    m = m.query('fq == @wildcards.fq')
+    m = m.query('sample == @wildcards.sample')
+    print(m)
     return FASTQ_DIR + m.fq
 
 ##### functions for retrieving fastq file names  #####
-
 def get_fq(wildcards):
     m = Metadata.loc[Metadata["sample"] == wildcards.sample, :].dropna()
     m["fq"] = FASTQ_DIR + m.fq
@@ -69,14 +44,6 @@ def arrange_fq_for_align(samples, metadata, fastq_dir):
     return input_arr
 
 ##### functions for parsing parameters from various tools  #####
-
-def read_command(filename):
-    if(filename.endswith(".bz2")):
-        return("bunzip2 -c")
-    elif(filename.endswith(".gz")):
-        return("zcat")
-    else:
-        return("cat")
 
 def featurecounts_stranded(stranded):
     def stranded_switch(x):

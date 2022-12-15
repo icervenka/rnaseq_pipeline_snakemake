@@ -5,7 +5,7 @@ align:
     "-N 18
     --read-edit-dist 18 "
   # optimized extra parameters for star
-  star_extra:
+  star_extra_1:
     "--outFilterMismatchNmax 33
     --alignEndsType Local
     --alignSJoverhangMin 8

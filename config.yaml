@@ -12,7 +12,7 @@ fasta: "/shared/genome/grcm38/fasta/grcm38.fa"
 # see README for list of available pipelines
 # TODO think about running the list of pipelines to separate directories in one
 # run
-pipeline: "deseq"
+pipeline: "download_only"
 
 # trimming ---------------------------------------------------------------------
 # should reads be trimmed for adapters and/or quality, uses cutadapt
@@ -24,6 +24,10 @@ trim:
   # see https://cutadapt.readthedocs.io/en/stable/guide.html#quality-trimming
   quality: ""
   extra: ""
+
+# align options ----------------------------------------------------------------
+align:
+  extra: "star_extra_1"
 
 # coverage ---------------------------------------------------------------------
 # should bedgraph and tdf files be generated for bam files

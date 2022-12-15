@@ -11,8 +11,24 @@ min_version("5.7.0")
 ##### load config and sample sheets #####
 # pipelines, string constants and functions
 include: "snakemake/rules/common.smk"
-include: "snakemake/rules/functions.smk"
+include: "snakemake/rules/input_functions.smk"
 include: "snakemake/rules/pipelines.smk"
+
+def parse_filename(string):
+    path = os.path.dirname(string)
+    filename = os.path.basename(string)
+    split1 = os.path.splitext(filename)
+    split2 = os.path.splitext(split1[0])
+    if(split2[1] == ".fastq"):
+        return(split2[0], split1[1][1:])
+    else:
+        return(split1[0], split1[1][1:])
+
+def extract_name(parsed_filename):
+    return(parsed_filename[0])
+
+def extract_extension(parsed_filename):
+    return(parsed_filename[1])
 
 # config
 configfile: "config.yaml"
@@ -26,9 +42,10 @@ Metadata = Metadata.sort_values(by=['sample', 'lane', 'read'])
 
 Samples = list(Metadata["sample"].unique())
 Fqs = list(Metadata["fq"].unique())
+Basenames = [ extract_name(parse_filename(x)) for x in Fqs ]
+print(Basenames)
 
 ##### string constants based on metadata and config files #####
-#SAMPLES_BASENAME = [extract_name(parse_filename(x)) for x in Samples]
 DIFFEXP_ANALYSIS = "{}_{}/".format(
     pipelines[config['pipeline']][-1], config["diffexp"]["outdir"])
 NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
@@ -42,7 +59,8 @@ include: "snakemake/rules/trim.smk"
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
 
-include: "snakemake/rules/bam_index.smk"
+# if config['pipeline'] not in ["download_only"]:
+#     include: "snakemake/rules/bam_index.smk"
 
 if config['coverage']['calculate'] == "yes":
     include: "snakemake/rules/coverage.smk"
@@ -50,7 +68,9 @@ else:
     include: "snakemake/rules/skip_coverage.smk"
 
 #include: "snakemake/rules/multiqc.smk"
-include: "snakemake/rules/result_archive.smk"
+
+# TODO archive requires all directories to be present
+# include: "snakemake/rules/result_archive.smk"
 
 ##### top level snakemake rule #####
 rule all:
@@ -60,14 +80,14 @@ rule all:
         config['fasta'] + ".fai",
         # check if fastq files are present otherwise download sra
         expand(FASTQ_DIR + "{file}", file=Metadata.fq),
-        # get_sra_download_files,
+        get_trim_output_files,
         # fastqc output files
         #expand(LOG_DIR + "qc/{file}.html", file=Metadata.fq),
         #expand(LOG_DIR + "qc/{file}_fastqc.zip", file=Metadata.fq),
         # align output files
         get_align_output_files,
         get_align_log_files,
-        # get_bam_index_files,
+        #get_bam_index_files,
         # coverage get_align_output_files
         get_coverage_files,
         # count output files
@@ -79,4 +99,4 @@ rule all:
         # multiqc has problems finding some files
         #LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
         # result archive compressed output
-        "archive/" + NOW + "_" + config["experiment_name"] + "_result_archive.tar.gz"
+        #"archive/" + NOW + "_" + config["experiment_name"] + "_result_archive.tar.gz"
