@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import datetime
 import re
 from snakemake.shell import shell
@@ -14,6 +15,47 @@ include: "snakemake/rules/common.smk"
 include: "snakemake/rules/input_functions.smk"
 include: "snakemake/rules/pipelines.smk"
 
+
+def is_gzipped(string):
+    pass
+
+
+def is_fastq(string):
+    pass
+
+
+def is_paired(string):
+    pass
+
+
+def is_unpaired(string):
+    pass
+
+
+def is_mate1(string):
+    pass
+
+
+def is_mate2(string):
+    pass
+
+
+def extract_path(string):
+    pass
+
+
+def extract_basename(string):
+    pass
+
+
+def extract_filename(string):
+    pass
+
+
+def extract_filename_sans_read(string):
+    pass
+
+
 def parse_filename(string):
     path = os.path.dirname(string)
     filename = os.path.basename(string)
@@ -24,26 +66,45 @@ def parse_filename(string):
     else:
         return(split1[0], split1[1][1:])
 
+
 def extract_name(parsed_filename):
     return(parsed_filename[0])
 
+
 def extract_extension(parsed_filename):
     return(parsed_filename[1])
+
 
 # config
 configfile: "config.yaml"
 validate(config, schema="snakemake/schema/config.schema.yaml")
 config_extra = load_configfile("config_extra.yaml")
 
+
+rnaseq_ext = ["fq", "fastq", "fa", "fasta"]
+rnaseq_ext_regex = "|\.".join([e + "$" for e in rnaseq_ext])
+
+paired_read_strings_regex = "|".join([e + "$" for e in config["paired_read_strings"]])
+
 # metadata
 Metadata = pd.read_table(config["metadata"], dtype=str)
+Metadata["paired"] = np.where(
+    Metadata.duplicated(subset=['sample', 'lane'], keep=False), 1, 0
+)
+Metadata["filename_sans_gzip"] = Metadata["fq"].str.replace(
+    ".gz", "", regex=False)
+Metadata["filename_sans_ext"] = Metadata["filename_sans_gzip"].str.replace(
+    "\." + rnaseq_ext_regex, "", regex=True
+)
+Metadata["filename_sans_read"] = Metadata["filename_sans_ext"].str.replace(
+    paired_read_strings_regex, "", regex=True
+)
 validate(Metadata, schema="snakemake/schema/metadata.schema.yaml")
 Metadata = Metadata.sort_values(by=['sample', 'lane', 'read'])
 
 Samples = list(Metadata["sample"].unique())
 Fqs = list(Metadata["fq"].unique())
-Basenames = [ extract_name(parse_filename(x)) for x in Fqs ]
-print(Basenames)
+# Basenames = [ extract_name(parse_filename(x)) for x in Fqs ]
 
 ##### string constants based on metadata and config files #####
 DIFFEXP_ANALYSIS = "{}_{}/".format(
@@ -80,14 +141,16 @@ rule all:
         config['fasta'] + ".fai",
         # check if fastq files are present otherwise download sra
         expand(FASTQ_DIR + "{file}", file=Metadata.fq),
-        get_trim_output_files,
+        # trim adapters and quality
+        get_trim_pe_output_files,
+        get_trim_se_output_files,
         # fastqc output files
         #expand(LOG_DIR + "qc/{file}.html", file=Metadata.fq),
         #expand(LOG_DIR + "qc/{file}_fastqc.zip", file=Metadata.fq),
         # align output files
         get_align_output_files,
         get_align_log_files,
-        #get_bam_index_files,
+        # get_bam_index_files,
         # coverage get_align_output_files
         get_coverage_files,
         # count output files
