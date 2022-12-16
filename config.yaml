@@ -1,6 +1,8 @@
 experiment_name: "Liver_cancer_project"
-metadata: "metadata.tsv"
 threads: 15
+
+metadata: "metadata.tsv"
+paired_read_strings: ["_1", "_2"]
 
 species: "mouse"
 index: "/shared/genome/grcm38/star"
@@ -10,8 +12,6 @@ fasta: "/shared/genome/grcm38/fasta/grcm38.fa"
 # pipeline ---------------------------------------------------------------------
 # pipelines are defined in snakemake/rules/pipelines.smk
 # see README for list of available pipelines
-# TODO think about running the list of pipelines to separate directories in one
-# run
 pipeline: "download_only"
 
 # trimming ---------------------------------------------------------------------

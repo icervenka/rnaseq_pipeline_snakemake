@@ -21,15 +21,15 @@ def get_paired_end_sra(wildcards):
 
 ##### functions for getting names of fastq files for trimming #####
 def get_single_end_cutadapt(wildcards):
-    m = Metadata[~Metadata.duplicated(subset=['sample', 'lane'], keep=False).astype(bool)]
-    m = m.query('sample == @wildcards.sample')
-    return FASTQ_DIR + m.fq
+    m = Metadata[Metadata.paired == 0]
+    m = m.query('filename_sans_read == @wildcards.filename')
+    return list(FASTQ_DIR + m.fq)
 
 def get_paired_end_cutadapt(wildcards):
-    m = Metadata[Metadata.duplicated(subset=['sample', 'lane']).astype(bool)]
-    m = m.query('sample == @wildcards.sample')
+    m = Metadata[Metadata.paired == 1]
+    m = m.query('filename_sans_read == @wildcards.filename')
     print(m)
-    return FASTQ_DIR + m.fq
+    return list(FASTQ_DIR + m.fq)
 
 ##### functions for retrieving fastq file names  #####
 def get_fq(wildcards):

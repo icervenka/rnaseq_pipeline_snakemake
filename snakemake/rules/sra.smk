@@ -6,7 +6,7 @@ rule sra_download:
     input:
         config['metadata']
     output:
-        temp(SRA_DIR + "{sra}")
+        SRA_DIR + "{sra}"
     params:
         get_sra
     threads:
