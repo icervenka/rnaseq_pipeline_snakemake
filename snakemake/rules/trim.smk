@@ -1,7 +1,6 @@
 ruleorder: cutadapt_pe > cutadapt_se
 
 # TODO fix extensions in trimming
-# TODO snakemake can't find link files
 
 def get_trim_pe_output_files(wildcards):
     return expand(TRIMMED_DIR + "{filename}{read}" + ".fastq.gz", 
@@ -17,6 +16,14 @@ def get_trim_se_output_files(wildcards):
             Metadata[Metadata["paired"] == 0]["filename_sans_read"].unique()
         )
     )
+
+def get_trim_log_files(wildcards):
+    return expand(LOG_DIR + "trim/{filename}.txt", 
+        filename=list(
+            Metadata["filename_sans_read"].unique()
+        )
+    )
+
 
 rule cutadapt_se:
     input:
@@ -63,7 +70,7 @@ rule cutadapt_pe:
         extra=config['trim']['extra']
     threads: 4
     log:
-        LOG_DIR + "{filename}.txt"
+        LOG_DIR + "trim/{filename}.txt"
     run:
         i1 = input[0]
         i2 = input[1]

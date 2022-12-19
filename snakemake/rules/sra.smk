@@ -1,4 +1,4 @@
-ruleorder: fastq_dump_paired > fastq_dump_single
+ruleorder: fastq_dump_pe > fastq_dump_se
 # uses prefetch-validate combo because fasterq-dump has no way of
 # checking if the file was downloaded correctly due to network errors
 
@@ -25,7 +25,7 @@ rule sra_download:
             "done "
         )
 
-rule fastq_dump_single:
+rule fastq_dump_se:
     input:
         get_single_end_sra
     output:
@@ -41,7 +41,7 @@ rule fastq_dump_single:
             "-o {output}"
         )
 
-rule fastq_dump_paired:
+rule fastq_dump_pe:
     input:
         get_paired_end_sra
     output:
