@@ -86,7 +86,8 @@ rule diffexp_report:
         upset_min_group_size=config["report"]["upset"]["min_group_size"],
         species=config["species"],
         gene_ids_in=config['diffexp']["input_gene_ids"],
-        mdplot_group=config["report"]["mdplot_group"]
+        mdplot_group=config["report"]["mdplot_group"],
+        pandoc_path=config["pandoc_path"]
     script:
         "../scripts/deseq_report.R"
 
@@ -104,6 +105,7 @@ rule diffexp_report_pca:
         top_gene_loadings=config['report']["pca"]['top_gene_loadings'],
         pca2go_ngenes=config['report']["pca"]['pca2go_ngenes'],
         pca2go_loadings_ngenes=config['report']["pca"]['pca2go_loadings_ngenes'],
+        pandoc_path=config["pandoc_path"]
     script:
         "../scripts/deseq_report_pca.R"
 

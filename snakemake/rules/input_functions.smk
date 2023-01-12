@@ -20,22 +20,21 @@ def get_paired_end_sra(wildcards):
     return SRA_DIR + m
 
 ##### functions for getting names of fastq files for trimming #####
-def get_single_end_cutadapt(wildcards):
-    m = Metadata[Metadata.paired == 0]
-    m = m.query('filename_sans_read == @wildcards.filename')
-    return list(FASTQ_DIR + m.fq)
+# def get_single_end_cutadapt(wildcards):
+#     m = Metadata[Metadata.paired == 0]
+#     m = m.query('filename_sans_read == @wildcards.filename')
+#     return list(FASTQ_DIR + m.fq)
 
-def get_paired_end_cutadapt(wildcards):
-    m = Metadata[Metadata.paired == 1]
-    m = m.query('filename_sans_read == @wildcards.filename')
-    print(m)
-    return list(FASTQ_DIR + m.fq)
+# def get_paired_end_cutadapt(wildcards):
+#     m = Metadata[Metadata.paired == 1]
+#     m = m.query('filename_sans_read == @wildcards.filename')
+#     print(m)
+#     return list(FASTQ_DIR + m.fq)
 
 ##### functions for retrieving fastq file names  #####
 def get_fq(wildcards):
-    m = Metadata.loc[Metadata["sample"] == wildcards.sample, :].dropna()
-    m["fq"] = FASTQ_DIR + m.fq
-    return m.fq
+    m = Metadata.query('sample == @wildcards.sample').dropna()
+    return FASTQ_DIR + m.fq
 
 def arrange_fq_for_align(samples, metadata, fastq_dir):
     metadata['fq_full'] = fastq_dir + metadata['fq']
@@ -44,7 +43,6 @@ def arrange_fq_for_align(samples, metadata, fastq_dir):
     return input_arr
 
 ##### functions for parsing parameters from various tools  #####
-
 def featurecounts_stranded(stranded):
     def stranded_switch(x):
         select = {

@@ -15,6 +15,7 @@ suppressMessages(library(Glimma))
 suppressMessages(library(clusterProfiler))
 
 source("snakemake/scripts/common.R")
+rmarkdown::find_pandoc(dir = snakemake@params[["pandoc_path"]])
 
 experiment_name = snakemake@params[["experiment_name"]]
 fdr = snakemake@params[["fdr"]]

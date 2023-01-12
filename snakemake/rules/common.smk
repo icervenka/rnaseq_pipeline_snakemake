@@ -13,6 +13,7 @@ COUNT_LOG_OUTDIR = LOG_DIR + COUNT_OUTDIR
 DIFFEXP_OUTDIR = "diffexp/"
 DIFFEXP_LOG_OUTDIR = LOG_DIR + DIFFEXP_OUTDIR
 GSEA_INPUT_OUTDIR = "gsea_input/"
+ARCHIVE_DIR = "archive/"
 
 # string constants of filenames created by different programs
 STAR_BAM_NAME = "Aligned.sortedByCoord.out"
@@ -21,3 +22,5 @@ TOPHAT_BAM_NAME = "accepted_hits"
 KALLISTO_BAM_NAME = "abundance"
 COMMON_BAM_NAME = "aligned_sorted"
 BALLGOWN_INPUT_FILES = ["e_data", "i_data", "t_data", "e2t", "i2t"]
+RESULT_ARCHIVE_DIRS = [COVERAGE_OUTDIR, COUNT_OUTDIR, DIFFEXP_OUTDIR, LOG_DIR,
+GSEA_INPUT_OUTDIR]

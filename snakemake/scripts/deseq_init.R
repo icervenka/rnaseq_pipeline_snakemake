@@ -13,7 +13,7 @@ min_count = snakemake@params[["min_count"]]
 
 col_data = read.table(snakemake@input[["col_data"]], sep='\t', header = T)
 # use_samples = paste(unique(col_data$sample), collapse="|")
-col_data = col_data %>% dplyr::select(-c(fq, lane, read)) %>% unique
+col_data = col_data %>% dplyr::select(-any_of(fq, lane, read, sra)) %>% unique
 use_samples = map_chr(col_data$sample, ~ paste0("\\.", .x, "\\.")) %>% paste(collapse="|")
 count_data = read.table(snakemake@input[["count_data"]], sep='\t', header = T, row.names = 1)
 count_data = count_data %>% dplyr::select(matches(use_samples))
