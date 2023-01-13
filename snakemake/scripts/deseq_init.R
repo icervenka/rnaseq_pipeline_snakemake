@@ -3,7 +3,7 @@ suppressMessages(library(stringr))
 suppressMessages(library(DESeq2))
 suppressMessages(library(dplyr))
 
-source("snakemake/scripts/common.R", local = TRUE)
+source("snakemake/scripts/script_functions.R", local = TRUE)
 
 output <- snakemake@output[[1]]
 # check if design is a formula, if not prepend a tilda
@@ -52,7 +52,7 @@ dds <- dds[rowSums(counts(dds)) > min_count, ]
 #   dds  = dds[ all(!seqnames(dds) %in% c("Y")), ]
 # }
 
-if (snakemake@params[["contrast_type"]] == "C" &
+if (snakemake@params[["contrast_type"]] == "C" &&
   snakemake@params[["lfc_shrink"]] == "normal") {
   set_beta_prior <- TRUE
   warning("You have selected numeric contrasts with 'normal'
