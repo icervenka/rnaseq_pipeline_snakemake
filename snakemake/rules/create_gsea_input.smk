@@ -1,7 +1,11 @@
 GSEA_OUT = DIFFEXP_OUTDIR + DIFFEXP_ANALYSIS + GSEA_INPUT_OUTDIR
 
 def get_gsea_output(wildcards):
-    
+    return [
+        GSEA_OUT + config['experiment_name'] + "gsea_expression.gct",
+        GSEA_OUT + config['experiment_name'] + ".cls"
+    ] + 
+    expand(GSEA_OUT + "{contrast}.rnk", contrast=get_contrasts)
 
 rule expression2gsea:
     input:
@@ -14,7 +18,7 @@ rule expression2gsea:
     script:
         "../scripts/expression2gsea.R"
 
-rule expression2gsea_ranked:
+rule expression2gsea_preranked:
     input:
         get_contrast_files
     output:
@@ -24,4 +28,4 @@ rule expression2gsea_ranked:
     threads:
         1
     script:
-        "../scripts/expression2gsea_ranked.R"
+        "../scripts/expression2gsea_preranked.R"
