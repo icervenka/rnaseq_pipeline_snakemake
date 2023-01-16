@@ -1,6 +1,6 @@
 library(Glimma)
 library(clusterProfiler)
-source("snakemake/scripts/common.R")
+source("snakemake/scripts/script_functions.R")
 
 
 
