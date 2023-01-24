@@ -23,18 +23,18 @@ def get_paired_end_sra(wildcards):
 # def get_single_end_cutadapt(wildcards):
 #     m = Metadata[Metadata.paired == 0]
 #     m = m.query('filename_sans_read == @wildcards.filename')
-#     return list(FASTQ_DIR + m.fq)
+#     return list(FASTQ_INPUT_DIR + m.fq)
 
 # def get_paired_end_cutadapt(wildcards):
 #     m = Metadata[Metadata.paired == 1]
 #     m = m.query('filename_sans_read == @wildcards.filename')
 #     print(m)
-#     return list(FASTQ_DIR + m.fq)
+#     return list(FASTQ_INPUT_DIR + m.fq)
 
 ##### functions for retrieving fastq file names  #####
 def get_fq(wildcards):
     m = Metadata.query('sample == @wildcards.sample').dropna()
-    return FASTQ_DIR + m.fq
+    return FASTQ_INPUT_DIR + m.fq
 
 def arrange_fq_for_align(samples, metadata, fastq_dir):
     metadata['fq_full'] = fastq_dir + metadata['fq']

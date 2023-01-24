@@ -14,7 +14,7 @@ rule align:
         log=ALIGN_LOG_OUTDIR + "{sample}/hisat.log"
     params:
         metadata=Metadata,
-        fastq_dir=FASTQ_DIR
+        fastq_dir=FASTQ_INPUT_DIR
         extra=config_extra['align']['star_extra'],
     threads:
         config["threads"]

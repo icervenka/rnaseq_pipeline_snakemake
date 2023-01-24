@@ -18,10 +18,9 @@ rule count:
     threads:
         config["threads"]
     run:
-        stranded_str = [ featurecount_stranded(Metadata.query('sample == @x').
+        stranded_str = [ featurecounts_stranded(Metadata.query('sample == @x').
             stranded.dropna().unique()[0]) for x in Samples ]
         stranded_str = ','.join(stranded_str)
-
         shell(
             "featureCounts "
             "-a {input.gtf} "

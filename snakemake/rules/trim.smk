@@ -24,7 +24,6 @@ def get_trim_log_files(wildcards):
         )
     )
 
-
 rule cutadapt_se:
     input:
         FASTQ_DIR + "{filename}.fastq.gz"
@@ -38,22 +37,16 @@ rule cutadapt_se:
     log:
         LOG_DIR + "trim/{filename}.txt"
     run:
-        if params.adapters == "" and params.quality == "" and params.extra == "":
-            shell(
-                "ln {input} {output}; "
-                "printf 'No trimming performed\n' > {log}"
-            )
-        else:
-            shell(
-                "cutadapt "
-                "{params.adapters} "
-                "{params.quality} "
-                "{params.extra} "
-                "-j {threads} "
-                "-o {output} "
-                "{input} "
-                "> {log} "
-            )
+        shell(
+            "cutadapt "
+            "{params.adapters} "
+            "{params.quality} "
+            "{params.extra} "
+            "-j {threads} "
+            "-o {output} "
+            "{input} "
+            "> {log} "
+        )
 
 rule cutadapt_pe:
     input:
@@ -76,23 +69,15 @@ rule cutadapt_pe:
         i2 = input[1]
         o1 = output[0]
         o2 = output[1]
-        print(wildcards)
-        if params.adapters == "" and params.quality == "" and params.extra == "":
-            shell(
-                "ln {i1} {o1}; "
-                "ln {i2} {o2}; "
-                "printf 'No trimming performed\n' > {log}"
-            )
-        else:
-            shell(
-                "cutadapt "
-                "{params.adapters} "
-                "{params.quality} "
-                "{params.extra} "
-                "-j {threads} "
-                "-o {o1} "
-                "-p {o2} "
-                "{i1} "
-                "{i2} "
-                "> {log} "
-            )
+        shell(
+            "cutadapt "
+            "{params.adapters} "
+            "{params.quality} "
+            "{params.extra} "
+            "-j {threads} "
+            "-o {o1} "
+            "-p {o2} "
+            "{i1} "
+            "{i2} "
+            "> {log} "
+        )

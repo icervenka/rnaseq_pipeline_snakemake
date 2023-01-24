@@ -1,6 +1,7 @@
 # folder organization of the pipelline input and output files
 RULES_DIR = "snakemake/rules/"
 SRA_DIR = "sra/"
+
 FASTQ_DIR = "fastq/"
 TRIMMED_DIR = "trimmed/"
 LOG_DIR = "logs/"

@@ -17,7 +17,7 @@ rule align:
     params:
         extra=config_extra['align']['tophat_extra'],
         metadata=Metadata,
-        fastq_dir=FASTQ_DIR
+        fastq_dir=FASTQ_INPUT_DIR
     threads:
         config["threads"]
     script:

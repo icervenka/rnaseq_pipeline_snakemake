@@ -13,7 +13,7 @@ fasta: "/shared/genome/grcm38/fasta/grcm38.fa"
 # pipeline ---------------------------------------------------------------------
 # pipelines are defined in snakemake/rules/pipelines.smk
 # see README for list of available pipelines
-pipeline: "download_only"
+pipeline: "deseq"
 
 # trimming ---------------------------------------------------------------------
 # should reads be trimmed for adapters and/or quality, uses cutadapt

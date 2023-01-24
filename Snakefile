@@ -9,19 +9,19 @@ from snakemake.io import load_configfile
 ##### set minimum snakemake version #####
 min_version("5.7.0")
 
+# load and process config files ------------------------------------------------
+configfile: "config.yaml"
+validate(config, schema="snakemake/schema/config.schema.yaml")
+config_extra = load_configfile("config_extra.yaml")
+
 # load common constants and functions  -----------------------------------------
 # contains directory structure
-include: "snakemake/rules/common.smk"
+include: "snakemake/rules/folder_structure.smk"
 # contains input functions for rules
 include: "snakemake/rules/input_functions.smk"
 # contains pipleline rule defitions
 # TODO automated parsing for readme?
 include: "snakemake/rules/pipelines.smk"
-
-# load and process config files ------------------------------------------------
-configfile: "config.yaml"
-validate(config, schema="snakemake/schema/config.schema.yaml")
-config_extra = load_configfile("config_extra.yaml")
 
 # process metadata -------------------------------------------------------------
 rnaseq_ext = ["fq", "fastq", "fa", "fasta"]
@@ -59,7 +59,19 @@ NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 include: "snakemake/rules/preprocess.smk"
 include: "snakemake/rules/sra.smk"
 include: "snakemake/rules/fastqc.smk"
-include: "snakemake/rules/trim.smk"
+
+# check whether to load trimming rule and set the fastq input dir for alignment
+# accordingly
+if (
+        config['trim']['adapters_single'] != "" or 
+        config['trim']['adapters_single'] != "" or 
+        config['trim']['quality'] != "" or 
+        config['trim']['extra'] != "":
+    ):
+    include: "snakemake/rules/trim.smk"
+    FASTQ_INPUT_DIR = TRIMMED_DIR
+else:
+    FASTQ_INPUT_DIR = FASTQ_DIR
 
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
@@ -74,7 +86,6 @@ else:
     include: "snakemake/rules/skip_coverage.smk"
 
 include: "snakemake/rules/multiqc.smk"
-# TODO archive requires all directories to be present
 include: "snakemake/rules/result_archive.smk"
 
 # top level snakemake rule -----------------------------------------------------
@@ -104,8 +115,6 @@ rule all:
         get_diffexp_output_files,
         ### multiqc output files
         ### multiqc has problems finding some files
-        #LOG_DIR + "qc/" + re.sub("\s+", "", config["experiment_name"]) + ".html",
         get_multiqc_output_files,
         ### result archive compressed output
-        #"archive/" + NOW + "_" + config["experiment_name"] + "_result_archive.tar.gz"
         get_result_archive_output_files
