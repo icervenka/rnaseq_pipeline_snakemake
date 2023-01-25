@@ -27,7 +27,7 @@ rule sra_download:
 
 rule fastq_dump_se:
     input:
-        get_single_end_sra
+        ancient(get_single_end_sra)
     output:
         FASTQ_DIR + "{sra}.fastq"
     threads:
@@ -43,7 +43,7 @@ rule fastq_dump_se:
 
 rule fastq_dump_pe:
     input:
-        get_paired_end_sra
+        ancient(get_paired_end_sra)
     output:
         expand(FASTQ_DIR + "{{sra}}{read}.fastq", read=['_1', "_2"])
     threads:

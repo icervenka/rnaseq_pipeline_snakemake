@@ -38,3 +38,4 @@ rule move_align_log:
     shell:
         "mv {input} {params.outdir}"
 
+include: "bam_index.smk"

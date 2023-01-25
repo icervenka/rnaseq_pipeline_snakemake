@@ -115,6 +115,7 @@ report:
 
 gsea:
   ranking: "sign_fc_pval"
+
 # additional miscellaneous options ---------------------------------------------
 # create tar.gz archive with results for differentially expressed genes, counts
 # and logs

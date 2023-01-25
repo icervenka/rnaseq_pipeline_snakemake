@@ -56,23 +56,34 @@ DIFFEXP_ANALYSIS = "{}_{}/".format(
 NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 
 # load pipleline rules ---------------------------------------------------------
+
+# makes sure that certain files that might be needed for analysis are created
+# - fasta index file
 include: "snakemake/rules/preprocess.smk"
+
+# download sra files, skips if sra files are not defined in
+# metadata - load always
 include: "snakemake/rules/sra.smk"
+
+# run fastqc quality control - load always
 include: "snakemake/rules/fastqc.smk"
 
 # check whether to load trimming rule and set the fastq input dir for alignment
-# accordingly
+# accordingly - load conditionally
+# TODO maybe simplify the condition for loading the rule
 if (
         config['trim']['adapters_single'] != "" or 
         config['trim']['adapters_single'] != "" or 
         config['trim']['quality'] != "" or 
-        config['trim']['extra'] != "":
+        config['trim']['extra'] != ""
     ):
     include: "snakemake/rules/trim.smk"
     FASTQ_INPUT_DIR = TRIMMED_DIR
 else:
+    include: "snakemake/rules/skip_trim.smk"
     FASTQ_INPUT_DIR = FASTQ_DIR
 
+# load pipline rules for selected pipeline from config.yaml 
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
 
@@ -80,13 +91,20 @@ for rule in pipelines[config['pipeline']]:
 # if config['pipeline'] not in ["download_only"]:
 #     include: "snakemake/rules/bam_index.smk"
 
+# load rules for calculating coverage - load conditionally
 if config['coverage']['calculate'] == "yes":
     include: "snakemake/rules/coverage.smk"
 else:
     include: "snakemake/rules/skip_coverage.smk"
 
+# multiqc - load always
 include: "snakemake/rules/multiqc.smk"
-include: "snakemake/rules/result_archive.smk"
+
+# load rule for creating result archive with processed data - load conditionally
+if config['result_archive'] == "yes":
+    include: "snakemake/rules/result_archive.smk"
+else:
+    include: "snakemake/rules/skip_result_archive.smk"
 
 # top level snakemake rule -----------------------------------------------------
 rule all:
@@ -95,7 +113,7 @@ rule all:
         ### needed for rsem and cufflinks
         config['fasta'] + ".fai",
         ### check if fastq files are present otherwise download sra
-        expand(FASTQ_DIR + "{file}", file=Metadata.fq),
+        ancient(expand(FASTQ_DIR + "{file}", file=Metadata.fq)),
         ### trim adapters and quality
         get_trim_pe_output_files,
         get_trim_se_output_files,
@@ -105,7 +123,7 @@ rule all:
         ### align output files
         get_align_output_files,
         get_align_log_files,
-        # get_bam_index_files,
+        get_bam_index_files,
         ### coverage
         get_coverage_files,
         ### count output files

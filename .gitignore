@@ -8,3 +8,5 @@ logs/
 archive/
 __pycache__/
 test_configs/
+counts/
+diffexp/*
