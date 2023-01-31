@@ -13,7 +13,7 @@ rule align:
         sam=temp(ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".sam"),
         log=ALIGN_LOG_OUTDIR + "{sample}/hisat.log"
     params:
-        metadata=Metadata,
+        metadata=Metadata, #ancient(config["metadata"]),
         fastq_dir=FASTQ_INPUT_DIR
         extra=config_extra['align']['star_extra'],
     threads:

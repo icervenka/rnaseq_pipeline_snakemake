@@ -4,7 +4,7 @@ ruleorder: fastq_dump_pe > fastq_dump_se
 
 rule sra_download:
     input:
-        config['metadata']
+        ancient(config["metadata"])
     output:
         SRA_DIR + "{sra}"
     params:
@@ -27,7 +27,7 @@ rule sra_download:
 
 rule fastq_dump_se:
     input:
-        ancient(get_single_end_sra)
+        get_single_end_sra
     output:
         FASTQ_DIR + "{sra}.fastq"
     threads:
@@ -43,7 +43,7 @@ rule fastq_dump_se:
 
 rule fastq_dump_pe:
     input:
-        ancient(get_paired_end_sra)
+        get_paired_end_sra
     output:
         expand(FASTQ_DIR + "{{sra}}{read}.fastq", read=['_1', "_2"])
     threads:

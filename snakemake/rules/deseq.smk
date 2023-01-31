@@ -8,7 +8,7 @@ def get_diffexp_output_files(wildcards):
         DDS_OUTDIR + "result_array.rds",
         DDS_OUTDIR + "result_array_ids.rds",
         OUTDIR + "analysis_params/config.yaml",
-        OUTDIR + "analysis_params/metadata.tsv",
+        OUTDIR + "analysis_params/" + config["metadata"],
         DEGFILES_OUTDIR + "sample_expression.csv",
         REPORTS_OUTDIR + "report.html",
         REPORTS_OUTDIR + "pca.html",
@@ -17,7 +17,7 @@ def get_diffexp_output_files(wildcards):
 rule diffexp_init:
     input:
         count_data="counts/counts.tsv",
-        col_data="metadata.tsv"
+        col_data=ancient(config["metadata"])
     output:
         DDS_OUTDIR + "dds.rds"
     params:
@@ -112,9 +112,9 @@ rule diffexp_report_pca:
 rule diffexp_copy_config:
     input:
         config="config.yaml",
-        metadata="metadata.tsv"
+        metadata=ancient(config["metadata"])
     output:
         config=OUTDIR + "analysis_params/config.yaml",
-        metadata=OUTDIR + "analysis_params/metadata.tsv"
+        metadata=OUTDIR + "analysis_params/" + config["metadata"]
     shell:
         "cp {input.config} {output.config}; cp {input.metadata} {output.metadata}"

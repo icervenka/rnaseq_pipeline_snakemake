@@ -1,7 +1,5 @@
 import re
 
-# TODO align should put logs in one directory
-
 def get_multiqc_output_files(wildcards):
     return(LOG_DIR +
            "multiqc/" +
@@ -29,6 +27,8 @@ rule multiqc:
         shell(
             "multiqc "
             "-f "
+            "-d "
+            "-dd 1 "
             "-o {params.outdir} "
             "-n {params.name} "
             "{input_dirs} "
