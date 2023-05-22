@@ -2,7 +2,7 @@ experiment_name: "Liver_cancer_project"
 threads: 15
 pandoc_path: "/usr/lib/rstudio-server/bin/quarto/bin/tools"
 
-metadata: "metadata.tsv"
+metadata: "metadata_test.tsv"
 paired_read_strings: ["_1", "_2"]
 
 species: "mouse"
