@@ -6,27 +6,31 @@ from snakemake.shell import shell
 from snakemake.utils import validate, min_version
 from snakemake.io import load_configfile
 
-##### set minimum snakemake version #####
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Set minimum snakemake version =====                                   │
+#└─────────────────────────────────────────────────────────────────────────────┘
 min_version("5.7.0")
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Load and process config files =====                                   │
 #└─────────────────────────────────────────────────────────────────────────────┘
 configfile: "config.yaml"
-validate(config, schema="snakemake/schema/config.schema.yaml")
+validate(config, schema="workflow/schema/config.schema.yaml")
 config_extra = load_configfile("config_extra.yaml")
-# validate(config, schema="snakemake/schema/config_extra.schema.yaml")
+# validate(config, schema="workflow/schema/config_extra.schema.yaml")
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Load shared constants and functions =====                             │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # contains directory structure
-include: "snakemake/rules/folder_structure.smk"
+include: "workflow/rules/folder_structure.smk"
 # contains input functions for rules
-include: "snakemake/rules/input_functions.smk"
+# contains other misc functions rules
+include: "workflow/rules/input_functions.smk"
+include: "workflow/rules/misc_functions.smk"
 # contains pipleline rule defitions
 # TODO automated parsing for readme?
-include: "snakemake/rules/pipelines.smk"
+include: "workflow/rules/pipelines.smk"
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Process metadata =====                                                │
@@ -38,7 +42,7 @@ paired_read_strings_regex = "|".join(
 )
 
 Metadata = pd.read_table(config["metadata"], dtype=str)
-validate(Metadata, schema="snakemake/schema/metadata.schema.yaml")
+validate(Metadata, schema="workflow/schema/metadata.schema.yaml")
 
 Metadata["paired"] = np.where(
     Metadata.duplicated(subset=['sample', 'lane'], keep=False), 1, 0
@@ -69,13 +73,13 @@ NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 #└─────────────────────────────────────────────────────────────────────────────┘
 # makes sure that certain files that might be needed for analysis are created
 # - fasta index file
-include: "snakemake/rules/preprocess.smk"
+include: "workflow/rules/preprocess.smk"
 
 # download sra files, skips if sra files are not defined in
-include: "snakemake/rules/sra.smk"
+include: "workflow/rules/sra.smk"
 
 # run fastqc quality control - load always
-include: "snakemake/rules/fastqc.smk"
+include: "workflow/rules/fastqc.smk"
 
 # check whether to load trimming rule and set the fastq input dir for alignment
 # accordingly - load conditionally
@@ -86,11 +90,13 @@ if (
         config['trim']['quality'] != "" or 
         config['trim']['extra'] != ""
     ):
-    include: "snakemake/rules/trim.smk"
+    include: "workflow/rules/trim.smk"
     FASTQ_INPUT_DIR = TRIMMED_DIR
+    workflow_trimming = "yes"
 else:
-    include: "snakemake/rules/skip_trim.smk"
+    include: "workflow/rules/skip_trim.smk"
     FASTQ_INPUT_DIR = FASTQ_DIR
+    workflow_trimming = "no"
 
 # load pipline rules for selected pipeline from config.yaml 
 for rule in pipelines[config['pipeline']]:
@@ -98,23 +104,41 @@ for rule in pipelines[config['pipeline']]:
 
 # TODO fix bam_index rule
 # if config['pipeline'] not in ["download_only"]:
-#     include: "snakemake/rules/bam_index.smk"
+#     include: "workflow/rules/bam_index.smk"
 
 # load rules for calculating coverage - load conditionally
 if config['coverage']['calculate'] == "yes":
-    include: "snakemake/rules/coverage.smk"
+    include: "workflow/rules/coverage.smk"
 else:
-    include: "snakemake/rules/skip_coverage.smk"
+    include: "workflow/rules/skip_coverage.smk"
 
 # multiqc - load always
-include: "snakemake/rules/multiqc.smk"
+include: "workflow/rules/multiqc.smk"
 
 # load rule for creating result archive with processed data - load conditionally
 if config['result_archive'] == "yes":
-    include: "snakemake/rules/result_archive.smk"
+    include: "workflow/rules/result_archive.smk"
 else:
-    include: "snakemake/rules/skip_result_archive.smk"
+    include: "workflow/rules/skip_result_archive.smk"
 
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Execute before starting the workflow =====                            │
+#└─────────────────────────────────────────────────────────────────────────────┘
+onstart:
+    print()
+    print_header("Workflow starting")
+    print("Number of fastq files: " + str(len(Fqs)))
+    print("Number of samples: " + str(len(Samples)))
+    print()
+    print_header("Workflow parameters")
+    print("Selected pipeline: " + config['pipeline'])
+    print("Pipeline steps:")
+    for rule in pipelines[config['pipeline']]:
+        print(" - " + rule)
+    print("Trimming: " + workflow_trimming)
+    print("Coverage calculation: " + config['coverage']['calculate'])
+    print("Creating result archive: " + config['result_archive'])
+    
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Top level snakemake rule =====                                        │
 #└─────────────────────────────────────────────────────────────────────────────┘
@@ -147,3 +171,17 @@ rule all:
         get_multiqc_output_files,
         ### result archive compressed output
         get_result_archive_output_files
+
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Execute after the workflow =====                                      │
+#└─────────────────────────────────────────────────────────────────────────────┘
+onsuccess:
+    from datetime import datetime
+    print_header(str(datetime.today().strftime('%Y-%m-%d %H:%M:%S')) + 
+    " - RNA-Seq workflow finished successfully!")
+
+onerror:
+    from datetime import datetime
+    print_header(str(datetime.today().strftime('%Y-%m-%d %H:%M:%S')) + 
+    " - There was and ERROR running RNA-Seq workflow!")
