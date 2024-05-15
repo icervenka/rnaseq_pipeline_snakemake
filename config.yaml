@@ -1,5 +1,10 @@
+#╔═════════════════════════════════════════════════════════════════════════════╗
+#║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
+#║ Main config file for snakemake run                                          ║
+#║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
+#╚═════════════════════════════════════════════════════════════════════════════╝
 experiment_name: "Liver_cancer_project"
-threads: 15
+# threads: 15
 pandoc_path: "/usr/lib/rstudio-server/bin/quarto/bin/tools"
 
 metadata: "metadata_test.tsv"
@@ -10,12 +15,16 @@ index: "/shared/genome/grcm38/star"
 gtf: "/shared/genome/grcm38/annotation/grcm38.gtf"
 fasta: "/shared/genome/grcm38/fasta/grcm38.fa"
 
-# pipeline ---------------------------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Pipeline config =====                                                 │
+#└─────────────────────────────────────────────────────────────────────────────┘
 # pipelines are defined in snakemake/rules/pipelines.smk
 # see README for list of available pipelines
 pipeline: "deseq"
 
-# trimming ---------------------------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Trimming config =====                                                 │
+#└─────────────────────────────────────────────────────────────────────────────┘
 # should reads be trimmed for adapters and/or quality, uses cutadapt
 # if no trimming parameters are specified, trimming will be skipped
 trim:
@@ -26,11 +35,16 @@ trim:
   quality: ""
   extra: ""
 
-# align options ----------------------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Align config =====                                                    │
+#└─────────────────────────────────────────────────────────────────────────────┘
+# extra options are found in config_extra.yaml
 align:
   extra: "star_extra_1"
 
-# coverage ---------------------------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Coverage config =====                                                 │
+#└─────────────────────────────────────────────────────────────────────────────┘
 # should bedgraph and tdf files be generated for bam files
 # possible choices for normalization: RPKM, CPM, BPM, RPGC, None
 # RPGC normalization requires the --effectiveGenomeSize to be specified in extra
@@ -42,7 +56,9 @@ coverage:
   normalize_using: "BPM"
   extra: ""
 
-# counting options -------------------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Read counting config =====                                            │
+#└─────────────────────────────────────────────────────────────────────────────┘
 # strandedness is specified in the metadata.tsv file
 # for extra parameters to be passed to counting programs, see config_extra.yaml
 count:
@@ -52,7 +68,10 @@ count:
   # for extra parameters to specify the counting scores use config_extra.yaml
   overlap: "yes"
 
-# differential expression options ----------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Differential expression config =====                                  │
+#└─────────────────────────────────────────────────────────────────────────────┘
+# TODO enable multiple diffexp runs from one config
 diffexp:
   # name of the analysis and final output directory
   outdir: "default"
@@ -79,7 +98,9 @@ diffexp:
   # otherwise they will be replaced by gene id
   drop_no_sybmol: TRUE
 
-# report options ---------------------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Reporting config =====                                                │
+#└─────────────────────────────────────────────────────────────────────────────┘
 report:
   # one of:
   # 'default' - regular web page
@@ -113,10 +134,15 @@ report:
     min_group_size: 3
   mdplot_group: "group"
 
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Export files config =====                                             │
+#└─────────────────────────────────────────────────────────────────────────────┘
 gsea:
   ranking: "sign_fc_pval"
 
-# additional miscellaneous options ---------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Additional miscellaneous options =====                                │
+#└─────────────────────────────────────────────────────────────────────────────┘
 # create tar.gz archive with results for differentially expressed genes, counts
 # and logs
 result_archive: "no"

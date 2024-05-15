@@ -1,4 +1,13 @@
-##### extra parameters for aligning #####
+#╔═════════════════════════════════════════════════════════════════════════════╗
+#║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
+#║ Additional configuration options for Snakemake run                          ║
+#║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
+#╚═════════════════════════════════════════════════════════════════════════════╝
+
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Align config =====                                                    │
+#└─────────────────────────────────────────────────────────────────────────────┘
 align:
   # optimized extra parameters for tophat
   tophat_extra:
@@ -24,7 +33,9 @@ align:
   kallisto_single_extra:
     "-l 41 -s 10 "
 
-#### extra parameters for individual counting packages #####
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Read counting config =====                                            │
+#└─────────────────────────────────────────────────────────────────────────────┘
 count:
   featurecounts_extra: ""
   htseq_extra: ""
@@ -37,7 +48,9 @@ count:
   cufflinks_extra: "--multi-read-correct "
   cuffmerge_extra: "--multi-read-correct "
 
-#### extra parameters for individual diffexp packages #####
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Differential expression config =====                                  │
+#└─────────────────────────────────────────────────────────────────────────────┘
 diffexp:
   # deseq2 lfc shrink algorithm type
   # apeglm is not yet implemented
