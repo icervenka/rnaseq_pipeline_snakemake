@@ -1,0 +1,15 @@
+name: base_shared_env
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - python=3.10
+ - deeptools=3.5
+ - pigz=2.8
+ - samtools=1.19
+ - fastqc=0.12
+ - cutadapt=4.6
+ - trim-galore=0.6
+ - multiqc=1.19
+ - fastp=0.23
+ - fq=0.11.0

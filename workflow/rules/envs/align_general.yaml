@@ -1,0 +1,14 @@
+name: align_general_environment
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - python=3.10
+ - samtools=1.20
+ - star=2.7.11b
+ - hisat2=2.2
+ - kallisto=0.50
+ - salmon=1.10
+ - bwa=0.7.18
+ - bwa-mem2=2.2
+ - bedtools=2.31
