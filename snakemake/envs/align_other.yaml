@@ -1,0 +1,9 @@
+# for aligners that require python 2.7 such as bowtie2 and tophat
+name: align_other_environment
+channels:
+ - defaults
+ - conda-forge
+ - bioconda
+dependencies:
+ - python=2.7.18
+ - tophat=2.1.1
