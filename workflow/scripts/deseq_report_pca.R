@@ -5,7 +5,7 @@ suppressMessages(library(plotly))
 suppressMessages(library(heatmaply))
 suppressMessages(library(DT))
 suppressMessages(library(tidyverse))
-source("snakemake/scripts/script_functions.R", local = TRUE)
+source("workflow/scripts/script_functions.R", local = TRUE)
 
 # snakemake params ----------------------------------------------------------
 species <- snakemake@params[["species"]]

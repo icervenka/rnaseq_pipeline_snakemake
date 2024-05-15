@@ -14,7 +14,7 @@ suppressMessages(library(Glimma))
 suppressMessages(library(clusterProfiler))
 suppressMessages(library(tidyverse))
 
-source("snakemake/scripts/script_functions.R", local = TRUE)
+source("workflow/scripts/script_functions.R", local = TRUE)
 rmarkdown::find_pandoc(dir = snakemake@params[["pandoc_path"]])
 
 # snakemake parameters
@@ -50,7 +50,7 @@ knitr_output_options <- list(
 
 # render html document
 rmarkdown::render(
-  paste0("snakemake/scripts/deseq_report_rmd/", report_layout, ".Rmd"),
+  paste0("workflow/scripts/deseq_report_rmd/", report_layout, ".Rmd"),
   output_file = paste0(snakemake@output[[1]]),
   output_dir = snakemake@params[["outdir"]],
   output_options = knitr_output_options,

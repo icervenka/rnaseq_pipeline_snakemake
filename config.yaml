@@ -4,23 +4,23 @@
 #║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
 #╚═════════════════════════════════════════════════════════════════════════════╝
 experiment_name: "Liver_cancer_project"
-# threads: 15
+threads: 15
 pandoc_path: "/usr/lib/rstudio-server/bin/quarto/bin/tools"
 
 metadata: "metadata_test.tsv"
 paired_read_strings: ["_1", "_2"]
 
 species: "mouse"
-index: "/shared/genome/grcm38/star"
-gtf: "/shared/genome/grcm38/annotation/grcm38.gtf"
-fasta: "/shared/genome/grcm38/fasta/grcm38.fa"
+index: "/home/ingwarr/genomes/ncbi_grcm38/star"
+gtf: "/home/ingwarr/genomes/ncbi_grcm38/annotation/gencode.vM25.annotation.gtf"
+fasta: "/home/ingwarr/genomes/ncbi_grcm38/fasta/GRCm38.primary_assembly.genome.fa"
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Pipeline config =====                                                 │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # pipelines are defined in snakemake/rules/pipelines.smk
 # see README for list of available pipelines
-pipeline: "deseq"
+pipeline: "star_only"
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Trimming config =====                                                 │

@@ -5,7 +5,7 @@ suppressMessages(library(DESeq2))
 suppressMessages(library(clusterProfiler))
 suppressMessages(library(dplyr))
 
-source("snakemake/scripts/script_functions.R", local = TRUE)
+source("workflow/scripts/script_functions.R", local = TRUE)
 
 sp_arr <- get_species_info(snakemake@params[["species"]])
 outdir <- snakemake@params[["outdir"]]

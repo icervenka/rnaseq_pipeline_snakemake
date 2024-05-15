@@ -18,5 +18,7 @@ rule fastqc:
         1
     log:
         LOG_DIR + "fastqc/{sample}.log"
+    conda:
+        CONDA_SHARED_ENV
     wrapper:
         "v1.21.0/bio/fastqc"

@@ -4,5 +4,7 @@ rule fasta_index:
         config['fasta']
     output:
         config['fasta'] + ".fai"
+    conda:
+        CONDA_SHARED_ENV
     shell:
         "samtools faidx -o {output} {input}"

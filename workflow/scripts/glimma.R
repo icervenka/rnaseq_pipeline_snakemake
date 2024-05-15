@@ -1,6 +1,6 @@
 library(Glimma)
 library(clusterProfiler)
-source("snakemake/scripts/script_functions.R")
+source("workflow/scripts/script_functions.R")
 
 dds = dds
 result_array = result_array

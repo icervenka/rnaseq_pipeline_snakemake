@@ -3,7 +3,7 @@ suppressMessages(library(stringr))
 suppressMessages(library(DESeq2))
 suppressMessages(library(dplyr))
 
-source("snakemake/scripts/script_functions.R", local = TRUE)
+source("workflow/scripts/script_functions.R", local = TRUE)
 
 output <- snakemake@output[[1]]
 # check if design is a formula, if not prepend a tilda

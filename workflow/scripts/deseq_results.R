@@ -3,7 +3,7 @@ suppressMessages(library(DESeq2))
 suppressMessages(library(purrr))
 suppressMessages(library(dplyr))
 
-source("snakemake/scripts/script_functions.R", local = TRUE)
+source("workflow/scripts/script_functions.R", local = TRUE)
 
 # TODO add parallelization to lfcshrink
 dds <- readRDS(snakemake@input[["dds"]])

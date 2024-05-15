@@ -11,7 +11,6 @@ input_arr = [','.join(x) for x in input_arr.to_list()]
 input_str = " ".join(input_arr)
 
 outprefix = os.path.dirname(snakemake.output.bam) + "/"
-print(input_arr)
 read_cmd = read_command(input_arr[0])
 
 shell(

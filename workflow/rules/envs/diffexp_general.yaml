@@ -1,0 +1,17 @@
+name: diffexp_environment
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - r-base = 4.1.3
+ - r-dplyr
+ - r-ggplot2
+ - r-pheatmap
+ - r-rmarkdown
+ - r-knitr
+ - pandoc
+ - r-dt
+ - r-rcolorbrewer
+ - bioconductor-deseq2
+ - bioconductor-tximport
+ - bioconductor-apeglm
