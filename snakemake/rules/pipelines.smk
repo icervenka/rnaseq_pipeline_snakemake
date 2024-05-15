@@ -1,4 +1,6 @@
-# list of available pipelines
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== List of available pipelines =====                                     │
+#└─────────────────────────────────────────────────────────────────────────────┘
 # requires the components to be basenames of smk rules
 # last item in the list is always script for differential gene expression
 pipelines = {

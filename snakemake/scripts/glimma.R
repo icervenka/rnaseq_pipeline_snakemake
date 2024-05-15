@@ -2,10 +2,6 @@ library(Glimma)
 library(clusterProfiler)
 source("snakemake/scripts/script_functions.R")
 
-
-
-
-
 dds = dds
 result_array = result_array
 no_contrasts = length(result_array)

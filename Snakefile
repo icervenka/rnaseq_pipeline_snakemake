@@ -9,12 +9,17 @@ from snakemake.io import load_configfile
 ##### set minimum snakemake version #####
 min_version("5.7.0")
 
-# load and process config files ------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Load and process config files =====                                   │
+#└─────────────────────────────────────────────────────────────────────────────┘
 configfile: "config.yaml"
 validate(config, schema="snakemake/schema/config.schema.yaml")
 config_extra = load_configfile("config_extra.yaml")
+# validate(config, schema="snakemake/schema/config_extra.schema.yaml")
 
-# load common constants and functions  -----------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Load shared constants and functions =====                             │
+#└─────────────────────────────────────────────────────────────────────────────┘
 # contains directory structure
 include: "snakemake/rules/folder_structure.smk"
 # contains input functions for rules
@@ -23,7 +28,9 @@ include: "snakemake/rules/input_functions.smk"
 # TODO automated parsing for readme?
 include: "snakemake/rules/pipelines.smk"
 
-# process metadata -------------------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Process metadata =====                                                │
+#└─────────────────────────────────────────────────────────────────────────────┘
 rnaseq_ext = ["fq", "fastq", "fa", "fasta"]
 rnaseq_ext_regex = "|\.".join([e + "$" for e in rnaseq_ext])
 paired_read_strings_regex = "|".join(
@@ -46,7 +53,9 @@ Metadata["filename_sans_read"] = Metadata["filename_sans_ext"].str.replace(
 )
 Metadata = Metadata.sort_values(by=['sample', 'lane', 'read'])
 
-# global variables -------------------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Global variables =====                                                │
+#└─────────────────────────────────────────────────────────────────────────────┘
 Samples = list(Metadata["sample"].unique())
 Fqs = list(Metadata["fq"].unique())
 
@@ -55,14 +64,14 @@ DIFFEXP_ANALYSIS = "{}_{}/".format(
     pipelines[config['pipeline']][-1], config["diffexp"]["outdir"])
 NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 
-# load pipleline rules ---------------------------------------------------------
-
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Load pipleline rules =====                                            │
+#└─────────────────────────────────────────────────────────────────────────────┘
 # makes sure that certain files that might be needed for analysis are created
 # - fasta index file
 include: "snakemake/rules/preprocess.smk"
 
 # download sra files, skips if sra files are not defined in
-# metadata - load always
 include: "snakemake/rules/sra.smk"
 
 # run fastqc quality control - load always
@@ -106,7 +115,9 @@ if config['result_archive'] == "yes":
 else:
     include: "snakemake/rules/skip_result_archive.smk"
 
-# top level snakemake rule -----------------------------------------------------
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Top level snakemake rule =====                                        │
+#└─────────────────────────────────────────────────────────────────────────────┘
 rule all:
     input:
         ### check if genomic fasta index file exists

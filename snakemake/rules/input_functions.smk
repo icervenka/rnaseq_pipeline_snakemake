@@ -4,7 +4,9 @@ def is_tool(name):
     from shutil import which
     return which(name)
 
-##### functions for retrieving and dumping sra files #####
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Functions for retrieving and dumping sra files =====                  │
+#└─────────────────────────────────────────────────────────────────────────────┘
 def get_sra(wildcards):
     sra = Metadata.query('sra == @wildcards.sra').sra.dropna().unique()
     return sra
@@ -19,7 +21,9 @@ def get_paired_end_sra(wildcards):
     m = m.query('sra == @wildcards.sra').sra.unique()
     return SRA_DIR + m
 
-##### functions for getting names of fastq files for trimming #####
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Functions for getting names of fastq files for trimming =====         │
+#└─────────────────────────────────────────────────────────────────────────────┘
 # def get_single_end_cutadapt(wildcards):
 #     m = Metadata[Metadata.paired == 0]
 #     m = m.query('filename_sans_read == @wildcards.filename')
@@ -31,7 +35,9 @@ def get_paired_end_sra(wildcards):
 #     print(m)
 #     return list(FASTQ_INPUT_DIR + m.fq)
 
-##### functions for retrieving fastq file names  #####
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Functions for retrieving fastq file names =====                       │
+#└─────────────────────────────────────────────────────────────────────────────┘
 def get_fq(wildcards):
     m = Metadata.query('sample == @wildcards.sample').dropna()
     return FASTQ_INPUT_DIR + m.fq
@@ -42,7 +48,9 @@ def arrange_fq_for_align(samples, metadata, fastq_dir):
     input_arr = fq_meta.groupby(['read'])['fq_full'].apply(lambda x: x.to_list())
     return input_arr
 
-##### functions for parsing parameters from various tools  #####
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Functions for parsing parameters from various tools =====             │
+#└─────────────────────────────────────────────────────────────────────────────┘
 def featurecounts_stranded(stranded):
     def stranded_switch(x):
         select = {
@@ -119,8 +127,9 @@ def cuffmerge_params(wildcards):
     param_string += config_extra['count']['cuffmerge_extra']
     return(param_string)
 
-##### input function for creating cuffdiff data payloads  #####
-
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Input function for creating cuffdiff data payloads =====              │
+#└─────────────────────────────────────────────────────────────────────────────┘
 def get_cuffdiff_data():
     cond = config['diffexp']['design']
     cond = cond.replace('~', '')
