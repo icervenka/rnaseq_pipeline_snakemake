@@ -1,10 +1,10 @@
 """Wrapper for hisat2 alignment."""
 
-from script_functions import read_command, arrange_fq_for_align
+from script_functions import arrange_fq_for_align
 from snakemake.shell import shell
 
 input_arr = arrange_fq_for_align(
-    snakemake.input.sample,
+    snakemake.wildcards.sample,
     snakemake.params.metadata,
     snakemake.params.fastq_dir)
 
@@ -25,6 +25,8 @@ shell(
     "-q "
     "-x {snakemake.params.index} "
     "{input_str} "
-    "-S {snakemake.output.bam} "
+    "-S {snakemake.output.sam} "
+    "--novel-splicesite-outfile {snakemake.output.splicesite} "
+    "--met-file {snakemake.output.met} "
     ">> {snakemake.output.log} 2>&1 "
 )
