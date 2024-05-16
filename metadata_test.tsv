@@ -1,6 +1,0 @@
-sample	fq	lane	read	stranded	group	sra
-algmut	algmut_L1.fastq.gz	1	R1	no	alg	
-algwt	algwt_L1.fastq.gz	1	R1	no	alg	
-algwt	algwt_L2.fastq.gz	2	R1	no	alg	
-lmcd1tg	lmcd1tg_L1.fastq.gz	1	R1	reverse	lmcd	
-sra2	SRR14063317.fastq.gz	1	R1	reverse	sra	SRR14063317

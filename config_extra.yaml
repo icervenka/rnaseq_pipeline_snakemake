@@ -22,10 +22,11 @@ align:
     --outFilterMatchNmin 0
     --seedSearchStartLmax 12 "
   # optimized extra parameters for hisat
-  hisat_extra:
-    "--mp 1,0
-    --sp 3,1
-    --pen-noncansplice 15 "
+  # hisat_extra:
+  #   "--mp 1,0
+  #   --sp 3,1
+  #   --pen-noncansplice 15 "
+  hisat_extra: ""
   # extra parameters for kallisto, if unknown, leave these defaults
   kallisto_extra:
     ""

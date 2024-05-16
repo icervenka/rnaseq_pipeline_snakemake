@@ -3,24 +3,24 @@
 #║ Main config file for snakemake run                                          ║
 #║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
 #╚═════════════════════════════════════════════════════════════════════════════╝
-experiment_name: "Liver_cancer_project"
-threads: 15
-pandoc_path: "/usr/lib/rstudio-server/bin/quarto/bin/tools"
+experiment_name: 
+threads: 
+pandoc_path: 
 
-metadata: "metadata.tsv"
-paired_read_strings: ["_1", "_2"]
+metadata: 
+paired_read_strings: 
 
-species: "mouse"
-index: "/home/ingwarr/genomes/ncbi_grcm38/star"
-gtf: "/home/ingwarr/genomes/ncbi_grcm38/annotation/gencode.vM25.annotation.gtf"
-fasta: "/home/ingwarr/genomes/ncbi_grcm38/fasta/GRCm38.primary_assembly.genome.fa"
+species: 
+index: 
+gtf: 
+fasta:
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Pipeline config =====                                                 │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # pipelines are defined in snakemake/rules/pipelines.smk
 # see README for list of available pipelines
-pipeline: "star_only"
+pipeline: 
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Trimming config =====                                                 │
@@ -29,18 +29,18 @@ pipeline: "star_only"
 # if no trimming parameters are specified, trimming will be skipped
 trim:
   # see https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
-  adapters_single: ""
-  adapters_paired: ""
+  adapters_single: 
+  adapters_paired: 
   # see https://cutadapt.readthedocs.io/en/stable/guide.html#quality-trimming
-  quality: ""
-  extra: ""
+  quality: 
+  extra: 
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Align config =====                                                    │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # extra options are found in config_extra.yaml
 align:
-  extra: "star_extra_1"
+  extra: 
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Coverage config =====                                                 │
@@ -50,11 +50,11 @@ align:
 # RPGC normalization requires the --effectiveGenomeSize to be specified in extra
 # https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html
 coverage:
-  calculate: "no"
-  split_strands: "no"
-  bin_size: "10"
-  normalize_using: "BPM"
-  extra: ""
+  calculate: 
+  split_strands: 
+  bin_size: 
+  normalize_using: 
+  extra:
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Read counting config =====                                            │
@@ -63,10 +63,10 @@ coverage:
 # for extra parameters to be passed to counting programs, see config_extra.yaml
 count:
   # if multimapping reads should be counted
-  multimap: "no"
+  multimap: 
   # if reads belonging to the overlapping genes should be counted
   # for extra parameters to specify the counting scores use config_extra.yaml
-  overlap: "yes"
+  overlap: 
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Differential expression config =====                                  │
@@ -74,26 +74,26 @@ count:
 # TODO enable multiple diffexp runs from one config
 diffexp:
   # name of the analysis and final output directory
-  outdir: "default"
+  outdir: 
   # the default value for one design variable is 'group'
   # if only one grouping variable is present, specify it as is
   # if you wish to use formula to combine multiple groups, mark the beginning
   # with ~ any combination of columns present in metadata file is possible
-  design: "group"
+  design: 
   # ordering of the reference levels from which contrasts will be costructed
   # name is a column in the metadata file
   # if only one level is specified it is taken as baseline
   # if empty, alphabetical order will be used
   reference_levels:
-    group: ["alg, lmcd, liver"]
+    group: 
   # see README for explanation of different contrast types
-  contrast_type: "A"
-  contrasts: "group"
-  fdr: 0.05
+  contrast_type: 
+  contrasts: 
+  fdr: 
   # filter out genes that have smaller total amount of reads across all samples
-  gene_min_readcount: 10
-  input_gene_ids: "ENSEMBL"
-  output_gene_ids: "SYMBOL"
+  gene_min_readcount: 
+  input_gene_ids: 
+  output_gene_ids: 
   # drop genes from output that don't map to any gene symbol
   # otherwise they will be replaced by gene id
   drop_no_sybmol: TRUE
@@ -105,7 +105,7 @@ report:
   # one of:
   # 'default' - regular web page
   # 'flex' - dashboard-like output
-  layout: "flex"
+  layout: 
   # export all samples in one html report or divide reports per-sample
   # individual reduces the loading time of report with many comparisons
   individual: FALSE
@@ -113,36 +113,36 @@ report:
   # size
   self_contained: FALSE
   pca:
-    groups: ["group"]
-    ngenes: 1000
-    top_pcas: 6
-    top_gene_loadings: 25
-    pca2go_ngenes: 10000
-    pca2go_loadings_ngenes: 500
+    groups: 
+    ngenes:
+    top_pcas: 
+    top_gene_loadings: 
+    pca2go_ngenes:
+    pca2go_loadings_ngenes: 
   sample_heatmap:
     # can be one of the following: mean, variance, diff
-    mode: "variance"
-    n_genes: 1000
+    mode: 
+    n_genes: 
     # one of the following: euclidean, correlation or none for no clustering
-    cluster_metric_col: "euclidean"
-    cluster_metric_row: "euclidean"
-    annotation: "group"
+    cluster_metric_col: 
+    cluster_metric_row: 
+    annotation:
   sample_distances_heatmap:
-    annotation: "group"
+    annotation: 
   upset:
-    max_groups: 40
-    min_group_size: 3
-  mdplot_group: "group"
+    max_groups: 
+    min_group_size: 
+  mdplot_group: 
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Export files config =====                                             │
 #└─────────────────────────────────────────────────────────────────────────────┘
 gsea:
-  ranking: "sign_fc_pval"
+  ranking: 
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Additional miscellaneous options =====                                │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # create tar.gz archive with results for differentially expressed genes, counts
 # and logs
-result_archive: "no"
+result_archive: 
