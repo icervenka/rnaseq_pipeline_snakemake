@@ -28,7 +28,6 @@ rule result_archive:
             "tar "
             "-czf "    
             "{output} "
-            "{include_dirs} "
-            
+            "{include_dirs} "    
         )
         
