@@ -12,16 +12,24 @@ def parse_filename(string):
     filename = os.path.basename(string)
     split1 = os.path.splitext(filename)
     split2 = os.path.splitext(split1[0])
-    if(split2[1] == ".fastq"):
-        return(split2[0], split1[1][1:])
+    # if(split2[1] == ".fastq"):
+    #     return(split2[0], split1[1][1:])
+    # else:
+    return(split1[0], split1[1][1:])
+
+def extract_name(string):
+    parse_filename(string)
+    return(parse_filename(string)[0])
+
+def extract_extension(string):
+    return(parse_filename(string)[1])
+
+def is_compressed(filename):
+    compressed_extesions = ["gz", "bz2"]
+    if extract_extension(filename) in compressed_extesions:
+        return True
     else:
-        return(split1[0], split1[1][1:])
-
-def extract_name(parsed_filename):
-    return(parsed_filename[0])
-
-def extract_extension(parsed_filename):
-    return(parsed_filename[1])
+        return False
 
 ##### functions for retrieving fastq file names  #####
 def arrange_fq_for_align(sample, metadata, fastq_dir):
