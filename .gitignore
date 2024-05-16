@@ -1,12 +1,20 @@
+# dotifiles
 ._*
 .snakemake/
+
+# analysis files
 sra/
 fastq/
 trimmed/
 align/
 logs/
 archive/
-__pycache__/
-test_configs/
 counts/
 diffexp/*
+
+# test files
+test_configs/
+run_tests.sh
+
+# other
+__pycache__/
