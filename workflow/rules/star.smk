@@ -12,7 +12,7 @@ rule align:
         bam=temp(ALIGN_OUTDIR + "{sample}/" + STAR_BAM_NAME + ".bam"),
         log=expand(ALIGN_OUTDIR + "{{sample}}/{log}", log=STAR_LOGFILES),
     params:
-        extra=config_extra['align'][config['align']['extra']],
+        extra=has_extra_config(config["align"]["extra"], config_extra["align"]),
         metadata=Metadata,
         fastq_dir=FASTQ_INPUT_DIR
     threads:

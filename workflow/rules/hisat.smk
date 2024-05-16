@@ -25,7 +25,7 @@ rule align:
         metadata=Metadata,
         index=config["index"],
         fastq_dir=FASTQ_INPUT_DIR,
-        extra=config_extra["align"][config["align"]["extra"]],
+        extra=has_extra_config(config["align"]["extra"], config_extra["align"]),
     threads: config["threads"]
     conda:
         CONDA_ALIGN_GENERAL_ENV
