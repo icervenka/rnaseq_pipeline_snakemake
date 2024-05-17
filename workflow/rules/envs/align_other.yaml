@@ -5,5 +5,4 @@ channels:
  - conda-forge
  - bioconda
 dependencies:
- - python=2.7.18
  - tophat=2.1.1
