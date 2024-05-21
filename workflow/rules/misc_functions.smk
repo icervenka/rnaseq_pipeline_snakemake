@@ -4,9 +4,27 @@ def print_header(s):
     print("║"+"  "+s+"  "+(74-header_len)*" "+"║")
     print("╚"+78*"═"+"╝")
 
+
 def has_extra_config(conf, conf_extra):
     conf = conf.strip()
     if len(conf) > 0:
         return conf_extra[conf]
     else:
         return " "
+
+
+def all_paired(Metadata):
+    r1 = sum(Metadata["read"] == "R1")
+    r2 = sum(Metadata["read"] == "R2")
+    if r1 == r2:
+        return True
+    else:
+        return False
+    
+
+def all_single(Metadata):
+    r2 = sum(Metadata["read"] == "R2")
+    if r2 == 0:
+        return True
+    else:
+        return False
