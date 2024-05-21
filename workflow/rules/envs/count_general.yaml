@@ -1,10 +1,8 @@
 name: count_general_environment
 channels:
- - defaults
  - conda-forge
  - bioconda
 dependencies:
- - python=3.10.14
  - subread=2.0.6
  - stringtie=2.2.3
  - htseq=2.0.5
