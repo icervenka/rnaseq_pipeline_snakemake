@@ -10,6 +10,7 @@ def get_align_log_files(wildcards):
 # TODO Coverage-search algorithm is turned on, making this step very slow
 ## Please try running TopHat again with the option (--no-coverage-search) if this step takes too much time or memory.
 # TODO create transcriptome index for tophat only once and reuse it
+# TODO a lot of log files are created in log directory, move them all
 
 rule align:
     input:
@@ -31,7 +32,7 @@ rule align:
         "../scripts/tophat_wrapper.py"
 
 
-rule rename_bam:
+rule align_out:
     input:
         rules.align.output.bam,
     output:

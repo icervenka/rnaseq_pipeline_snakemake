@@ -3,7 +3,7 @@ def get_bam_index_files(wildcards):
 
 rule bam_index:
     input:
-        rules.rename_bam.output
+        rules.align_out.output
     output:
         ALIGN_OUTDIR + "{sample}/"+ COMMON_BAM_NAME + ".bam.bai"
     threads:

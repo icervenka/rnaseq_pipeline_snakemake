@@ -35,6 +35,15 @@ rule align:
     script:
         "../scripts/salmon_wrapper.py"
 
+# rule align_out:
+#     input:
+#         rules.align.output.bam
+#     output:
+#         ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".bam"
+#     shell:
+#         "mv {input} {output}"
+
+
 rule move_align_log:
     input:
         rules.align.output.runlog

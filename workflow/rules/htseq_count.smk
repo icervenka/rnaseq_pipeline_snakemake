@@ -6,7 +6,7 @@ def get_count_log_files(wildcards):
 
 rule count:
     input:
-        bam=rules.rename_bam.output,
+        bam=rules.align_out.output,
         gtf=config["gtf"]
     output:
         temp(COUNT_OUTDIR + "{sample}_counts.txt")

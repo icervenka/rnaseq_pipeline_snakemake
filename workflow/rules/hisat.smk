@@ -33,7 +33,7 @@ rule align:
         "../scripts/hisat_wrapper.py"
 
 
-rule rename_bam:
+rule align_out:
     input:
         rules.align.output.sam,
     output:

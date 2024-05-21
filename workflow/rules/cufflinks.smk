@@ -9,7 +9,7 @@ def get_count_log_files(wildcards):
 
 rule assemble:
     input:
-        bam=rules.rename_bam.output,
+        bam=rules.align_out.output,
         gtf=config["gtf"],
         fasta=config["fasta"]
     output:
