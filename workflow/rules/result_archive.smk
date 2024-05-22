@@ -3,13 +3,10 @@ def get_result_archive_output_files(wildcards):
 
 rule result_archive:
     input:
-        get_trim_pe_output_files,
-        get_trim_se_output_files,
         get_trim_log_files,
         get_fastqc_output_files,
         get_align_output_files,
         get_align_log_files,
-        # get_bam_index_files,
         get_coverage_files,
         get_count_output_files,
         get_count_log_files,

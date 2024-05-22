@@ -1,10 +1,12 @@
 import re
 
+
 def get_multiqc_output_files(wildcards):
-    return(LOG_DIR +
-           "multiqc/" +
-           re.sub("\s+", "", config["experiment_name"]) +
-           ".html")
+    return rules.multiqc.output.html
+
+
+report_basename = re.sub("\s+", "", config["experiment_name"])
+
 
 rule multiqc:
     input:
@@ -13,12 +15,10 @@ rule multiqc:
         get_align_log_files,
         get_count_log_files
     output:
-        html = LOG_DIR + "multiqc/" + \
-            re.sub("\s+", "", config["experiment_name"]) + ".html",
+        html = LOG_DIR + "multiqc/" + report_basename + ".html",
     params:
-        name = re.sub("\s+", "", config["experiment_name"]),
+        name = report_basename,
         outdir = LOG_DIR + "multiqc/"
-    # TODO conda directive doesn't work with run directive
     conda:
         CONDA_SHARED_ENV
     script:
