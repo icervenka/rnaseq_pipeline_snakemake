@@ -27,6 +27,6 @@ shell(
     "{input_str} "
     "-S {snakemake.output.sam} "
     "--novel-splicesite-outfile {snakemake.output.splicesite} "
-    "--met-file {snakemake.output.met} "
-    ">> {snakemake.output.log} 2>&1 "
+    "--met-file {snakemake.log.met} "
+    ">> {snakemake.log.log} 2>&1 "
 )
