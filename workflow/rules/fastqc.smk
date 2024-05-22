@@ -1,7 +1,7 @@
 def get_fastqc_output_files(wildcards):
     return(
-        expand(LOG_DIR + "fastqc/{sample}.html", sample=Metadata.fq) + 
-        expand(LOG_DIR + "fastqc/{sample}_fastqc.zip", sample=Metadata.fq)
+        expand(rules.output.html, sample=Metadata.fq) + 
+        expand(rules.output.zip, sample=Metadata.fq)
     )
 
 rule fastqc:

@@ -1,9 +1,9 @@
 def get_count_output_files(wildcards):
-    return [COUNT_OUTDIR + "gene_counts.txt", COUNT_OUTDIR + "counts.tsv"]
+    return [rules.count.output.counts, rules.counts_to_matrix.output]
 
 
 def get_count_log_files(wildcards):
-    return COUNT_LOG_OUTDIR + "gene_counts.txt.summary"
+    return rules.move_count_summary.output
 
 
 stranded_str = [
@@ -35,33 +35,16 @@ rule count:
         CONDA_COUNT_GENERAL_ENV
     script:
         "../scripts/featurecounts_wrapper.py"
-        # stranded_str = [
-        #     featurecounts_stranded(
-        #         Metadata.query("sample == @x").stranded.dropna().unique()[0]
-        #     )
-        #     for x in Samples
-        # ]
-        # stranded_str = ",".join(stranded_str)
-        # shell(
-        #     "featureCounts "
-        #     "-a {input.gtf} "
-        #     "-o {output.counts} "
-        #     "-T {threads} "
-        #     "-s {stranded_str} "
-        #     "{params.extra} "
-        #     "{input.bam} "
-        #     "2> {log}"
-        # )
 
 
 rule counts_to_matrix:
     input:
-        counts=COUNT_OUTDIR + "gene_counts.txt",
+        COUNT_OUTDIR + "gene_counts.txt",
     output:
-        counts_tsv=COUNT_OUTDIR + "counts.tsv",
+        COUNT_OUTDIR + "counts.tsv",
     shell:
         # | awk '{{gsub("bam/","",$0); print}}'
-        "cat {input.counts} | head -n -1 | cut -f 1,7- > {output.counts_tsv}"
+        "cat {input} | head -n -1 | cut -f 1,7- > {output}"
 
 
 rule move_count_summary:

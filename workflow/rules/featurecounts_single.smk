@@ -1,13 +1,13 @@
 def get_count_output_files(wildcards):
     return expand(rules.count.output.counts, sample=Samples) + [
-        rules.counts_to_matrix.output.counts_tsv 
-    ]
+        rules.counts_to_matrix.output.counts_tsv]
 
 
 def get_count_log_files(wildcards):
-    return expand(rules.count.output.summary, sample=Samples) + expand(
-        rules.count.log, sample=Samples)
-
+    return (
+        expand(rules.count.output.summary, sample=Samples) + 
+        expand(rules.count.log, sample=Samples)
+    )
 
 # TODO fix stranded
 
@@ -22,7 +22,6 @@ rule count:
         extra=featurecounts_params,
         # stranded="A",
     log:
-        # mark as temporary
         COUNT_LOG_OUTDIR + "{sample}/" + "featurecounts_log.txt", 
     threads: 
         config["threads"]
