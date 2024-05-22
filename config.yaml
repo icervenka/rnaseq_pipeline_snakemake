@@ -65,8 +65,9 @@ count:
   # if multimapping reads should be counted
   multimap: "no"
   # if reads belonging to the overlapping genes should be counted
-  # for extra parameters to specify the counting scores use config_extra.yaml
   overlap: "yes"
+  # for extra parameters to specify the counting scores use config_extra.yaml
+  extra: ""
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Differential expression config =====                                  │

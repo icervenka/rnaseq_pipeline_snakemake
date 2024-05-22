@@ -19,6 +19,7 @@ shell(
     "-o {snakemake.output.counts} "
     "-T {snakemake.threads} "
     #"-s {stranded_str} "
+    "{snakemake.params.standard} "
     "{snakemake.params.extra} "
     "{snakemake.input.bam} "
     "2> {snakemake.log}"

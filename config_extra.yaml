@@ -4,6 +4,10 @@
 #║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
 #╚═════════════════════════════════════════════════════════════════════════════╝
 
+# To be able to reuse and store extra configs, create a unique extra config
+# name under appropriate step (align, count, etc.) and then pass this name into 
+# the extra parameter in the config.yaml file.
+
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Align config =====                                                    │
 #└─────────────────────────────────────────────────────────────────────────────┘
@@ -11,7 +15,7 @@ align:
   # optimized extra parameters for tophat
   tophat_extra:
     "-N 18
-    --read-edit-dist 18 "
+    --read-edit-dist 18"
   # optimized extra parameters for star
   star_extra_1:
     "--outFilterMismatchNmax 33
@@ -20,18 +24,22 @@ align:
     --outFilterScoreMinOverLread 0
     --outFilterMatchNminOverLread 0
     --outFilterMatchNmin 0
-    --seedSearchStartLmax 12 "
+    --seedSearchStartLmax 12"
   # optimized extra parameters for hisat
-  # hisat_extra:
-  #   "--mp 1,0
-  #   --sp 3,1
-  #   --pen-noncansplice 15 "
-  hisat_extra: ""
+  hisat_extra:
+    "--mp 1,0
+    --sp 3,1
+    --pen-noncansplice 15"
   # extra parameters for kallisto, if unknown, leave these defaults
   kallisto_extra:
     ""
-  kallisto_single_extra:
-    "-l 41 -s 10 "
+  # required for single end run, estimated for paired end
+  kallisto_single_fragment_info:
+    "-l 200 -s 10"
+  salmon_extra:
+    "--numBootstraps 100"
+  salmon_single_fragment_info:
+    "--fldMean 400 --fldSD 10"
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Read counting config =====                                            │

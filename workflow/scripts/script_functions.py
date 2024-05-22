@@ -8,10 +8,10 @@ def is_tool(name):
 
 ##### functions for manipulating/filtering filenames and extensions #####
 def parse_filename(string):
-    path = os.path.dirname(string)
+    #path = os.path.dirname(string)
     filename = os.path.basename(string)
     split1 = os.path.splitext(filename)
-    split2 = os.path.splitext(split1[0])
+    #split2 = os.path.splitext(split1[0])
     # if(split2[1] == ".fastq"):
     #     return(split2[0], split1[1][1:])
     # else:

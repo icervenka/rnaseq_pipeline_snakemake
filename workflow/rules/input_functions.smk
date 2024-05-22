@@ -49,6 +49,20 @@ def arrange_fq_for_align(samples, metadata, fastq_dir):
     return input_arr
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Functions for retrieving bam file names =====                       │
+#└─────────────────────────────────────────────────────────────────────────────┘
+# def get_bam(wildcards):
+#     m = glob_wildcards(ALIGN_OUTDIR +"{wildcards.sample}/" + COMMON_BAM_NAME + ".bam")
+#     print(m)
+#     return m
+
+# def get_salmon_quant(wildcards):
+#     pass
+
+# def get_kallisto_quant(wildcards):
+#     pass
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for parsing parameters from various tools =====             │
 #└─────────────────────────────────────────────────────────────────────────────┘
 def featurecounts_stranded(stranded):
@@ -68,10 +82,15 @@ def featurecounts_params(wildcards):
     param_string += config_extra["count"]["featurecounts_extra"] + " "
     return(param_string)
 
+def htseq_stranded(wildcards):
+    pass
+
+# TODO move stranded to separate function
+
 def htseq_params(wildcards):
     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
     param_string = ""
-    param_string += s + " "
+    # param_string += s + " "
     if config["count"]["overlap"] == "yes":
         param_string += "--nonunique=all "
         if config["count"]["multimap"] == "no":
@@ -79,7 +98,8 @@ def htseq_params(wildcards):
     param_string += config_extra["count"]["htseq_extra"] + " "
     return(param_string)
 
-def kallisto_params(wildcards):
+
+def kallisto_stranded(wildcards):
     def stranded_switch(x):
         select = {
             "no": " ",
@@ -91,7 +111,6 @@ def kallisto_params(wildcards):
     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()
     param_string = ""
     param_string += stranded_switch(s)
-    param_string += config_extra['align']['kallisto_extra']
     return(param_string)
 
 def stringtie_stranded(wildcards):
@@ -102,6 +121,7 @@ def stringtie_stranded(wildcards):
     }
     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
     return(select.get(s, ""))
+
 
 # TODO change numbers for yes/no/reverse
 def cufflinks_params(wildcards):
@@ -122,10 +142,10 @@ def cufflinks_params(wildcards):
     param_string += config_extra['count']['cufflinks_extra']
     return(param_string)
 
-def cuffmerge_params(wildcards):
-    param_string = ""
-    param_string += config_extra['count']['cuffmerge_extra']
-    return(param_string)
+# def cuffmerge_params(wildcards):
+#     param_string = ""
+#     param_string += config_extra['count']['cuffmerge_extra']
+#     return(param_string)
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Input function for creating cuffdiff data payloads =====              │
