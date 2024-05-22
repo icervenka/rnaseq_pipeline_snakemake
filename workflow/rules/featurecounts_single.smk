@@ -1,11 +1,11 @@
 def get_count_output_files(wildcards):
     return expand(rules.count.output.counts, sample=Samples) + [
-        rules.counts_to_matrix.output.counts_tsv]
+        rules.counts_to_matrix.output]
 
 
 def get_count_log_files(wildcards):
     return (
-        expand(rules.count.output.summary, sample=Samples) + 
+        expand(rules.move_count_summary.output, sample=Samples) + 
         expand(rules.count.log, sample=Samples)
     )
 
@@ -19,8 +19,9 @@ rule count:
         counts=COUNT_OUTDIR + "{sample}/" + "gene_counts.txt",
         summary=COUNT_OUTDIR + "{sample}/" + "gene_counts.txt.summary",
     params:
-        extra=featurecounts_params,
-        # stranded="A",
+        # stranded="A"
+        standard=featurecounts_params,
+        extra=has_extra_config(config["count"]["extra"], config_extra["count"])
     log:
         COUNT_LOG_OUTDIR + "{sample}/" + "featurecounts_log.txt", 
     threads: 
@@ -33,9 +34,9 @@ rule count:
 # TODO 
 rule counts_to_matrix:
     input:
-        counts=expand(rules.count.output.counts, sample=Samples),
+        expand(rules.count.output.counts, sample=Samples),
     output:
-        counts_tsv=COUNT_OUTDIR + "counts.tsv",
+        COUNT_OUTDIR + "counts.tsv",
     shell:
         "touch {output}"
 
@@ -43,8 +44,8 @@ rule counts_to_matrix:
 # TODO think about merging into one file
 rule move_count_summary:
     input:
-          summary=rules.count.output.summary,
+        rules.count.output.summary,
     output:
-         COUNT_LOG_OUTDIR + "{sample}/" + "gene_counts.txt.summary"
+        COUNT_LOG_OUTDIR + "{sample}/" + "gene_counts.txt.summary"
     shell:
         "mv {input} {output}"

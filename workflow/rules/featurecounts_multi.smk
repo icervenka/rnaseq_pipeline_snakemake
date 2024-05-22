@@ -26,7 +26,9 @@ rule count:
         summary=COUNT_OUTDIR + "gene_counts.txt.summary",
     params:
         metadata=Metadata,
-        extra=featurecounts_params
+        # stranded="A"
+        standard=featurecounts_params,
+        extra=has_extra_config(config["count"]["extra"], config_extra["count"]),
     log:
         COUNT_LOG_OUTDIR + "featurecounts_log.txt",
     threads: 
