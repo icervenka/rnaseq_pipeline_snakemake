@@ -1,0 +1,13 @@
+name: r_general_environment
+channels:
+ - conda-forge
+ - bioconda
+dependencies:
+ - r-base=4.3
+ - r-dplyr=1.1
+ - r-purrr=1.0
+ - r-stringr=1.5
+ - r-tidyr=1.3
+ - r-tibble=3.2
+ - r-readr=2.1
+ - r-ggplot2=3.5
