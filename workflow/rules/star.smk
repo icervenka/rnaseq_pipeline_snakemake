@@ -1,20 +1,21 @@
 def get_align_output_files(wildcards):
-    return expand(rules.align_out.output.bam, sample=Samples)
+    return expand(rules.align_out.output, sample=Samples)
 
 def get_align_log_files(wildcards):
     return expand(rules.move_align_log.output, sample=Samples)
 
 rule align:
     input:
-        sample=get_fq,
-        index=config["index"]
+        sample=get_fq
     output:
-        bam=temp(ALIGN_OUTDIR + "{sample}/" + STAR_BAM_NAME + ".bam"),
-        log=expand(ALIGN_OUTDIR + "{{sample}}/{log}", log=STAR_LOGFILES),
+        bam=opj(ALIGN_OUTDIR, "{sample}", STAR_BAM_NAME + ".bam")
     params:
-        extra=has_extra_config(config["align"]["extra"], config_extra["align"]),
         metadata=Metadata,
-        fastq_dir=FASTQ_INPUT_DIR
+        fastq_dir=FASTQ_INPUT_DIR,
+        index=config["index"],
+        extra=has_extra_config(config["align"]["extra"], config_extra["align"])
+    log:
+        expand(opj(ALIGN_OUTDIR, "{{sample}}", "{log}"), log=STAR_LOGFILES)
     threads:
         config["threads"]
     conda:
@@ -22,21 +23,21 @@ rule align:
     script:
         "../scripts/star_wrapper.py"
 
-rule rename_bam:
+rule align_out:
     input:
         rules.align.output.bam
     output:
-        ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".bam"
+        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_NAME + ".bam")
     shell:
         "mv {input} {output}"
 
 rule move_align_log:
     input:
-        rules.align.output.log
+        rules.align.log
     output:
-        expand(ALIGN_LOG_OUTDIR + "{{sample}}/{log}", log=STAR_LOGFILES)
+        expand(opj(ALIGN_LOG_OUTDIR, "{{sample}}", "{log}"), log=STAR_LOGFILES)
     params:
-        outdir=ALIGN_LOG_OUTDIR + "{sample}"
+        outdir=opj(ALIGN_LOG_OUTDIR, "{sample}")
     shell:
         "mv {input} {params.outdir}"
 

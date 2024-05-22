@@ -1,7 +1,12 @@
+# TODO create a default config and the config.yaml will only overwrite the default values
+# TODO make aligner specific directories for logs
+# TODO switch paths from appending strings to os.path.join
+
 import pandas as pd
 import numpy as np
 import datetime
 import re
+from os import path
 from snakemake.shell import shell
 from snakemake.utils import validate, min_version
 from snakemake.io import load_configfile
@@ -12,12 +17,10 @@ from snakemake.io import load_configfile
 min_version("5.7.0")
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
-#│ ===== Load and process config files =====                                   │
+#│ ===== Misc setup =====                                                      │
 #└─────────────────────────────────────────────────────────────────────────────┘
-configfile: "config.yaml"
-validate(config, schema="workflow/schema/config.schema.yaml")
-config_extra = load_configfile("config_extra.yaml")
-# validate(config, schema="workflow/schema/config_extra.schema.yaml")
+# Is used a lot in all the rules, this might save some typing
+opj = path.join
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Load shared constants and functions =====                             │
@@ -31,6 +34,14 @@ include: "workflow/rules/misc_functions.smk"
 # contains pipleline rule defitions
 # TODO automated parsing for readme?
 include: "workflow/rules/pipelines.smk"
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Load and process config files =====                                   │
+#└─────────────────────────────────────────────────────────────────────────────┘
+configfile: "config.yaml"
+validate(config, schema="workflow/schema/config.schema.yaml")
+config_extra = load_configfile("config_extra.yaml")
+# validate(config, schema="workflow/schema/config_extra.schema.yaml")
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Process metadata =====                                                │
@@ -47,8 +58,11 @@ validate(Metadata, schema="workflow/schema/metadata.schema.yaml")
 Metadata["paired"] = np.where(
     Metadata.duplicated(subset=['sample', 'lane'], keep=False), 1, 0
 )
+
+# TODO add bz2 as extension
 Metadata["filename_sans_gzip"] = Metadata["fq"].str.replace(
     ".gz", "", regex=False)
+
 Metadata["filename_sans_ext"] = Metadata["filename_sans_gzip"].str.replace(
     "\." + rnaseq_ext_regex, "", regex=True
 )
@@ -63,10 +77,11 @@ Metadata = Metadata.sort_values(by=['sample', 'lane', 'read'])
 Samples = list(Metadata["sample"].unique())
 Fqs = list(Metadata["fq"].unique())
 
+# TODO add the ability to run multiple diffexp configurations at once
 # string constants based on metadata and config files
 DIFFEXP_ANALYSIS = "{}_{}/".format(
     pipelines[config['pipeline']][-1], config["diffexp"]["outdir"])
-NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
+# NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Load pipleline rules =====                                            │
@@ -75,7 +90,7 @@ NOW = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
 # - fasta index file
 include: "workflow/rules/preprocess.smk"
 
-# download sra files, skips if sra files are not defined in
+# download sra files, skips if sra files are not defined
 include: "workflow/rules/sra.smk"
 
 # run fastqc quality control - load always
@@ -101,10 +116,6 @@ else:
 # load pipline rules for selected pipeline from config.yaml 
 for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
-
-# TODO fix bam_index rule
-# if config['pipeline'] not in ["download_only"]:
-#     include: "workflow/rules/bam_index.smk"
 
 # load rules for calculating coverage - load conditionally
 if config['coverage']['calculate'] == "yes":
@@ -148,7 +159,7 @@ rule all:
         ### needed for rsem and cufflinks
         config['fasta'] + ".fai",
         ### check if fastq files are present otherwise download sra
-        ancient(expand(FASTQ_DIR + "{file}", file=Metadata.fq)),
+        # ancient(expand(FASTQ_DIR + "{file}", file=Metadata.fq)),
         ### trim adapters and quality
         get_trim_pe_output_files,
         get_trim_se_output_files,

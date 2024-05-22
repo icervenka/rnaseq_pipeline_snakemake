@@ -2,32 +2,34 @@ def get_align_output_files(wildcards):
     return expand(rules.align.output.bam, sample=Samples)
 
 def get_align_log_files(wildcards):
-    return expand(rules.move_align_log.output.runlog, sample=Samples) + expand(
-        rules.move_align_log.output.quantlog, sample=Samples)
+    return (
+        expand(rules.move_align_log.output.quantlog, sample=Samples) +
+        expand(rules.move_align_log.output.runlog, sample=Samples)
+    )
 
 def get_bam_index_files(wildcards):
     return []
 
 # TODO fix stranded
-# TODO log is being created anyway
+
 
 rule align:
     input:
         fq=get_fq,
         gtf=config["gtf"]
     output: 
-        bam=ALIGN_OUTDIR + "{sample}/" + SALMON_QUANT_NAME + ".sf",
-        runlog=expand(ALIGN_OUTDIR + "{{sample}}/" + "{runlog}", runlog=SALMON_LOG_FILES)
+        bam=opj(ALIGN_OUTDIR, "{sample}", SALMON_QUANT_NAME + ".sf")
     params:
         index=config["index"],
         metadata=Metadata,
         fastq_dir=FASTQ_INPUT_DIR,
-        outdir=ALIGN_OUTDIR + "{sample}/",
+        outdir=opj(ALIGN_OUTDIR, "{sample}"),
         fragment_info=config_extra["align"]["salmon_single_fragment_info"],
         extra=has_extra_config(config["align"]["extra"], config_extra["align"]),
         stranded="A"
-    # log:
-    #     ALIGN_LOG_OUTDIR + "{sample}/salmon_quant.log"
+    log:
+        quantlog=expand(opj(ALIGN_OUTDIR, "{{sample}}", "logs", "{log}"), log=["salmon_quant.log"]),
+        runlog=expand(opj(ALIGN_OUTDIR, "{{sample}}", "{log}"), log=SALMON_LOG_FILES)
     threads:
         config["threads"]
     conda:
@@ -46,19 +48,16 @@ rule align:
 #     shell:
 #         "mv {input} {output}"
 
-
-
-
 rule move_align_log:
     input:
-        quantlog=ALIGN_OUTDIR + "{sample}/" + "logs/salmon_quant.log",
-        runlog=rules.align.output.runlog
+        quantlog=rules.align.log.quantlog,
+        runlog=rules.align.log.runlog
     output:
-        quantlog=ALIGN_LOG_OUTDIR + "{sample}/" + "salmon_quant.log",
-        runlog=expand(ALIGN_LOG_OUTDIR + "{{sample}}/{log}", log=SALMON_LOG_FILES)
+        quantlog=expand(opj(ALIGN_LOG_OUTDIR, "{{sample}}", "{log}"), log=["salmon_quant.log"]),
+        runlog=expand(opj(ALIGN_LOG_OUTDIR, "{{sample}}", "{log}"), log=SALMON_LOG_FILES)
     params:
-        logdir=ALIGN_OUTDIR + "{sample}/" + "logs/",
-        outdir=ALIGN_LOG_OUTDIR + "{sample}/"
+        logdir=opj(ALIGN_OUTDIR, "{sample}", "logs"),
+        outdir=opj(ALIGN_LOG_OUTDIR, "{sample}")
     shell:
         """
         mv {input.runlog} {params.outdir}

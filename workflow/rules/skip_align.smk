@@ -26,8 +26,8 @@ else:
 
 rule align_out:
     input:
-        glob_wildcards(ALIGN_OUTDIR + "{sample}/{file}." + ext)
+        glob_wildcards(opj(ALIGN_OUTDIR, "{sample}", "{file}" + "." + ext))
     output:
-        expand(ALIGN_OUTDIR + "{{sample}}/{file}." + ext, file = COMMON_ALIGN_NAME)
+        expand(opj(ALIGN_OUTDIR, "{{sample}}", "{file}" + "." + ext), file = COMMON_ALIGN_NAME)
     shell:
         "mv {input} {output}"

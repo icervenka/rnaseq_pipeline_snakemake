@@ -17,7 +17,7 @@ shell(
     "STAR "
     "{snakemake.params.extra} "
     "--runThreadN {snakemake.threads} "
-    "--genomeDir {snakemake.input.index} "
+    "--genomeDir {snakemake.params.index} "
     "--readFilesIn {input_str} "
     "--outFileNamePrefix {outprefix} "
     "--readFilesCommand {read_cmd} "

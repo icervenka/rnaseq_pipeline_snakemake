@@ -1,12 +1,11 @@
 def get_align_output_files(wildcards):
-    return expand(rules.align_out.output.bam, sample=Samples)
+    return expand(rules.align_out.output, sample=Samples)
 
 
 def get_align_log_files(wildcards):
     return expand(rules.move_align_log.output, sample=Samples)
 
 # TODO add library type
-# TODO function to create align_outdir in params
 # TODO Coverage-search algorithm is turned on, making this step very slow
 ## Please try running TopHat again with the option (--no-coverage-search) if this step takes too much time or memory.
 # TODO create transcriptome index for tophat only once and reuse it
@@ -17,15 +16,17 @@ rule align:
         sample=get_fq,
         gtf=config["gtf"]
     output:
-        bam=ALIGN_OUTDIR + "{sample}/" + TOPHAT_BAM_NAME + ".bam",
-        log=ALIGN_OUTDIR + "{sample}/align_summary.txt",
+        bam=opj(ALIGN_OUTDIR, "{sample}", TOPHAT_BAM_NAME + ".bam"),
     params:
         metadata=Metadata,
         fastq_dir=FASTQ_INPUT_DIR,
-        align_outdir=ALIGN_OUTDIR + "{sample}/",
+        align_outdir=opj(ALIGN_OUTDIR, "{sample}"),
         index=config["index"],
         extra=has_extra_config(config["align"]["extra"], config_extra["align"])
-    threads: config["threads"]
+    log:
+        expand(opj(ALIGN_OUTDIR, "{{sample}}", "{log}"), log=TOPHAT_LOG_FILES),
+    threads: 
+        config["threads"]
     conda:
         CONDA_ALIGN_OTHER_ENV
     script:
@@ -36,16 +37,16 @@ rule align_out:
     input:
         rules.align.output.bam,
     output:
-        ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".bam",
+        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_NAME + ".bam")
     shell:
         "mv {input} {output}"
 
 
 rule move_align_log:
     input:
-        rules.align.output.log,
+        rules.align.log,
     output:
-        ALIGN_LOG_OUTDIR + "{sample}/align_summary.txt",
+        expand(opj(ALIGN_LOG_OUTDIR, "{{sample}}", "{log}"), log=TOPHAT_LOG_FILES),
     shell:
         "mv {input} {output}"
 

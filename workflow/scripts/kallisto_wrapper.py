@@ -23,7 +23,7 @@ shell(
     "-t {snakemake.threads} "
     "--genomebam "
     "-g {snakemake.input.gtf} "
-    "-i {snakemake.input.index} "
+    "-i {snakemake.params.index} "
     "-o {snakemake.params.outdir} "
     "{input_str} "
 )

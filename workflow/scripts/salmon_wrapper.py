@@ -29,5 +29,4 @@ shell(
         "-l {snakemake.params.stranded} "
         "{input_str} "
         "-o {snakemake.params.outdir} "
-        # "> {snakemake.log} 2>&1 "
 )
