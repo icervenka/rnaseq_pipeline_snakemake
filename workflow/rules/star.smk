@@ -1,8 +1,8 @@
 def get_align_output_files(wildcards):
-    return expand(ALIGN_OUTDIR+"{sample}/"+COMMON_BAM_NAME+".bam", sample=Samples)
+    return expand(rules.align_out.output.bam, sample=Samples)
 
 def get_align_log_files(wildcards):
-    return expand(ALIGN_LOG_OUTDIR+"{sample}/{log}", sample=Samples, log=STAR_LOGFILES)
+    return expand(rules.move_align_log.output, sample=Samples)
 
 rule align:
     input:

@@ -1,9 +1,9 @@
 def get_align_output_files(wildcards):
-    return expand(ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".bam", sample=Samples)
+    return expand(rules.align_out.output.bam, sample=Samples)
 
 
 def get_align_log_files(wildcards):
-    return expand(ALIGN_LOG_OUTDIR + "{sample}/align_summary.txt", sample=Samples)
+    return expand(rules.move_align_log.output, sample=Samples)
 
 # TODO add library type
 # TODO function to create align_outdir in params
@@ -41,7 +41,7 @@ rule align_out:
         "mv {input} {output}"
 
 
-rule move_log:
+rule move_align_log:
     input:
         rules.align.output.log,
     output:
