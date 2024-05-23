@@ -28,3 +28,18 @@ def all_single(Metadata):
         return True
     else:
         return False
+
+        
+def is_set_subsample(s):
+    if s == "" or s == 0 or s == None:
+        return False
+    elif s in ['False', 'false', 'FALSE']:
+        return False
+    else:
+        return True
+
+def is_set_trimmer(s):
+    if s in ['fastp', 'trimmomatic', 'cutadapt']:
+        return True
+    else:
+        return False

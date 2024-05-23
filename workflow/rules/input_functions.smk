@@ -27,26 +27,45 @@ def get_paired_end_sra(wildcards):
 # def get_single_end_cutadapt(wildcards):
 #     m = Metadata[Metadata.paired == 0]
 #     m = m.query('filename_sans_read == @wildcards.filename')
-#     return list(FASTQ_INPUT_DIR + m.fq)
+#     return list(FASTQ_ALIGN_DIR + m.fq)
 
 # def get_paired_end_cutadapt(wildcards):
 #     m = Metadata[Metadata.paired == 1]
 #     m = m.query('filename_sans_read == @wildcards.filename')
 #     print(m)
-#     return list(FASTQ_INPUT_DIR + m.fq)
+#     return list(FASTQ_ALIGN_DIR + m.fq)
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for retrieving fastq file names =====                       │
 #└─────────────────────────────────────────────────────────────────────────────┘
 def get_fq(wildcards):
     m = Metadata.query('sample == @wildcards.sample').dropna()
-    return FASTQ_INPUT_DIR + m.fq
+    return FASTQ_ALIGN_DIR + m.fq
+
+
+def get_single_fq(wildcards, fastq_dir):
+    return f"{fastq_dir}{wildcards.filename}{wildcards.ext}"
+
+
+def get_paired_fq(wildcards, fastq_dir):
+    return expand(f"{{fastq_dir}}{{wildcards.filename}}{read}{{ext}}", 
+            read=config["paired_read_strings"])
+
 
 def arrange_fq_for_align(samples, metadata, fastq_dir):
     metadata['fq_full'] = fastq_dir + metadata['fq']
     fq_meta = metadata[metadata['fq_full'].isin(samples)]
     input_arr = fq_meta.groupby(['read'])['fq_full'].apply(lambda x: x.to_list())
     return input_arr
+
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Functions for acessing metadata columns =====                         │
+#└─────────────────────────────────────────────────────────────────────────────┘
+def get_metadata(what, paired = 1):
+    if paired != 1 and paired != 0:
+        raise ValueError("Value for 'paired' argument can only be 0 or 1.")
+    return Metadata[Metadata["paired"] == paired][what].unique()
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for retrieving bam file names =====                       │
@@ -124,6 +143,7 @@ def stringtie_stranded(wildcards):
 
 
 # TODO change numbers for yes/no/reverse
+# TODO move stranded to separate function
 def cufflinks_params(wildcards):
     def stranded_switch(x):
         select = {
@@ -174,3 +194,17 @@ def get_cuffdiff_data():
     files_str = " ".join(files)
 
     return (labels_str, files_str)
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Other input/param functions =====                                     │
+#└─────────────────────────────────────────────────────────────────────────────┘
+
+def get_subsample_proportion(n):
+    if type(n) != int and type(n) != float:
+        raise ValueError("Incorrect value for propotion of sampled reads." + 
+            "Must be either int or float.")
+    else:
+        if n <= 1:
+            return "-p " + str(n)
+        else:
+            return "-n " + str(n)

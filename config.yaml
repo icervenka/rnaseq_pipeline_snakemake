@@ -23,11 +23,24 @@ fasta: "/home/ingwarr/genomes/ncbi_grcm38/fasta/GRCm38.primary_assembly.genome.f
 pipeline: "star_only"
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Preprocess config =====                                               │
+#└─────────────────────────────────────────────────────────────────────────────┘
+preprocess:
+  # can be specified as percentage (number smaller than 1) or absolute number of
+  # reads to be kept (whole number 1 or greater). If empty, no subsetting will
+  # be performed.
+  subsample:
+  extra: ""
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Trimming config =====                                                 │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # should reads be trimmed for adapters and/or quality, uses cutadapt
 # if no trimming parameters are specified, trimming will be skipped
 trim:
+  # one of 'fastp', 'cutadapt' or 'trimmomatic'. If nothing is specified, 
+  # trimming will be skipped
+  trimmer: ""
   # see https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
   adapters_single: ""
   adapters_paired: ""
@@ -50,8 +63,8 @@ align:
 # RPGC normalization requires the --effectiveGenomeSize to be specified in extra
 # https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html
 coverage:
-  calculate: "no"
-  split_strands: "no"
+  calculate: FALSE
+  split_strands: FALSE
   bin_size: "10"
   normalize_using: "BPM"
   extra: ""
@@ -63,9 +76,9 @@ coverage:
 # for extra parameters to be passed to counting programs, see config_extra.yaml
 count:
   # if multimapping reads should be counted
-  multimap: "no"
+  multimap: FALSE
   # if reads belonging to the overlapping genes should be counted
-  overlap: "yes"
+  overlap: TRUE
   # for extra parameters to specify the counting scores use config_extra.yaml
   extra: ""
 
