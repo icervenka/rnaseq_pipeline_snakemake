@@ -18,6 +18,7 @@ pipelines = {
     # intermediate pipelines
     "featurecounts_only": ['skip_align', 'featurecounts', 'skip_diffexp'],
     "htseq_only": ['skip_align', 'htseq', 'skip_diffexp'],
+    "stringtie_only": ['skip_align', 'stringtie', 'skip_diffexp'],
     "deseq_only": ['skip_align', 'featurecounts', 'deseq'],
     
     # full diffexp pipelines

@@ -42,7 +42,7 @@ fpkm <- combined %>%
 # save files
 write.table(
   tpm,
-  snakemake@output["counts"],
+  snakemake@output["tpm"],
   sep = "\t",
   quote = FALSE,
   row.names = FALSE
