@@ -5,6 +5,7 @@
 # analysis files
 sra/
 fastq/
+fastq_preprocessed/
 trimmed/
 align/
 logs/

@@ -9,6 +9,18 @@
 # the extra parameter in the config.yaml file.
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Trim config =====                                                     │
+#└─────────────────────────────────────────────────────────────────────────────┘
+trim:
+  fastp_default: ""
+  cutadapt_default: ""
+  trimmomatic_default: ""
+  # see https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
+  adapters_single: ""
+  adapters_paired: ""
+  # see https://cutadapt.readthedocs.io/en/stable/guide.html#quality-trimming
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Align config =====                                                    │
 #└─────────────────────────────────────────────────────────────────────────────┘
 align:

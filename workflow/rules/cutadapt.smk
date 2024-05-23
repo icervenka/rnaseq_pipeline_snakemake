@@ -1,21 +1,17 @@
 ruleorder: cutadapt_pe > cutadapt_se
 
-# TODO fix extensions in trimming
-
 def get_trim_pe_output_files(wildcards):
-    return expand(TRIMMED_DIR + "{filename}{read}" + ".fastq.gz", 
-        filename=list(
-            Metadata[Metadata["paired"] == 1]["filename_sans_read"].unique()
-        ), 
-        read=config["paired_read_strings"]
+    return expand(rules.cutadapt_pe.output, 
+        filename=list(get_metadata("filename_sans_read", 1)),
+        ext=list(get_metadata("filename_full_ext", 1))
     )
 
 def get_trim_se_output_files(wildcards):
-    return expand(TRIMMED_DIR + "{filename}.fastq.gz", 
-        filename=list(
-            Metadata[Metadata["paired"] == 0]["filename_sans_read"].unique()
-        )
+    return expand(rules.cutadapt_se.output, 
+        filename=list(get_metadata("filename_sans_read", 0)),
+        ext=list(get_metadata("filename_full_ext", 0))
     )
+
 
 def get_trim_log_files(wildcards):
     return expand(LOG_DIR + "trim/{filename}.txt", 
@@ -24,66 +20,51 @@ def get_trim_log_files(wildcards):
         )
     )
 
+
 rule cutadapt_se:
     input:
-        FASTQ_DIR + "{filename}.fastq.gz"
+        lambda wildcards: get_single_fq(wildcards, FASTQ_CURRENT_DIR)
     output:
-        TRIMMED_DIR + "{filename}.fastq.gz"
+        FASTQ_TRIMMED_DIR + "{filename}{ext}"
     params:
         adapters=config['trim']['adapters_single'],
         quality=config['trim']['quality'],
         extra=config['trim']['extra']
-    threads: 4
+    threads: 
+        4
     log:
-        LOG_DIR + "trim/{filename}.txt"
+        TRIM_LOG_OUTDIR + "{filename}{ext}.txt"
     conda:
         CONDA_SHARED_ENV
-    # TODO conda directive doesn't work with run directive
-    run:
-        shell(
-            "cutadapt "
-            "{params.adapters} "
-            "{params.quality} "
-            "{params.extra} "
-            "-j {threads} "
-            "-o {output} "
-            "{input} "
-            "> {log} "
-        )
+    shell:
+        """
+        cutadapt \
+        {params.adapters} \
+        {params.quality} \
+        {params.extra} \
+        -j {threads} \
+        -o {output} \
+        {input} \
+        > {log} "
+        """
 
 rule cutadapt_pe:
     input:
-        expand(FASTQ_DIR + "{{filename}}{read}" + ".fastq.gz", 
-            read=config["paired_read_strings"]
-        )
+        lambda wildcards: get_paired_fq(wildcards, FASTQ_CURRENT_DIR)
     output:
-        expand(TRIMMED_DIR + "{{filename}}{read}" + ".fastq.gz", 
+        expand(FASTQ_TRIMMED_DIR + "{{filename}}{read}{{ext}}", 
             read=config["paired_read_strings"]
         )
     params:
         adapters=config['trim']['adapters_paired'],
         quality=config['trim']['quality'],
         extra=config['trim']['extra']
-    threads: 4
     log:
-        LOG_DIR + "trim/{filename}.txt"
-    # TODO conda directive doesn't work with run directive
+        TRIM_LOG_OUTDIR + "{filename}{ext}.txt"
+    threads: 
+        4
     conda:
         CONDA_SHARED_ENV
-    run:
-        i1 = input[0]
-        i2 = input[1]
-        o1 = output[0]
-        o2 = output[1]
-        shell(
-            "cutadapt "
-            "{params.adapters} "
-            "{params.quality} "
-            "{params.extra} "
-            "-j {threads} "
-            "-o {o1} "
-            "-p {o2} "
-            "{i1} "
-            "{i2} "
-            "> {log} "
-        )
+    script:
+        "../scripts/cutadapt_pe_wrapper.py"
+

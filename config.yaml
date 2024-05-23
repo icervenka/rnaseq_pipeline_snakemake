@@ -41,10 +41,6 @@ trim:
   # one of 'fastp', 'cutadapt' or 'trimmomatic'. If nothing is specified, 
   # trimming will be skipped
   trimmer: ""
-  # see https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
-  adapters_single: ""
-  adapters_paired: ""
-  # see https://cutadapt.readthedocs.io/en/stable/guide.html#quality-trimming
   quality: ""
   extra: ""
 
