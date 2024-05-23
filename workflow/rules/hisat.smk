@@ -23,7 +23,7 @@ rule align:
         splicesite=opj(ALIGN_OUTDIR, "{sample}", "splice_sites.txt"),  
     params:
         metadata=Metadata,
-        fastq_dir=FASTQ_INPUT_DIR,
+        fastq_dir=FASTQ_CURRENT_DIR,
         index=config["index"],
         extra=has_extra_config(config["align"]["extra"], config_extra["align"]),
     log:
@@ -44,7 +44,8 @@ rule align_out:
         opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_NAME + ".bam"),
     params:
         compression=9,
-    threads: config["threads"]
+    threads: 
+        config["threads"]
     conda:
         CONDA_ALIGN_GENERAL_ENV
     shell:

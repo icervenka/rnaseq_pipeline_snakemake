@@ -22,7 +22,7 @@ rule align:
         bam=opj(ALIGN_OUTDIR, "{sample}/", KALLISTO_BAM_NAME + ".bam"),
     params:
         metadata=Metadata,
-        fastq_dir=FASTQ_INPUT_DIR,
+        fastq_dir=FASTQ_CURRENT_DIR,
         index=config["index"],
         outdir=opj(ALIGN_OUTDIR, "{sample}"),
         fragment_info=config_extra["align"]["kallisto_single_fragment_info"],

@@ -22,25 +22,11 @@ def get_paired_end_sra(wildcards):
     return SRA_DIR + m
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
-#│ ===== Functions for getting names of fastq files for trimming =====         │
-#└─────────────────────────────────────────────────────────────────────────────┘
-# def get_single_end_cutadapt(wildcards):
-#     m = Metadata[Metadata.paired == 0]
-#     m = m.query('filename_sans_read == @wildcards.filename')
-#     return list(FASTQ_ALIGN_DIR + m.fq)
-
-# def get_paired_end_cutadapt(wildcards):
-#     m = Metadata[Metadata.paired == 1]
-#     m = m.query('filename_sans_read == @wildcards.filename')
-#     print(m)
-#     return list(FASTQ_ALIGN_DIR + m.fq)
-
-#┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for retrieving fastq file names =====                       │
 #└─────────────────────────────────────────────────────────────────────────────┘
 def get_fq(wildcards):
     m = Metadata.query('sample == @wildcards.sample').dropna()
-    return FASTQ_ALIGN_DIR + m.fq
+    return FASTQ_CURRENT_DIR + m.fq
 
 
 def get_single_fq(wildcards, fastq_dir):
@@ -58,7 +44,6 @@ def arrange_fq_for_align(samples, metadata, fastq_dir):
     input_arr = fq_meta.groupby(['read'])['fq_full'].apply(lambda x: x.to_list())
     return input_arr
 
-
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for acessing metadata columns =====                         │
 #└─────────────────────────────────────────────────────────────────────────────┘
@@ -66,20 +51,6 @@ def get_metadata(what, paired = 1):
     if paired != 1 and paired != 0:
         raise ValueError("Value for 'paired' argument can only be 0 or 1.")
     return Metadata[Metadata["paired"] == paired][what].unique()
-
-#┌─────────────────────────────────────────────────────────────────────────────┐
-#│ ===== Functions for retrieving bam file names =====                       │
-#└─────────────────────────────────────────────────────────────────────────────┘
-# def get_bam(wildcards):
-#     m = glob_wildcards(ALIGN_OUTDIR +"{wildcards.sample}/" + COMMON_BAM_NAME + ".bam")
-#     print(m)
-#     return m
-
-# def get_salmon_quant(wildcards):
-#     pass
-
-# def get_kallisto_quant(wildcards):
-#     pass
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for parsing parameters from various tools =====             │

@@ -1,4 +1,5 @@
  # from snakemake.io import glob_wildcards, expand
+# TODO if skip counting is also used, the rule gives an error
 
 def get_align_output_files(wildcards):
     return expand(rules.align_out.output, sample=Samples)

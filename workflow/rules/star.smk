@@ -11,7 +11,7 @@ rule align:
         bam=opj(ALIGN_OUTDIR, "{sample}", STAR_BAM_NAME + ".bam")
     params:
         metadata=Metadata,
-        fastq_dir=FASTQ_INPUT_DIR,
+        fastq_dir=FASTQ_CURRENT_DIR,
         index=config["index"],
         extra=has_extra_config(config["align"]["extra"], config_extra["align"])
     log:

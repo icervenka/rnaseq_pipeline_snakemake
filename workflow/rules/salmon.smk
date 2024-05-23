@@ -22,7 +22,7 @@ rule align:
     params:
         index=config["index"],
         metadata=Metadata,
-        fastq_dir=FASTQ_INPUT_DIR,
+        fastq_dir=FASTQ_CURRENT_DIR,
         outdir=opj(ALIGN_OUTDIR, "{sample}"),
         fragment_info=config_extra["align"]["salmon_single_fragment_info"],
         extra=has_extra_config(config["align"]["extra"], config_extra["align"]),
