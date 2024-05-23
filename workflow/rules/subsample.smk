@@ -18,16 +18,17 @@ def get_subsample_se_output_files(wildcards):
 def get_subsample_log_files(wildcards):
     return []
 
+
 rule subsample_se:
     input:
-        lambda wildcards: get_single_fq(wildcards, FASTQ_DIR)
+        lambda wildcards: get_single_fq(wildcards, FASTQ_CURRENT_DIR)
     output:
         FASTQ_PREPROCESSED_DIR + "{filename}{ext}"
     params:
         proportion=get_subsample_proportion(config['preprocess']['subsample']),
         extra=config['preprocess']['extra']
     log:
-        LOG_DIR + "preprocess/" + "{filename}{ext}.log"
+        SUBSAMPLE_LOG_OUTDIR + "{filename}{ext}.log"
     threads: 
         1
     conda:
@@ -37,7 +38,7 @@ rule subsample_se:
 
 rule subsample_pe:
     input:
-        lambda wildcards: get_paired_fq(wildcards, FASTQ_DIR)
+        lambda wildcards: get_paired_fq(wildcards, FASTQ_CURRENT_DIR)
     output:
         expand(FASTQ_PREPROCESSED_DIR + "{{filename}}{read}{{ext}}", 
             read=config["paired_read_strings"]
@@ -46,10 +47,11 @@ rule subsample_pe:
         proportion=get_subsample_proportion(config['preprocess']['subsample']),
         extra=config['preprocess']['extra']
     log:
-        LOG_DIR + "preprocess/" + "{filename}{ext}.log"
+        SUBSAMPLE_LOG_OUTDIR + "{filename}{ext}.log"
     threads: 
         1
     conda:
         CONDA_SHARED_ENV
     script:
         "../scripts/subsample_pe_wrapper.py"
+

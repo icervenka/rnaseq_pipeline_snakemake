@@ -1,3 +1,7 @@
+# TODO maybe move the new folder constants somewhere else
+DIFFEXP_ANALYSIS = "{}_{}/".format(
+    pipelines[config['pipeline']][-1], config["diffexp"]["outdir"])
+
 OUTDIR = DIFFEXP_OUTDIR + DIFFEXP_ANALYSIS
 DEGFILES_OUTDIR = OUTDIR + "degfiles/"
 REPORTS_OUTDIR = OUTDIR + "reports/"
@@ -44,7 +48,7 @@ rule diffexp_results:
     script:
         "../scripts/deseq_results.R"
 
-# solve the issue with diffexp csv files
+# TODO solve the issue with diffexp csv files
 # currently they are created as s side effect
 rule diffexp_save:
     input:
