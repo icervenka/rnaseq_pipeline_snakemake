@@ -15,7 +15,7 @@ if is_set_subsample(config['preprocess']['subsample']):
     # change the current fastq dir for further processing
     FASTQ_CURRENT_DIR = FASTQ_PREPROCESSED_DIR
 else:
-    pass
+    include: "skip_subsample.smk"
 
 # load trimming rules if trimmer is specified
 if is_set_trimmer(config['trim']['trimmer']):
@@ -23,4 +23,4 @@ if is_set_trimmer(config['trim']['trimmer']):
     # change the current fastq dir for further processing
     FASTQ_CURRENT_DIR = FASTQ_TRIMMED_DIR
 else:
-    pass
+    include: "skip_trim.smk"
