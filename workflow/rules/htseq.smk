@@ -11,7 +11,7 @@ rule count:
         bam=rules.align_out.output,
         gtf=config["gtf"]
     output:
-        COUNT_OUTDIR + "{sample}/" + HTSEQ_COUNT_NAME
+        opj(COUNT_OUTDIR, "{sample}", HTSEQ_COUNT_NAME)
     params:
         standard=htseq_params,
         extra=has_extra_config(config["count"]["extra"], config_extra["count"])
@@ -37,7 +37,7 @@ rule move_count_log:
     input:
         rules.count.output
     output:
-        COUNT_LOG_OUTDIR + "{sample}/" + HTSEQ_LOG_FILES[0]
+        opj(COUNT_LOG_OUTDIR, "{sample}", HTSEQ_LOG_FILES[0])
     params:
         kind="log"
     conda:
@@ -50,7 +50,7 @@ rule counts_to_matrix:
     input:
         expand(rules.count.output, sample=Samples)
     output:
-        COUNT_OUTDIR + COMMON_COUNT_NAME
+        opj(COUNT_OUTDIR, COMMON_COUNT_NAME)
     params:
         kind="count"
     conda:
