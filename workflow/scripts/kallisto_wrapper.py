@@ -1,3 +1,5 @@
+"""Wrapper for kallisto alignment."""
+
 from script_functions import arrange_fq_for_align
 from snakemake.shell import shell
 

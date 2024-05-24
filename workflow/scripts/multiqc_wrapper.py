@@ -1,3 +1,5 @@
+"""Wrapper for MultiQC."""
+
 import os
 from snakemake.shell import shell
 

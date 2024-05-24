@@ -1,3 +1,5 @@
+"""Wrapper for sra download."""
+
 from snakemake.shell import shell
 
 inp = snakemake.params[0][0]
