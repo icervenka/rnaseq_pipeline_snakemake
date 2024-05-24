@@ -41,8 +41,8 @@ STRINGTIE_GTF_FILE = "transcripts.gtf"
 STRINGTIE_COUNT_NAME = "gene_counts.txt"
 STRINGTIE_MERGED_FILE = "merged.gtf"
 STRINGTIE_TPM_FILE = "stringtie_tpm.txt"
-STRINGTIE_FPKM_FILE = "stringtie_tpm.txt"
-STRINGTIE_COMBINED_FILE = "stringtie_tpm.txt"
+STRINGTIE_FPKM_FILE = "stringtie_fpkm.txt"
+STRINGTIE_COMBINED_FILE = "stringtie_samples_combined.txt"
 BALLGOWN_INPUT_FILES = ["e_data.ctab", "i_data.ctab", "t_data.ctab", "e2t.ctab", "i2t.ctab"]
 
 ## Cuffdiff

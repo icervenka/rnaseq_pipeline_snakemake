@@ -21,9 +21,9 @@ rule count:
         bam=rules.align_out.output,
         gtf=config["gtf"]
     output:
-        counts=COUNT_OUTDIR + "{sample}/" + STRINGTIE_COUNT_NAME,
-        gtf=COUNT_OUTDIR + "{sample}/" + STRINGTIE_GTF_FILE,
-        ballgown=expand(COUNT_OUTDIR + "{{sample}}/{file}", file=BALLGOWN_INPUT_FILES)
+        counts=opj(COUNT_OUTDIR, "{sample}", STRINGTIE_COUNT_NAME),
+        gtf=opj(COUNT_OUTDIR, "{sample}", STRINGTIE_GTF_FILE),
+        ballgown=expand(opj(COUNT_OUTDIR, "{{sample}}", "{file}"), file=BALLGOWN_INPUT_FILES)
     params:
         #stranded=stringtie_stranded,
         #standard=stringtie_params,
@@ -48,6 +48,6 @@ rule count:
 			# "{params.standard} "
 
 
-include "stringtie_process_counts.smk"
+include: "stringtie_process_counts.smk"
 
 
