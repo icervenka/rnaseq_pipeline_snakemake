@@ -113,23 +113,6 @@ include: "workflow/rules/preprocess.smk"
 # run fastqc quality control - load always
 include: "workflow/rules/fastqc.smk"
 
-# # check whether to load trimming rule and set the fastq input dir for alignment
-# # accordingly - load conditionally
-# # TODO maybe simplify the condition for loading the rule
-# if (
-#         config['trim']['adapters_single'] != "" or 
-#         config['trim']['adapters_single'] != "" or 
-#         config['trim']['quality'] != "" or 
-#         config['trim']['extra'] != ""
-#     ):
-#     include: "workflow/rules/trim.smk"
-#     FASTQ_ALIGN_DIR = TRIMMED_DIR
-#     workflow_trimming = "yes"
-# else:
-#     include: "workflow/rules/skip_trim.smk"
-#     FASTQ_ALIGN_DIR = FASTQ_DIR
-#     workflow_trimming = "no"
-
 # TODO add the ability to run multiple diffexp configurations at once
 # load pipline rules for selected pipeline from config.yaml 
 for rule in pipelines[config['pipeline']]:
@@ -164,7 +147,7 @@ onstart:
     print("Pipeline steps:")
     for rule in pipelines[config['pipeline']]:
         print(" - " + rule)
-    print("Trimming: " + workflow_trimming)
+    print("Trimming: Using " + config['trim']['trimmer'])
     print("Coverage calculation: " + config['coverage']['calculate'])
     print("Creating result archive: " + config['result_archive'])
     
