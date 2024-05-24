@@ -1,38 +1,48 @@
 def get_count_output_files(wildcards):
-    return expand(COUNT_OUTDIR + "{sample}/transcripts.gtf", sample=Samples) +
-        expand(COUNT_OUTDIR + "{sample}/gene_counts.gtf", sample=Samples) +
-        expand(COUNT_OUTDIR + "{sample}/{ballgown}.ctab", sample=Samples,
-            ballgown=BALLGOWN_INPUT_FILES) +
-        [COUNT_OUTDIR + "merged.gtf",
-            COUNT_OUTDIR + "counts.tsv",
-            COUNT_OUTDIR + "fpkm.tsv",
-            COUNT_OUTDIR + "samples_combined.tsv"]
+    return (
+        [#rules.counts_to_matrix.output.counts_gene,
+        #rules.counts_to_matrix.output.counts_transcript, 
+        rules.gather_data.output.tpm,
+        rules.gather_data.output.fpkm,
+        rules.gather_data.output.samples_combined,
+        rules.merge.output] +
+        expand(rules.count.output.counts, sample=Samples) + 
+        expand(rules.count.output.gtf, sample=Samples) + 
+        expand(rules.count.output.ballgown, sample=Samples)
+    )
+
 
 def get_count_log_files(wildcards):
     return []
 
+
 rule assemble_transcripts:
     input:
         bam=rules.align.output.bam,
+        gtf=config['gtf']
     output:
-        COUNT_OUTDIR + "{sample}/transcripts.gtf"
+        gtf=COUNT_OUTDIR + "{sample}/" + STRINGTIE_GTF_FILE,
 	params:
-		stranded=stringtie_stranded,
-        extra=config_extra['count']['stringtie_assemble_extra']
+        #stranded=stringtie_stranded,
+        #standard=stringtie_params,
+        extra=has_extra_config(config["count"]["extra"], config_extra["count"])
     threads:
         config['threads']
-    run:
-        shell(
-            "stringtie "
-            "{params.stranded} "
-			"{params.extra} "
-            "-p {threads} "
-            "-l {wildcards.sample} "
-            "-o {output.gtf} "
-            "{input.bam} "
-        )
+    conda:
+        CONDA_COUNT_GENERAL_ENV
+    shell:
+        """
+        stringtie \
+        -p {threads} \
+        -l {wildcards.sample} \
+        -o {output.gtf} \
+        {input.bam}
+        """
 
-# TODO merge requires strandedness
+        # {params.stranded} \
+        # {params.extra} \"
+
+
 rule merge:
     input:
 		samples=expand(rules.assemble_transcripts.output, sample=Samples)
@@ -54,7 +64,7 @@ rule merge:
             "{input.samples} "
         )
 
-# TODO count requires strandedness
+
 rule count:
     input:
 		bam=rules.align.output.bam,
