@@ -16,14 +16,14 @@ rule count:
         bam=rules.align_out.output,
         gtf=config["gtf"],
     output:
-        counts=COUNT_OUTDIR + "{sample}/" + "gene_counts.txt",
-        summary=COUNT_OUTDIR + "{sample}/" + "gene_counts.txt.summary",
+        counts=COUNT_OUTDIR + "{sample}/" + FEATURECOUNTS_COUNT_NAME,
+        summary=COUNT_OUTDIR + "{sample}/" + FEATURECOUNTS_SUMMARY_NAME
     params:
         # stranded="A"
         standard=featurecounts_params,
         extra=has_extra_config(config["count"]["extra"], config_extra["count"])
     log:
-        COUNT_LOG_OUTDIR + "{sample}/" + "featurecounts_log.txt", 
+        COUNT_LOG_OUTDIR + "{sample}/" + FEATURECOUNTS_LOG_FILES[0], 
     threads: 
         config["threads"]
     conda:
@@ -36,7 +36,7 @@ rule counts_to_matrix:
     input:
         expand(rules.count.output.counts, sample=Samples),
     output:
-        COUNT_OUTDIR + "counts.tsv",
+        COUNT_OUTDIR + COMMON_COUNT_NAME,
     shell:
         "touch {output}"
 
@@ -46,6 +46,6 @@ rule move_count_summary:
     input:
         rules.count.output.summary,
     output:
-        COUNT_LOG_OUTDIR + "{sample}/" + "gene_counts.txt.summary"
+        COUNT_LOG_OUTDIR + "{sample}/" + FEATURECOUNTS_SUMMARY_NAME
     shell:
         "mv {input} {output}"
