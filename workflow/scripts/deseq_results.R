@@ -1,12 +1,10 @@
 #!/usr/bin/Rscript
-suppressMessages(library(DESeq2))
-suppressMessages(library(purrr))
-suppressMessages(library(dplyr))
-
+suppressMessages(library(magrittr))
 source("workflow/scripts/script_functions.R", local = TRUE)
 
 # TODO add parallelization to lfcshrink
 dds <- readRDS(snakemake@input[["dds"]])
+outdds <- snakemake@output[["outdds"]]
 lfc_shrink <- snakemake@params[["lfc_shrink"]]
 fdr <- snakemake@params[["fdr"]]
 contrasts <- snakemake@params[["contrasts"]]
@@ -56,4 +54,4 @@ result_array <- purrr::map(selected_contrasts, function(x) {
 })
 
 names(result_array) <- contrast_names
-saveRDS(result_array, file = snakemake@output[[1]])
+saveRDS(result_array, file = outdds)
