@@ -1,32 +1,19 @@
 #!/usr/bin/Rscript
-
-suppressMessages(library(tibble))
-suppressMessages(library(DESeq2))
-suppressMessages(library(clusterProfiler))
-suppressMessages(library(dplyr))
-
+suppressMessages(library(magrittr))
 source("workflow/scripts/script_functions.R", local = TRUE)
 
-sp_arr <- get_species_info(snakemake@params[["species"]])
-outdir <- snakemake@params[["outdir"]]
-ids_in <- snakemake@params[["gene_ids_in"]]
 result_array <- readRDS(snakemake@input[["result_array"]])
 dds <- readRDS(snakemake@input[["dds"]])
+outdir <- snakemake@params[["outdir"]]
+result_array_ids <- snakemake@output[["result_array_ids"]]
+sample_expression <- snakemake@output[["sample_expression"]]
+sp_arr <- get_species_info(snakemake@params[["species"]])
+ids_in <- snakemake@params[["gene_ids_in"]]
 
-# TODO validate translate id function
-# create a dataframe with IDs
-ids <- suppressMessages(
-  clusterProfiler::bitr(
-    rownames(dds),
-    fromType = ids_in,
-    toType = c("ENTREZID", "ENSEMBL", "SYMBOL", "GENENAME"),
-    OrgDb = sp_arr["orgdb"]
-  )
-)
-
+# create a dataframes with IDs
 result_array <- lapply(result_array, function(x) {
   x <- tibble::rownames_to_column(data.frame(x), ids_in)
-  x <- merge(ids, x, by = ids_in)
+  x <- add_idcolnames(x, sp_arr)
   x <- x[order(x$padj), ]
   return(x)
 })
@@ -46,7 +33,7 @@ all <- lapply(names(result_array), function(x) {
 # export significant hits
 filtered <- lapply(names(result_array), function(x) {
   write.table(
-    result_array[[x]] %>% filter(padj < 0.05),
+    result_array[[x]] %>% dplyr::filter(padj < 0.05),
     file = paste0(outdir, x, "_diffexp.txt"),
     row.names = FALSE,
     quote = FALSE,
@@ -65,11 +52,13 @@ filtered <- lapply(names(result_array), function(x) {
 # write.table(fpkm, file=snakemake@output[["fpkm"]], quote = F, row.names = F, sep = "\t")
 
 # export deseq corrected sample expression values, merged with ids
-sample_expression <- data.frame(counts(dds, normalized = TRUE),
-  row.names = rownames(counts(dds))
+sample_expression <- data.frame(DESeq2::counts(dds, normalized = TRUE),
+  row.names = rownames(DESeq2::counts(dds))
 )
-sample_expression <- rownames_to_column(sample_expression, "gene")
-sample_expression <- merge(ids, sample_expression, by.x = ids_in, by.y = "gene")
+
+sample_expression <- tibble::rownames_to_column(sample_expression, ids_in) %>%
+  add_idcolnames(sp_arr)
+
 write.table(
   sample_expression,
   file = snakemake@output[["sample_expression"]],
@@ -78,4 +67,4 @@ write.table(
   sep = "\t"
 )
 
-saveRDS(result_array, file = snakemake@output[["result_array_ids"]])
+saveRDS(result_array, file = result_array_ids)
