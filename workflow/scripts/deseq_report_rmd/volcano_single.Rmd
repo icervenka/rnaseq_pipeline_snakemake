@@ -1,15 +1,22 @@
 ### Volcano plot
 
 ```{r volcano, echo = F, warning = F, out.width="100%"}
-b = result_ids %>% 
-  mutate(significant = case_when(padj < fdr ~ "yes", TRUE ~ "no"))
+b <- result_ids %>%
+  mutate(significant = dplyr::case_when(padj < fdr ~ "yes", TRUE ~ "no"))
 
-p = b %>%
-  ggplot(aes(x = log2FoldChange, y = -log10(pvalue), color = significant, text = SYMBOL)) +
+p <- b %>%
+  ggplot2::ggplot(
+    aes(
+      x = log2FoldChange,
+      y = -log10(pvalue),
+      color = significant,
+      text = SYMBOL
+    )
+  ) +
   geom_point() +
-  labs(x ="Log 2 Fold Change", y = "-log10(p-value)") + 
-  theme_bw() + 
+  labs(x = "Log 2 Fold Change", y = "-log10(p-value)") +
+  theme_bw() +
   scale_color_manual(values = c("grey80", viridis(1)))
 
-ggplotly(p, tooltip = "text") %>% toWebGL()
+plotly::ggplotly(p, tooltip = "text") %>% toWebGL()
 ```

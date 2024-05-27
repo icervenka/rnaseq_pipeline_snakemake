@@ -1,24 +1,28 @@
 ### Diferentially expressed genes
 
 ```{r, echo = F, warning = F}
-show_table = result_ids %>% 
+show_table <- result_ids %>%
   dplyr::filter(padj <= fdr) %>%
-  dplyr::select(ENSEMBL, ENTREZID, SYMBOL, baseMean, log2FoldChange, pvalue, padj)
+  dplyr::select(
+    ENSEMBL, ENTREZID, SYMBOL, baseMean, log2FoldChange, pvalue, padj
+  )
 
 DT::datatable(show_table,
-              rownames = F,
-              filter = "top",
-              extensions = c("Buttons"),
-              style="bootstrap",
-              class="compact  stripe",
-              width="100%",
-              options = list(
-                dom = "Blrtip",  # specify content (search box, etc)
-                deferRender = TRUE,
-                buttons = list(
-                  I("colvis"),
-                  "csv",  # download as .csv
-                  "excel"  # download as .xlsx
-                ))) %>%
-  formatRound(columns = c(4, 5, 6, 7), digits=4)
+  rownames = F,
+  filter = "top",
+  extensions = c("Buttons"),
+  style = "bootstrap",
+  class = "compact  stripe",
+  width = "100%",
+  options = list(
+    dom = "Blrtip", # specify content (search box, etc)
+    deferRender = TRUE,
+    buttons = list(
+      I("colvis"),
+      "csv", # download as .csv
+      "excel" # download as .xlsx
+    )
+  )
+) %>%
+  formatRound(columns = c(4, 5, 6, 7), digits = 4)
 ```

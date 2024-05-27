@@ -1,24 +1,25 @@
 ### Sample-to-sample distances
 
 ```{r sts, fig.width=10, fig.height=6, echo=FALSE}
-# sample-to-sample distances
-sampleDists <- dist(t(assay(rld)))
-sampleDistMatrix <- as.matrix(sampleDists)
-rownames(sampleDistMatrix) <- rownames(colData(rld))
-colnames(sampleDistMatrix) <- rownames(colData(rld))
 
-annot_df = colData(dds) %>% 
-  as.data.frame %>% 
+sample_dists <- dist(t(assay(rld)))
+sample_dist_matrix <- as.matrix(sample_dists)
+rownames(sample_dist_matrix) <- rownames(colData(rld))
+colnames(sample_dist_matrix) <- rownames(colData(rld))
+
+annot_df <- colData(dds) %>%
+  as.data.frame() %>%
   dplyr::select(matches(annotation_heatmap))
 
-heatmaply(sampleDistMatrix, 
-          xlab = "Samples", 
-          ylab = "Samples", 
-          k_row = NA, 
-          k_col = NA, 
-          seriate = "OLO",
-          plot_method = "plotly", 
-          row_side_colors = annot_df, 
-          col_side_colors = annot_df, 
-          symm = T)
+heatmaply(sample_dist_matrix,
+  xlab = "Samples",
+  ylab = "Samples",
+  k_row = NA,
+  k_col = NA,
+  seriate = "OLO",
+  plot_method = "plotly",
+  row_side_colors = annot_df,
+  col_side_colors = annot_df,
+  symm = TRUE
+)
 ```

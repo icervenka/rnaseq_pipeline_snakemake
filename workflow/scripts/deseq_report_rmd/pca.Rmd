@@ -3,19 +3,18 @@
 ```{r pca, echo=FALSE, fig.width = 10, fig.height = 6, fig.align = "center"}
 # PCA plot
 # TODO change condition to unified name in rld dataset
+pca <- plotPCA(rld, intgroup = pca_groups, returnData = TRUE)
+percent_var <- round(100 * attr(pca, "percent_var"))
+no_groups <- length(pca %>% dplyr::select(group) %>% unique() %>% pull())
 
-pca = plotPCA(rld, intgroup=pca_groups, returnData = TRUE)
-percentVar <- round(100 * attr(pca, "percentVar"))
-no_groups = length(pca %>% dplyr::select(group) %>% unique %>% pull)
-
-p = pca %>%
-      ggplot(aes(x = PC1, y = PC2, color = group, text = name)) +
-      geom_point(size = 4) +
-      xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-      ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
-      theme_bw() + 
-      scale_color_manual(values=viridis(no_groups)) +
-      theme(legend.position = "top")
+p <- pca %>%
+  ggplot(aes(x = PC1, y = PC2, color = group, text = name)) +
+  geom_point(size = 4) +
+  xlab(paste0("PC1: ", percent_var[1], "% variance")) +
+  ylab(paste0("PC2: ", percent_var[2], "% variance")) +
+  theme_bw() +
+  scale_color_manual(values = viridis(no_groups)) +
+  theme(legend.position = "top")
 
 ggplotly(p, tooltip = "text")
 ```

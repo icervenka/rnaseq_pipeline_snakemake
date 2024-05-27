@@ -14,7 +14,7 @@ output:
 Column {data-width=300}
 -------------------------------------
 
-```{r child = 'fc_summary_flex.Rmd', eval = T}
+```{r child = 'fc_summary.Rmd', eval = T}
 ```
 
 ```{r child = 'pca.Rmd', eval = T}

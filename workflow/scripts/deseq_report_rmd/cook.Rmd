@@ -1,14 +1,14 @@
 ### Cook's distances - outlier detection
 
 ```{r cook, echo=FALSE, fig.width = 10}
-p = log10(assays(dds)[["cooks"]]) %>%
+p <- log10(assays(dds)[["cooks"]]) %>%
   as.data.frame() %>%
-  rownames_to_column(var = "gene") %>% 
-  pivot_longer(-gene, names_to = "variable", values_to = "value") %>% 
-    ggplot(aes(x = variable, y = value, fill = variable)) + 
-      geom_boxplot() + 
-      scale_fill_manual(values = viridis(length(colnames(dds)))) + 
-      theme_bw()
+  rownames_to_column(var = "gene") %>%
+  pivot_longer(-gene, names_to = "variable", values_to = "value") %>%
+  ggplot(aes(x = variable, y = value, fill = variable)) +
+  geom_boxplot() +
+  scale_fill_manual(values = viridis(length(colnames(dds)))) +
+  theme_bw()
 
 ggplotly(p)
 ```

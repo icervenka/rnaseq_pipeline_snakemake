@@ -1,51 +1,65 @@
 ### DEG Heatmap
 
 ```{r heatmap_diffexp, echo=FALSE, fig.width=10, fig.height=6}
-
-all_diffexp_genes = map(result_array, function(x) {
+all_diffexp_genes <- map(result_array, function(x) {
   x %>%
-    as.data.frame(stringsAsFactors = F) %>%
-    dplyr::filter(padj <= fdr) %>% 
-    rownames
-  }) %>% 
-  flatten %>% 
-  as.character %>% 
-  unique
+    as.data.frame(stringsAsFactors = FALSE) %>%
+    dplyr::filter(padj <= fdr) %>%
+    rownames()
+}) %>%
+  flatten() %>%
+  as.character() %>%
+  unique()
 
-orderFunc = get_order_func(heatmap_mode)
-select = order(orderFunc(counts(dds, normalized=TRUE)[all_diffexp_genes, ]), decreasing=TRUE)
+order_func <- get_order_func(heatmap_mode)
+select <- order(
+  order_func(
+    counts(dds, normalized = TRUE)[all_diffexp_genes, ]
+  ),
+  decreasing = TRUE
+)
 
 # filter top_n genes
-select = select[1:heatmap_n_genes]
+select <- select[1:heatmap_n_genes]
 
 # replace original gene ids with gene symbols to make it more readable
-exp_mat = assay(rld)[all_diffexp_genes, ][select, ] %>%
-  as_tibble(rownames = type_in) %>% 
-  left_join(translate_gene_ids(.[[type_in]], sp_info = get_species_info(species), from_type = type_in, to_type = "SYMBOL", drop = F)) %>%
+exp_mat <- assay(rld)[all_diffexp_genes, ][select, ] %>%
+  as_tibble(rownames = type_in) %>%
+  left_join(
+    translate_gene_ids(
+      .[[type_in]],
+      sp_info = get_species_info(species),
+      from_type = type_in,
+      to_type = "SYMBOL",
+      drop = FALSE
+    )
+  ) %>%
   dplyr::select(-matches(type_in)) %>%
-  dplyr::distinct(SYMBOL, .keep_all = T) %>%
+  dplyr::distinct(SYMBOL, .keep_all = TRUE) %>%
   tidyr::drop_na() %>%
   column_to_rownames(var = "SYMBOL") %>%
-  as.matrix
+  as.matrix()
 
-annot_df = colData(dds) %>% as.data.frame %>% dplyr::select(matches(annotation_heatmap))
+annot_df <- colData(dds) %>%
+  as.data.frame() %>%
+  dplyr::select(matches(annotation_heatmap))
 
-if(heatmap_n_genes < 50) {
-  show_rownames = TRUE
+if (heatmap_n_genes < 50) {
+  show_rownames <- TRUE
 } else {
-  show_rownames = FALSE
+  show_rownames <- FALSE
 }
 
-heatmaply(exp_mat, 
-          colors = "RdYlBu", 
-          scale = "row", 
-          xlab = "Samples", 
-          ylab = "Genes", 
-          Colv = F,
-          k_row = NA, 
-          seriate = "mean", 
-          plot_method = "plotly", 
-          col_side_colors = annot_df, 
-          showticklabels = c(TRUE, show_rownames))
-
+heatmaply(exp_mat,
+  colors = "RdYlBu",
+  scale = "row",
+  xlab = "Samples",
+  ylab = "Genes",
+  Colv = F,
+  k_row = NA,
+  seriate = "mean",
+  plot_method = "plotly",
+  col_side_colors = annot_df,
+  showticklabels = c(TRUE, show_rownames)
+)
 ```

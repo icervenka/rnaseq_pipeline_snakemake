@@ -1,25 +1,34 @@
 ### Venn diagram
 
 ```{r venn, fig.height=6, fig.width=8, echo = F}
-suppressMessages(library(ComplexHeatmap))
+# suppressMessages(library(ComplexHeatmap))
 
-df = result_array_ids
-if(length(df) > 1) {
-
+df <- result_array_ids
+if (length(df) > 1) {
   # for subsets select probably ENTREZ instead of ENSEMBL
-  upset_list = map(df, function(x) { x %>% dplyr::filter(padj < fdr) %>% dplyr::select(ENSEMBL) %>% pull})
-  
-  m = make_comb_mat(upset_list)
-  m = m[comb_size(m) > upset_min_group_size]
-  cs = comb_size(m)
-  cd = comb_degree(m)
-  UpSet(m, 
-        comb_order = order(cd, -cs),
-        comb_col = viridis(max(cd)+2)[cd],
-        pt_size = unit(5, "mm"), 
-        lwd = 3,
-        height = unit(length(set_size(m))/1.5, "cm"),
-        top_annotation = upset_top_annotation(m, annotation_name_rot = 90, height = unit(8, "cm")))
+  upset_list <- map(df, function(x) {
+    x %>%
+      dplyr::filter(padj < fdr) %>%
+      dplyr::select(ENSEMBL) %>%
+      pull()
+  })
+
+  m <- ComplexHeatmap::make_comb_mat(upset_list)
+  m <- m[ComplexHeatmap::comb_size(m) > upset_min_group_size]
+  cs <- ComplexHeatmap::comb_size(m)
+  cd <- ComplexHeatmap::comb_degree(m)
+  ComplexHeatmap::UpSet(m,
+    comb_order = order(cd, -cs),
+    comb_col = viridis(max(cd) + 2)[cd],
+    pt_size = unit(5, "mm"),
+    lwd = 3,
+    height = unit(length(set_size(m)) / 1.5, "cm"),
+    top_annotation = ComplexHeatmap::upset_top_annotation(
+      m,
+      annotation_name_rot = 90,
+      height = unit(8, "cm")
+    )
+  )
 }
 ```
 

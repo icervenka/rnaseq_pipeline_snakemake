@@ -1,22 +1,22 @@
 ```{r render_pca_subpages, include = FALSE}
 # Set knitr options to allow duplicate labels (needed for the subpages)
-options(knitr.duplicate.label = 'allow')
+options(knitr.duplicate.label = "allow")
 
 # Create temporary environment which we use for knitting subpages.RMD
 subpage_env <- new.env()
 
 # Create variable which stores all subpages outputs
-out = NULL
+out <- NULL
 
-out = map(1:length(pca2go), function(x) {
-  df = pca2go[[paste0('PC', x)]]
-  
+out <- map(1:length(pca2go), function(x) {
+  df <- pcaExplorer::pca2go[[paste0("PC", x)]]
+
   # Assign filtered data and product group to subpage_env
   assign("pc_no", x, subpage_env)
-  assign("pc_name", paste0('PC', x), subpage_env)
+  assign("pc_name", paste0("PC", x), subpage_env)
   assign("subpage_data", df, subpage_env)
-  
+
   # Knit subpage.RMD using the subpage_env and add result to out vector
-  knitr::knit_child(('pca_subpage.Rmd'), envir = subpage_env)
+  knitr::knit_child(("pca_subpage.Rmd"), envir = subpage_env)
 })
 ```

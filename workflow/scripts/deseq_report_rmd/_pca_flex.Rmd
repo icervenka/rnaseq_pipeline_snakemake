@@ -17,13 +17,13 @@ Column {data-width=200}
 ### Proportion of explained variance
 
 ```{r scree_pev, echo = F, eval = T}
-pcascree(pca_obj, title="", type = "pev") %>% ggplotly
+pcaExplorer::pcascree(pca_obj, title="", type = "pev") %>% plotly::ggplotly
 ```
 
 ### Cumulative proportion of explained variance
 
 ```{r scree_cev, echo = F, eval = T}
-pcascree(pca_obj, title="", type = "cev") %>% ggplotly
+pcaExplorer::pcascree(pca_obj, title="", type = "cev") %>% plotly::ggplotly
 ```
 
 
@@ -34,8 +34,16 @@ Column {data-width=600}
 
 ```{r pca_plots, echo = F, eval = T}
 
-plts = map(combn(1:top_pcas, 2) %>% as.data.frame, function(x) {
-  pcaplot(r, intgroup = group, ntop = pca_ngenes, text_labels = F, pcX = x[1], pcY = x[2]) + theme(legend.position = "none")
+plts = purrr::map(combn(1:top_pcas, 2) %>% as.data.frame, function(x) {
+  pcaExplorer::pcaplot(
+      r, 
+      intgroup = group, 
+      ntop = pca_ngenes, 
+      text_labels = F, 
+      pcX = x[1], 
+      pcY = x[2]
+    ) + 
+    theme(legend.position = "none")
 })
 
 subplot(plts, nrows = 4, titleX = T, titleY = T, margin = .04)
@@ -47,7 +55,12 @@ Column {data-width=200}
 ### Significance of PC correlation with covariates
 
 ```{r pc_heatmap, echo = F, eval = T}
-heatmaply(-log10(pca_corr), Rowv = F, Colv = F, key.title = "-log10(pvalue)\nof correlation")
+heatmaply::heatmaply(
+  -log10(pca_corr), 
+  Rowv = F, 
+  Colv = F, 
+  key.title = "-log10(pvalue)\nof correlation"
+)
 ```
 
 ```{r child = 'render_pca_subpages.Rmd', eval = T}

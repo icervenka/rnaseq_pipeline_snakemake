@@ -6,11 +6,13 @@ Column {data-width=500}
 ### Top/Bottom loadings
 
 ```{r fig.width = 10, eval = T}
-hi_loadings(pca_obj, 
-            topN = top_gene_loadings, 
-            whichpc = pc_no, 
-            annotation = anno_df_orgdb,
-            title = "")
+pcaExplorer::hi_loadings(
+  pca_obj, 
+  topN = top_gene_loadings, 
+  whichpc = pc_no, 
+  # annotation = anno_df_orgdb,
+  title = ""
+)
 ```
 
 Column {data-width=500}
