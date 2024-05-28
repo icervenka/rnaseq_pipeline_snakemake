@@ -1,6 +1,7 @@
 OUTDIR = DIFFEXP_OUTDIR + DIFFEXP_ANALYSIS
 labels_str, files_str = get_cuffdiff_data()
 
+# TODO add cuffnorm
 # TODO switch to conda environment
 rule diffexp:
     input:
