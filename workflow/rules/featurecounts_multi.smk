@@ -1,5 +1,6 @@
 def get_count_output_files(wildcards):
-    return [rules.count.output.counts, rules.counts_to_matrix.output]
+    # return  [rules.count.output.counts] + [rules.counts_to_matrix.output]
+    return  list(rules.counts_to_matrix.output)
 
 
 def get_count_log_files(wildcards):
@@ -22,15 +23,15 @@ rule count:
         bam=expand(rules.align_out.output, sample=Samples),
         gtf=config["gtf"],
     output:
-        counts=opj(COUNT_OUTDIR + FEATURECOUNTS_COUNT_NAME),
-        summary=opj(COUNT_OUTDIR + FEATURECOUNTS_SUMMARY_NAME),
+        counts=opj(COUNT_OUTDIR, FEATURECOUNTS_COUNT_NAME),
+        summary=opj(COUNT_OUTDIR, FEATURECOUNTS_SUMMARY_NAME),
     params:
         metadata=Metadata,
         # stranded="A"
         standard=featurecounts_params,
         extra=has_extra_config(config["count"]["extra"], config_extra["count"]),
     log:
-        opj(COUNT_LOG_OUTDIR + FEATURECOUNTS_LOG_FILES[0]),
+        opj(COUNT_LOG_OUTDIR, FEATURECOUNTS_LOG_FILES[0]),
     threads: 
         config["threads"]
     conda:
@@ -43,7 +44,7 @@ rule counts_to_matrix:
     input:
         rules.count.output.counts,
     output:
-        opj(COUNT_OUTDIR + COMMON_COUNT_NAME)
+        opj(COUNT_OUTDIR, COMMON_COUNT_NAME)
     shell:
         # | awk '{{gsub("bam/","",$0); print}}'
         "cat {input} | head -n -1 | cut -f 1,7- > {output}"
@@ -53,6 +54,6 @@ rule move_count_summary:
     input:
         rules.count.output.summary,
     output:
-        opj(COUNT_LOG_OUTDIR + FEATURECOUNTS_SUMMARY_NAME)
+        opj(COUNT_LOG_OUTDIR, FEATURECOUNTS_SUMMARY_NAME)
     shell:
         "mv {input} {output}"
