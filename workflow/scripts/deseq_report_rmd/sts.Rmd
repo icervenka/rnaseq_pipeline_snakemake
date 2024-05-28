@@ -2,16 +2,16 @@
 
 ```{r sts, fig.width=10, fig.height=6, echo=FALSE}
 
-sample_dists <- dist(t(assay(rld)))
+sample_dists <- dist(t(SummarizedExperiment::assay(rld)))
 sample_dist_matrix <- as.matrix(sample_dists)
-rownames(sample_dist_matrix) <- rownames(colData(rld))
-colnames(sample_dist_matrix) <- rownames(colData(rld))
+rownames(sample_dist_matrix) <- rownames(SummarizedExperiment::colData(rld))
+colnames(sample_dist_matrix) <- rownames(SummarizedExperiment::colData(rld))
 
-annot_df <- colData(dds) %>%
+annot_df <- SummarizedExperiment::colData(dds) %>%
   as.data.frame() %>%
   dplyr::select(matches(annotation_heatmap))
 
-heatmaply(sample_dist_matrix,
+heatmaply::heatmaply(sample_dist_matrix,
   xlab = "Samples",
   ylab = "Samples",
   k_row = NA,

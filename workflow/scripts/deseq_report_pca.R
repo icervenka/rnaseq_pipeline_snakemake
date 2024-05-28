@@ -1,10 +1,12 @@
-suppressMessages(library(rmarkdown))
-suppressMessages(library(pcaExplorer))
-suppressMessages(library(DESeq2))
-suppressMessages(library(plotly))
-suppressMessages(library(heatmaply))
-suppressMessages(library(DT))
-suppressMessages(library(tidyverse))
+# suppressMessages(library(rmarkdown))
+# suppressMessages(library(pcaExplorer))
+# suppressMessages(library(DESeq2))
+# suppressMessages(library(plotly))
+# suppressMessages(library(heatmaply))
+# suppressMessages(library(DT))
+# suppressMessages(library(tidyverse))
+
+suppressMessages(library(magrittr))
 source("workflow/scripts/script_functions.R", local = TRUE)
 
 # snakemake params ----------------------------------------------------------
@@ -23,14 +25,16 @@ sp_info <- get_species_info(species)
 
 # prepare files -------------------------------------------------------------
 r <- DESeq2::rlog(dds, blind = TRUE)
-pca_obj <- prcomp(t(assay(r)), rank. = 16)
+pca_obj <- prcomp(t(SummarizedExperiment::assay(r)), rank. = 16)
 pca_dims <- length(pca_obj$sdev)
-pca_corr <- pcaExplorer::correlatePCs(pca_obj, colData(dds), pcs = 1:pca_dims)
-anno_df_orgdb <- get_annotation_orgdb(
-  dds = dds,
-  orgdb_species = sp_info["orgdb"],
-  idtype = id_type
-)
+pca_corr <- pcaExplorer::correlatePCs(pca_obj, SummarizedExperiment::colData(dds), pcs = 1:pca_dims)
+
+# TODO fixme
+# anno_df_orgdb <- get_annotation_orgdb(
+#   dds = dds,
+#   orgdb_species = sp_info["orgdb"],
+#   idtype = id_type
+# )
 
 pca2go <- pcaExplorer::limmaquickpca2go(
   r,
@@ -45,8 +49,8 @@ knitr_output_options <- list(
   mathjax = NULL
 )
 
-render(paste0("snakemake/scripts/deseq_report_rmd/_pca_flex.Rmd"),
-  output_file = paste0("../../../", snakemake@output[[1]]),
+rmarkdown::render(paste0("workflow/scripts/deseq_report_rmd/_pca_flex.Rmd"),
+  output_file = paste0(CD3UP, snakemake@output[[1]]),
   output_options = knitr_output_options,
   output_format = "all"
 )

@@ -6,11 +6,11 @@
 df <- result_array_ids
 if (length(df) > 1) {
   # for subsets select probably ENTREZ instead of ENSEMBL
-  upset_list <- map(df, function(x) {
+  upset_list <- purrr::map(df, function(x) {
     x %>%
       dplyr::filter(padj < fdr) %>%
       dplyr::select(ENSEMBL) %>%
-      pull()
+      dplyr::pull()
   })
 
   m <- ComplexHeatmap::make_comb_mat(upset_list)
@@ -19,14 +19,14 @@ if (length(df) > 1) {
   cd <- ComplexHeatmap::comb_degree(m)
   ComplexHeatmap::UpSet(m,
     comb_order = order(cd, -cs),
-    comb_col = viridis(max(cd) + 2)[cd],
-    pt_size = unit(5, "mm"),
+    comb_col = viridis::viridis(max(cd) + 2)[cd],
+    pt_size = ggplot2::unit(5, "mm"),
     lwd = 3,
-    height = unit(length(set_size(m)) / 1.5, "cm"),
+    height = ggplot2::unit(length(ComplexHeatmap::set_size(m)) / 1.5, "cm"),
     top_annotation = ComplexHeatmap::upset_top_annotation(
       m,
       annotation_name_rot = 90,
-      height = unit(8, "cm")
+      height = ggplot2::unit(8, "cm")
     )
   )
 }

@@ -1,20 +1,20 @@
 ### DEG Heatmap
 
 ```{r heatmap_diffexp, echo=FALSE, fig.width=10, fig.height=6}
-all_diffexp_genes <- map(result_array, function(x) {
+all_diffexp_genes <- purrr::map(result_array, function(x) {
   x %>%
     as.data.frame(stringsAsFactors = FALSE) %>%
     dplyr::filter(padj <= fdr) %>%
     rownames()
 }) %>%
-  flatten() %>%
+  purrr::flatten() %>%
   as.character() %>%
   unique()
 
 order_func <- get_order_func(heatmap_mode)
 select <- order(
   order_func(
-    counts(dds, normalized = TRUE)[all_diffexp_genes, ]
+    DESeq2::counts(dds, normalized = TRUE)[all_diffexp_genes, ]
   ),
   decreasing = TRUE
 )
@@ -23,24 +23,24 @@ select <- order(
 select <- select[1:heatmap_n_genes]
 
 # replace original gene ids with gene symbols to make it more readable
-exp_mat <- assay(rld)[all_diffexp_genes, ][select, ] %>%
-  as_tibble(rownames = type_in) %>%
-  left_join(
+exp_mat <- SummarizedExperiment::assay(rld)[all_diffexp_genes, ][select, ] %>%
+  tibble::as_tibble(rownames = ids_in) %>%
+  dplyr::left_join(
     translate_gene_ids(
-      .[[type_in]],
+      .[[ids_in]],
       sp_info = get_species_info(species),
-      from_type = type_in,
+      from_type = ids_in,
       to_type = "SYMBOL",
       drop = FALSE
     )
   ) %>%
-  dplyr::select(-matches(type_in)) %>%
+  dplyr::select(-matches(ids_in)) %>%
   dplyr::distinct(SYMBOL, .keep_all = TRUE) %>%
   tidyr::drop_na() %>%
-  column_to_rownames(var = "SYMBOL") %>%
+  tibble::column_to_rownames(var = "SYMBOL") %>%
   as.matrix()
 
-annot_df <- colData(dds) %>%
+annot_df <- SummarizedExperiment::colData(dds) %>%
   as.data.frame() %>%
   dplyr::select(matches(annotation_heatmap))
 
@@ -50,7 +50,7 @@ if (heatmap_n_genes < 50) {
   show_rownames <- FALSE
 }
 
-heatmaply(exp_mat,
+heatmaply::heatmaply(exp_mat,
   colors = "RdYlBu",
   scale = "row",
   xlab = "Samples",

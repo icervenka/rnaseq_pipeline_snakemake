@@ -1,20 +1,7 @@
 #!/usr/bin/Rscript
-suppressMessages(library(DESeq2))
-suppressMessages(library(rmarkdown))
-suppressMessages(library(flexdashboard))
-suppressMessages(library(DT))
-suppressMessages(library(plotly))
-suppressMessages(library(heatmaply))
-suppressMessages(library(gridExtra))
-suppressMessages(library(UpSetR))
-suppressMessages(library(viridis))
-suppressMessages(library(stringr))
-suppressMessages(library(tibble))
-suppressMessages(library(Glimma))
-suppressMessages(library(clusterProfiler))
-suppressMessages(library(tidyverse))
-
+suppressMessages(library(magrittr))
 source("workflow/scripts/script_functions.R", local = TRUE)
+
 rmarkdown::find_pandoc(dir = snakemake@params[["pandoc_path"]])
 
 # snakemake parameters
@@ -31,11 +18,11 @@ annotation_sts <- snakemake@params[["annotation_sts"]]
 upset_maxgroups <- snakemake@params[["upset_maxgroups"]]
 upset_min_group_size <- snakemake@params[["upset_min_group_size"]]
 species <- snakemake@params[["species"]]
-type_in <- snakemake@params[["gene_ids_in"]]
+ids_in <- snakemake@params[["gene_ids_in"]]
 group <- snakemake@params[["mdplot_group"]]
 
 dds <- readRDS(snakemake@input[[1]])
-rld <- DESeq2::rlog(dds, blind = F)
+rld <- DESeq2::rlog(dds, blind = FALSE)
 result_array <- readRDS(snakemake@input[[2]])
 result_array_ids <- readRDS(snakemake@input[[3]])
 
@@ -57,58 +44,58 @@ rmarkdown::render(
   output_format = "all"
 )
 
-# possibly move to separate file
-# Glimma MDS plot
-Glimma::glMDSPlot(dds,
-  path = snakemake@params[["outdir"]],
-  folder = "",
-  html = "mds-plot",
-  launch = FALSE
-)
+# # possibly move to separate file
+# # Glimma MDS plot
+# Glimma::glMDSPlot(dds,
+#   path = snakemake@params[["outdir"]],
+#   folder = "",
+#   html = "mds-plot",
+#   launch = FALSE
+# )
 
-# possibly move to separate file
-# Glimma Volcano-Expression XY plots
-no_contrasts <- length(result_array)
-walk(1:no_contrasts, function(x) {
-  lfc_res <- result_array[[x]]
-  contrast <- names(result_array)[x]
+# # possibly move to separate file
+# # Glimma Volcano-Expression XY plots
+# no_contrasts <- length(result_array)
+# purrr::walk(1:no_contrasts, function(x) {
+#   lfc_res <- result_array[[x]]
+#   contrast <- names(result_array)[x]
 
-  lfc_res <- lfc_res[complete.cases(lfc_res), ]
+#   lfc_res <- lfc_res[complete.cases(lfc_res), ]
 
-  counts <- counts(dds, normalized = TRUE)
-  counts <- counts[rownames(counts) %in% rownames(lfc_res), ]
-  counts <- counts[match(rownames(lfc_res), rownames(counts)), ]
+#   counts <- counts(dds, normalized = TRUE)
+#   counts <- counts[rownames(counts) %in% rownames(lfc_res), ]
+#   counts <- counts[match(rownames(lfc_res), rownames(counts)), ]
 
-  annotation <- translate_gene_ids(rownames(lfc_res),
-    get_species_info(species),
-    from_type = type_in,
-    drop = FALSE
-  )
-  annotation <- annotation[match(rownames(lfc_res), annotation[[type_in]]), ]
+#   annotation <- translate_gene_ids(rownames(lfc_res),
+#     get_species_info(species),
+#     from_type = type_in,
+#     drop = FALSE
+#   )
+#   annotation <- annotation[match(rownames(lfc_res), annotation[[type_in]]), ]
 
-  status <- as.numeric(lfc_res$padj < fdr)
-  status <- status * sign(lfc_res$log2FoldChange)
+#   status <- as.numeric(lfc_res$padj < fdr)
+#   status <- status * sign(lfc_res$log2FoldChange)
 
-  Glimma::glXYPlot(
-    x = lfc_res$log2FoldChange,
-    # takes care of pvalues being 0 and transformed to Inf
-    y = -log10(lfc_res$pvalue + .Machine$double.xmin),
-    xlab = "log2FoldChange",
-    ylab = "-log10(pvalue)",
-    status = status,
-    counts = counts,
-    anno = data.frame(
-      GeneID = annotation$ENSEMBL,
-      Symbol = annotation$SYMBOL,
-      Name = annotation$GENENAME
-    ),
-    groups = dds[[group]],
-    samples = dds[["sample"]],
-    main = contrast,
-    side.main = "Symbol",
-    path = snakemake@params[["outdir"]],
-    folder = "",
-    html = paste0(contrast, "_expression"),
-    launch = FALSE
-  )
-})
+#   Glimma::glXYPlot(
+#     x = lfc_res$log2FoldChange,
+#     # takes care of pvalues being 0 and transformed to Inf
+#     y = -log10(lfc_res$pvalue + .Machine$double.xmin),
+#     xlab = "log2FoldChange",
+#     ylab = "-log10(pvalue)",
+#     status = status,
+#     counts = counts,
+#     anno = data.frame(
+#       GeneID = annotation$ENSEMBL,
+#       Symbol = annotation$SYMBOL,
+#       Name = annotation$GENENAME
+#     ),
+#     groups = dds[[group]],
+#     samples = dds[["sample"]],
+#     main = contrast,
+#     side.main = "Symbol",
+#     path = snakemake@params[["outdir"]],
+#     folder = "",
+#     html = paste0(contrast, "_expression"),
+#     launch = FALSE
+#   )
+# })

@@ -3,24 +3,24 @@
 ```{r fc2, echo=FALSE, warning=F, out.width="100%"}
 # plot log fold change vs normalized counts
 result_ids <- result_ids %>%
-  mutate(significant = case_when(padj < fdr ~ "yes", TRUE ~ "no"))
+  dplyr::mutate(significant = dplyr::case_when(padj < fdr ~ "yes", TRUE ~ "no"))
 
-p <- ggplot(
+p <- ggplot2::ggplot(
   result_ids,
-  aes(
+  ggplot2::aes(
     x = log2(baseMean),
     y = log2FoldChange,
     color = significant,
     text = SYMBOL
   )
 ) +
-  geom_point(size = 0.7) +
-  xlab("Log mean expression value") +
-  ylab("Log 2 Fold Change") +
-  coord_cartesian(ylim = c(-5, 5)) +
-  theme_bw() +
-  scale_color_manual(values = c("grey80", viridis(1))) +
-  theme(plot.title = element_text(size = 16))
+  ggplot2::geom_point(size = 0.7) +
+  ggplot2::xlab("Log mean expression value") +
+  ggplot2::ylab("Log 2 Fold Change") +
+  ggplot2::coord_cartesian(ylim = c(-5, 5)) +
+  ggplot2::theme_bw() +
+  ggplot2::scale_color_manual(values = c("grey80", viridis::viridis(1))) +
+  ggplot2::theme(plot.title = ggplot2::element_text(size = 16))
 
-ggplotly(p, tooltip = "text") %>% toWebGL()
+plotly::ggplotly(p, tooltip = "text") %>% plotly::toWebGL()
 ```

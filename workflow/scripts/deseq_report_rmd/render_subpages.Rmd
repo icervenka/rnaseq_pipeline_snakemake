@@ -8,9 +8,9 @@ subpage_env <- new.env()
 # Create variable which stores all subpages outputs
 out <- NULL
 
-out <- map(names(result_array_ids), function(x) {
+out <- purrr::map(names(result_array_ids), function(x) {
   # Assign filtered data and product group to subpage_env
-  assign("heading", str_replace(x, "_", " - "), subpage_env)
+  assign("heading", stringr::str_replace(x, "_", " - "), subpage_env)
   assign("contrast", x, subpage_env)
   assign("genes_up", summary_log[x, ]$logFC_up, subpage_env)
   assign("genes_down", summary_log[x, ]$logFC_down, subpage_env)
@@ -25,7 +25,7 @@ out <- map(names(result_array_ids), function(x) {
       )
     )
   } else {
-    render(paste0(report_layout, "_individual.Rmd"),
+    rmarkdown::render(paste0(report_layout, "_individual.Rmd"),
       output_file = paste0(outdir, x, ".html"),
       output_options = knitr_output_options,
       output_format = "all",

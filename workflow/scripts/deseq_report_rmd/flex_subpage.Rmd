@@ -11,7 +11,7 @@ Column {data-width=300}
 ### Upregulated genes
 
 ```{r}
-valueBox(genes_up,
+flexdashboard::valueBox(genes_up,
   color = "#FF7F7F",
   icon = "fa-arrow-up"
 )
@@ -26,7 +26,7 @@ Column {data-width=300}
 ### Downregulated genes
 
 ```{r}
-valueBox(genes_down,
+flexdashboard::valueBox(genes_down,
   color = "#66CCFF",
   icon = "fa-arrow-down"
 )
@@ -84,6 +84,6 @@ DT::datatable(show_table,
     )
   )
 ) %>%
-  formatRound(columns = c(4, 5, 6, 7), digits = 4)
+  DT::formatRound(columns = c(4, 5, 6, 7), digits = 4)
 ```
 
