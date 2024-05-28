@@ -8,8 +8,8 @@ subpage_env <- new.env()
 # Create variable which stores all subpages outputs
 out <- NULL
 
-out <- map(1:length(pca2go), function(x) {
-  df <- pcaExplorer::pca2go[[paste0("PC", x)]]
+out <- purrr::map(1:length(pca2go), function(x) {
+  df <- pca2go[[paste0("PC", x)]]
 
   # Assign filtered data and product group to subpage_env
   assign("pc_no", x, subpage_env)

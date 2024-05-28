@@ -20,7 +20,7 @@ out <- purrr::map(names(result_array_ids), function(x) {
     # Knit subpage.RMD using the subpage_env and add result to out vector
     return(
       knitr::knit_child(
-        paste0(snakemake@params[["report_layout"]], "_subpage.Rmd"),
+        paste0("subpage_", snakemake@params[["report_layout"]], ".Rmd"),
         envir = subpage_env
       )
     )

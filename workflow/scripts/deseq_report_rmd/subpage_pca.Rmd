@@ -7,9 +7,9 @@ Column {data-width=500}
 
 ```{r fig.width = 10, eval = T}
 pcaExplorer::hi_loadings(
-  pca_obj, 
-  topN = top_gene_loadings, 
-  whichpc = pc_no, 
+  pca_obj,
+  topN = top_gene_loadings,
+  whichpc = pc_no,
   # annotation = anno_df_orgdb,
   title = ""
 )
@@ -21,14 +21,14 @@ Column {data-width=500}
 ### Enriched Gene ontology pathways in top loadings
 
 ```{r eval = T}
-default_dt(subpage_data$posLoad) %>% 
-  formatRound(columns = c(5), digits=4)
+default_dt(subpage_data$posLoad) %>%
+  DT::formatRound(columns = c(5), digits = 4)
 ```
 
 ### Enriched Gene ontology pathways in bottom loadings
 
 ```{r eval = T}
-default_dt(subpage_data$negLoad) %>% 
-  formatRound(columns = c(5), digits=4)
+default_dt(subpage_data$negLoad) %>%
+  DT::formatRound(columns = c(5), digits = 4)
 ```
 

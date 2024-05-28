@@ -14,5 +14,5 @@ output:
 options(knitr.duplicate.label = 'allow')
 ```
 
-```{r child = 'flex_subpage.Rmd'}
+```{r child = 'subpage_flex.Rmd'}
 ```

@@ -17,13 +17,13 @@ Column {data-width=200}
 ### Proportion of explained variance
 
 ```{r scree_pev, echo = F, eval = T}
-pcaExplorer::pcascree(pca_obj, title="", type = "pev") %>% plotly::ggplotly
+pcaExplorer::pcascree(pca_obj, title = "", type = "pev") %>% plotly::ggplotly()
 ```
 
 ### Cumulative proportion of explained variance
 
 ```{r scree_cev, echo = F, eval = T}
-pcaExplorer::pcascree(pca_obj, title="", type = "cev") %>% plotly::ggplotly
+pcaExplorer::pcascree(pca_obj, title = "", type = "cev") # %>% plotly::ggplotly()
 ```
 
 
@@ -33,20 +33,19 @@ Column {data-width=600}
 ### PCA plots
 
 ```{r pca_plots, echo = F, eval = T}
-
-plts = purrr::map(combn(1:top_pcas, 2) %>% as.data.frame, function(x) {
+plts <- purrr::map(combn(1:top_pcas, 2) %>% as.data.frame(), function(x) {
   pcaExplorer::pcaplot(
-      r, 
-      intgroup = group, 
-      ntop = pca_ngenes, 
-      text_labels = F, 
-      pcX = x[1], 
-      pcY = x[2]
-    ) + 
-    theme(legend.position = "none")
+    r,
+    intgroup = group,
+    ntop = pca_ngenes,
+    text_labels = FALSE,
+    pcX = x[1],
+    pcY = x[2]
+  ) +
+    ggplot2::theme(legend.position = "none")
 })
 
-subplot(plts, nrows = 4, titleX = T, titleY = T, margin = .04)
+plotly::subplot(plts, nrows = 4, titleX = TRUE, titleY = TRUE, margin = .04)
 ```
 
 Column {data-width=200}
@@ -56,9 +55,9 @@ Column {data-width=200}
 
 ```{r pc_heatmap, echo = F, eval = T}
 heatmaply::heatmaply(
-  -log10(pca_corr), 
-  Rowv = F, 
-  Colv = F, 
+  -log10(pca_corr),
+  Rowv = FALSE,
+  Colv = FALSE,
   key.title = "-log10(pvalue)\nof correlation"
 )
 ```

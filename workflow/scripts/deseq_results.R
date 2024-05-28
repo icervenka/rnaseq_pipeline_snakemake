@@ -3,14 +3,19 @@ suppressMessages(library(magrittr))
 source("workflow/scripts/script_functions.R", local = TRUE)
 
 # TODO add parallelization to lfcshrink
+# Parse snakemake items --------------------------------------------------------
+## input
 dds <- readRDS(snakemake@input[["dds"]])
-outdds <- snakemake@output[["outdds"]]
-lfc_shrink <- snakemake@params[["lfc_shrink"]]
-fdr <- snakemake@params[["fdr"]]
+## output
+result_array_out <- snakemake@output[["result_array"]]
+## params
 contrasts <- snakemake@params[["contrasts"]]
 contrast_names <- names(contrasts)
 contrast_type <- snakemake@params[["contrast_type"]]
+lfc_shrink <- snakemake@params[["lfc_shrink"]]
+fdr <- snakemake@params[["fdr"]]
 
+# Run --------------------------------------------------------------------------
 if (contrast_type == "A") {
   sc <- contrasts %>% unlist()
   selected_contrasts <- purrr::map_dfr(sc, function(x) {
@@ -43,7 +48,7 @@ result_array <- purrr::map(selected_contrasts, function(x) {
     suppressMessages(library(ashr))
     lfc_res <- DESeq2::lfcShrink(dds, contrast = sc, res = res, type = "ashr")
   } else if (lfc_shrink == "normal" & contrast_type == "C") {
-    message("When selecting numeric contrast and normal lfc shrinkage need 
+    message("When selecting numeric contrast and normal lfc shrinkage need
     following number of contrasts specified:")
     print(resultsNames(dds))
     lfc_res <- res
@@ -51,7 +56,8 @@ result_array <- purrr::map(selected_contrasts, function(x) {
     lfc_res <- DESeq2::lfcShrink(dds, contrast = sc, res = res, type = "normal")
   }
   lfc_res[order(lfc_res$padj), ]
-})
+}) %>%
+  setNames(contrast_names)
 
-names(result_array) <- contrast_names
-saveRDS(result_array, file = outdds)
+# Save -------------------------------------------------------------------------
+saveRDS(result_array, file = result_array_out)

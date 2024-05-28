@@ -15,5 +15,5 @@ output:
 options(knitr.duplicate.label = 'allow')
 ```
 
-```{r child = 'default_subpage.Rmd'}
+```{r child = 'subpage_default.Rmd'}
 ```
