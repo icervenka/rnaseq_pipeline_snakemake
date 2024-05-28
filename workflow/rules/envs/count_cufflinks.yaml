@@ -1,6 +1,5 @@
 name: count_cufflinks_environment
 channels:
- - defaults
  - conda-forge
  - bioconda
 dependencies:
