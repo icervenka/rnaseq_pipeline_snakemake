@@ -31,7 +31,8 @@ sample_expression <- data.frame(DESeq2::counts(dds, normalized = TRUE),
 sample_expression <- tibble::rownames_to_column(sample_expression, ids_in) %>%
   add_idcolnames(sp_info)
 
-# fpkm calculation changes the whole data frame, removed until the issue is addressed
+# fpkm calculation changes the whole data frame, removed until the issue is
+## addressed
 # txdb = makeTxDbFromGFF(annotation_gtf, format="gtf")
 # txdb_exons = exonsBy(txdb, by="gene")
 # txdb_exons = txdb_exons[names(txdb_exons) %in% rownames(dds)]
@@ -39,7 +40,12 @@ sample_expression <- tibble::rownames_to_column(sample_expression, ids_in) %>%
 # export fpkm values
 # fpkm = cbind.data.frame(, fpkm(dds, robust = F))
 # fpkm = rownames_to_column(fpkm, 'gene')
-# write.table(fpkm, file=snakemake@output[["fpkm"]], quote = F, row.names = F, sep = "\t")
+# write.table(fpkm,
+#   file = snakemake@output[["fpkm"]],
+#   quote = F,
+#   row.names = F,
+#   sep = "\t"
+# )
 
 # Save -------------------------------------------------------------------------
 write("exporting files", stderr())

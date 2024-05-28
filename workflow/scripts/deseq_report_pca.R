@@ -5,9 +5,9 @@ source("workflow/scripts/script_functions.R", local = TRUE)
 ## input
 dds <- readRDS(snakemake@input[["dds"]])
 ## output
-report_pca_out = snakemake@input[["report_pca"]]
+report_pca_out <- snakemake@input[["report_pca"]]
 # params
-sp_info = get_species_info(snakemake@params[["species"]])
+sp_info <- get_species_info(snakemake@params[["species"]])
 ids_in <- snakemake@params[["ids_in"]]
 group <- snakemake@params[["group"]][1] # TODO why [1]?
 top_pcas <- snakemake@params[["top_pcas"]]
