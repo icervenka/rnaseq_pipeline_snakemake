@@ -3,6 +3,7 @@
 
 # folder organization of the pipelline input and output files
 RULES_DIR = "workflow/rules/"
+SCRIPT_DIR = "workflow/scripts/"
 ENV_DIR = "envs/"
 SRA_DIR = "sra/"
 FASTQ_DIR = "fastq/"

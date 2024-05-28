@@ -5,7 +5,6 @@
 #╚═════════════════════════════════════════════════════════════════════════════╝
 experiment_name: "Liver_cancer_project"
 threads: 15
-pandoc_path: "/usr/lib/rstudio-server/bin/quarto/bin/tools"
 
 metadata: "metadata.tsv"
 paired_read_strings: ["_1", "_2"]
@@ -75,6 +74,10 @@ count:
   multimap: FALSE
   # if reads belonging to the overlapping genes should be counted
   overlap: TRUE
+  # Several tools, namely Cufflinks and Stringtie offer denovo assembly of
+  # transcripts. If FALSE, guided assembly using supplied gft will be performed.
+  # If unsupported, this option is ignored.
+  denovo_assembly: FALSE
   # for extra parameters to specify the counting scores use config_extra.yaml
   extra: ""
 

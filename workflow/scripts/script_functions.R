@@ -1,5 +1,11 @@
 suppressMessages(library(magrittr))
 
+# global constants for ease of dir access
+CD1UP <- "../" # nolint
+CD2UP <- "../../" # nolint
+CD3UP <- "../../../" # nolint
+
+
 modify_tilda <- function(x, add = TRUE) {
   if (add == TRUE) {
     if (!startsWith(x, "~")) {

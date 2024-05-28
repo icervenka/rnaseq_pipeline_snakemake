@@ -3,6 +3,7 @@
 # TODO switch paths from appending strings to os.path.join
 # TODO change get_fq input function to already get the correct directory
 # so it doesn't need to be passed to arrange_fq_for_align
+# TODO dir structure as dict and pass it as param to R and python scripts
 
 import pandas as pd
 import numpy as np

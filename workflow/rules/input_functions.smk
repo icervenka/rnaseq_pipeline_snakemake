@@ -38,12 +38,6 @@ def get_paired_fq(wildcards, fastq_dir):
             read=config["paired_read_strings"])
 
 
-def arrange_fq_for_align(samples, metadata, fastq_dir):
-    metadata['fq_full'] = fastq_dir + metadata['fq']
-    fq_meta = metadata[metadata['fq_full'].isin(samples)]
-    input_arr = fq_meta.groupby(['read'])['fq_full'].apply(lambda x: x.to_list())
-    return input_arr
-
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for acessing metadata columns =====                         │
 #└─────────────────────────────────────────────────────────────────────────────┘
@@ -112,10 +106,27 @@ def stringtie_stranded(wildcards):
     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
     return(select.get(s, ""))
 
+def stringtie_params(wildcards):
+    return ""
+
+
+def cufflinks_params(wildcards):
+    if config_extra['count']['cufflinks_mode'] == "classic":
+        mode="-G {input.gtf} "
+    elif config_extra['count']['cufflinks_mode'] == "guided":
+        mode="-g {input.gtf} "
+    elif config_extra['count']['cufflinks_mode'] == "denovo":
+        mode=""
+    else:
+        mode="-G {input.gtf} "
+
+    # -u/–multi-read-correct
+    # –max-multiread-fraction <0.0-1.0>
+    # –no-effective-length-correction
 
 # TODO change numbers for yes/no/reverse
 # TODO move stranded to separate function
-def cufflinks_params(wildcards):
+def cufflinks_stranded(wildcards):
     def stranded_switch(x):
         select = {
             "1": "ff-firststrand ",

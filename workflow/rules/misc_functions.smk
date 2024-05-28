@@ -38,6 +38,7 @@ def is_set_subsample(s):
     else:
         return True
 
+
 def is_set_trimmer(s):
     if s in ['fastp', 'trimmomatic', 'cutadapt']:
         return True
