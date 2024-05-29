@@ -3,14 +3,14 @@
 #║ Main config file for snakemake run                                          ║
 #║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
 #╚═════════════════════════════════════════════════════════════════════════════╝
-experiment_name: "Liver_cancer_project"
+experiment_name: "Test stringie"
 threads: 15
 
 metadata: "metadata.tsv"
 paired_read_strings: ["_1", "_2"]
 
 species: "mouse"
-index: "/home/ingwarr/genomes/ncbi_grcm38/star"
+index: /home/ingwarr/genomes/ncbi_grcm38/star/
 gtf: "/home/ingwarr/genomes/ncbi_grcm38/annotation/gencode.vM25.annotation.gtf"
 fasta: "/home/ingwarr/genomes/ncbi_grcm38/fasta/GRCm38.primary_assembly.genome.fa"
 
@@ -19,7 +19,7 @@ fasta: "/home/ingwarr/genomes/ncbi_grcm38/fasta/GRCm38.primary_assembly.genome.f
 #└─────────────────────────────────────────────────────────────────────────────┘
 # pipelines are defined in snakemake/rules/pipelines.smk
 # see README for list of available pipelines
-pipeline: "star_only"
+pipeline: "deseq"
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Preprocess config =====                                               │
@@ -48,7 +48,7 @@ trim:
 #└─────────────────────────────────────────────────────────────────────────────┘
 # extra options are found in config_extra.yaml
 align:
-  extra: "star_extra_1"
+  extra: ""
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Coverage config =====                                                 │
@@ -58,8 +58,8 @@ align:
 # RPGC normalization requires the --effectiveGenomeSize to be specified in extra
 # https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html
 coverage:
-  calculate: FALSE
-  split_strands: FALSE
+  calculate: "no"
+  split_strands: "no"
   bin_size: "10"
   normalize_using: "BPM"
   extra: ""
@@ -70,10 +70,11 @@ coverage:
 # strandedness is specified in the metadata.tsv file
 # for extra parameters to be passed to counting programs, see config_extra.yaml
 count:
+  # TODO change to bool
   # if multimapping reads should be counted
-  multimap: FALSE
+  multimap: "no"
   # if reads belonging to the overlapping genes should be counted
-  overlap: TRUE
+  overlap: "yes"
   # Several tools, namely Cufflinks and Stringtie offer denovo assembly of
   # transcripts. If FALSE, guided assembly using supplied gft will be performed.
   # If unsupported, this option is ignored.
@@ -98,7 +99,7 @@ diffexp:
   # if only one level is specified it is taken as baseline
   # if empty, alphabetical order will be used
   reference_levels:
-    group: ["alg, lmcd, liver"]
+    group: ["alg", "lmcd", "sra"]
   # see README for explanation of different contrast types
   contrast_type: "A"
   contrasts: "group"
