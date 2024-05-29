@@ -37,8 +37,10 @@ rule counts_to_matrix:
         expand(rules.count.output.counts, sample=Samples),
     output:
         opj(COUNT_OUTDIR, COMMON_COUNT_NAME),
-    shell:
-        "touch {output}"
+    conda:
+        CONDA_R_GENERAL_ENV
+    script:
+        "../scripts/featurecounts_count_matrix.R"
 
 
 # TODO think about merging into one file

@@ -45,9 +45,11 @@ rule counts_to_matrix:
         rules.count.output.counts,
     output:
         opj(COUNT_OUTDIR, COMMON_COUNT_NAME)
-    shell:
-        # | awk '{{gsub("bam/","",$0); print}}'
-        "cat {input} | head -n -1 | cut -f 1,7- > {output}"
+    conda:
+        CONDA_R_GENERAL_ENV
+    script:
+        "../scripts/featurecounts_count_matrix.R"
+        # "cat {input} | head -n -1 | cut -f 1,7- > {output}"
 
 
 rule move_count_summary:
