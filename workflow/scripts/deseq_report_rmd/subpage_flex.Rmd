@@ -5,12 +5,12 @@
 Column {data-width=300}
 -------------------------------------
 
-```{r child = 'fc_ma_single.Rmd', eval = T}
+```{r child = 'fc_ma.Rmd', eval = T}
 ```
 
 ### Upregulated genes
 
-```{r}
+```{r genes_down}
 flexdashboard::valueBox(genes_up,
   color = "#FF7F7F",
   icon = "fa-arrow-up"
@@ -20,12 +20,12 @@ flexdashboard::valueBox(genes_up,
 Column {data-width=300}
 -------------------------------------
 
-```{r child = 'volcano_single.Rmd', eval = T}
+```{r child = 'volcano.Rmd', eval = T}
 ```
 
 ### Downregulated genes
 
-```{r}
+```{r genes_up}
 flexdashboard::valueBox(genes_down,
   color = "#66CCFF",
   icon = "fa-arrow-down"
@@ -38,7 +38,7 @@ Column {data-width=400}
 
 ### Differentially expressed genes
 
-```{r, eval = T}
+```{r diffexp_table, eval = T}
 show_table <- result_ids %>%
   dplyr::filter(padj <= fdr) %>%
   dplyr::select(
@@ -64,6 +64,7 @@ show_table <- result_ids %>%
   ) %>%
   dplyr::select(-GENENAME)
 
+# TODO change to default_dt
 DT::datatable(show_table,
   escape = FALSE,
   rownames = FALSE,

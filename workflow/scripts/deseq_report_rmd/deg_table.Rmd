@@ -1,12 +1,13 @@
 ### Diferentially expressed genes
 
-```{r, echo = F, warning = F}
+```{r deg_table, echo = F, warning = F}
 show_table <- result_ids %>%
   dplyr::filter(padj <= fdr) %>%
   dplyr::select(
     ENSEMBL, ENTREZID, SYMBOL, baseMean, log2FoldChange, pvalue, padj
   )
 
+# TODO change to default_dt
 DT::datatable(show_table,
   rownames = F,
   filter = "top",

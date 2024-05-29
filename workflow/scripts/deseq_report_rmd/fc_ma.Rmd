@@ -1,6 +1,6 @@
 ### MA plot
 
-```{r fc2, echo=FALSE, warning=F, out.width="100%"}
+```{r fc_ma, echo = F, warning = F, out.width = "100%"}
 # plot log fold change vs normalized counts
 result_ids <- result_ids %>%
   dplyr::mutate(significant = dplyr::case_when(padj < fdr ~ "yes", TRUE ~ "no"))

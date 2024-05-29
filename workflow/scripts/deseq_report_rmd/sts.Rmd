@@ -1,6 +1,6 @@
 ### Sample-to-sample distances
 
-```{r sts, fig.width=10, fig.height=6, echo=FALSE}
+```{r sts_distances, fig.width = 10, fig.height = 6, echo = T}
 
 sample_dists <- dist(t(SummarizedExperiment::assay(rld)))
 sample_dist_matrix <- as.matrix(sample_dists)

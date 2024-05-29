@@ -1,6 +1,6 @@
 ### Summary table for identified DEGs
 
-```{r fc1, fig.width = 10, fig.height = 6, echo=F}
+```{r fc_summary, fig.width = 10, fig.height = 6, echo = F}
 summary_match <- function(summary) {
   arr <- unname(
     sapply(summary, function(x) {

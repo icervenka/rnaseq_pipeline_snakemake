@@ -29,24 +29,31 @@ upset_maxgroups <- snakemake@params[["upset_maxgroups"]]
 upset_min_group_size <- snakemake@params[["upset_min_group_size"]]
 
 # Run --------------------------------------------------------------------------
-# define markdwon report output structure
-report_layout_path <- paste0("_main_", report_layout)
-# path is relative to this script not snakemake base
-outdir <- paste0(CD3UP, outdir)
-
 rld <- DESeq2::rlog(dds, blind = FALSE)
+
+# set path for the main markdown file
+report_layout_path <- paste0(
+  "workflow/scripts/deseq_report_rmd/",
+  "_main_",
+  report_layout,
+  ".Rmd"
+)
+
+# output path is relative to this script that runs the markdown::render
+## not snakemake base
+relative_outdir <- paste0(CD3UP, outdir)
 
 knitr_output_options <- list(
   mathjax = NULL,
   self_contained = FALSE,
-  lib_dir = paste0(outdir, "/libs")
+  lib_dir = paste0(relative_outdir, "/libs")
 )
 
+# FIXME gives warning for diffexp dir creation permission denied, but works ok
 # render html document
 rmarkdown::render(
-  paste0("workflow/scripts/deseq_report_rmd/", report_layout_path, ".Rmd"),
-  output_file = report_out, # paste0(snakemake@output[["report"]]),
-  output_dir = outdir,
+  report_layout_path,
+  output_file = paste0(CD3UP, report_out),
   output_options = knitr_output_options,
   output_format = "all"
 )

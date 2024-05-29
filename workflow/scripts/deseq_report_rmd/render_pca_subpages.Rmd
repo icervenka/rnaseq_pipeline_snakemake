@@ -17,6 +17,6 @@ out <- purrr::map(1:length(pca2go), function(x) {
   assign("subpage_data", df, subpage_env)
 
   # Knit subpage.RMD using the subpage_env and add result to out vector
-  knitr::knit_child(("pca_subpage.Rmd"), envir = subpage_env)
+  knitr::knit_child(("subpage_pca.Rmd"), envir = subpage_env)
 })
 ```

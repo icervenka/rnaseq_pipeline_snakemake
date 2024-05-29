@@ -5,11 +5,12 @@ source("workflow/scripts/script_functions.R", local = TRUE)
 ## input
 dds <- readRDS(snakemake@input[["dds"]])
 ## output
-report_pca_out <- snakemake@input[["report_pca"]]
+report_pca_out <- snakemake@output[["report_pca"]]
 # params
+outdir <- snakemake@params[["outdir"]]
 sp_info <- get_species_info(snakemake@params[["species"]])
 ids_in <- snakemake@params[["ids_in"]]
-group <- snakemake@params[["group"]][1] # TODO why [1]?
+group <- snakemake@params[["group"]][1] # FIXME why [1]?
 top_pcas <- snakemake@params[["top_pcas"]]
 pca_ngenes <- snakemake@params[["ngenes"]]
 top_gene_loadings <- snakemake@params[["top_gene_loadings"]]
@@ -29,7 +30,7 @@ pca_corr <- pcaExplorer::correlatePCs(
   pcs = 1:pca_dims
 )
 
-# TODO fixme
+# FIXME
 # anno_df_orgdb <- get_annotation_orgdb(
 #   dds = dds,
 #   orgdb_species = sp_info["orgdb"],
@@ -44,12 +45,24 @@ pca2go <- pcaExplorer::limmaquickpca2go(
   organism = sp_info["orgdb_short"]
 )
 
+# set path for the main markdown file
+report_layout_path <- paste0(
+  "workflow/scripts/deseq_report_rmd/",
+  "_pca_",
+  "flex", # might change if other layouts are created later
+  ".Rmd"
+)
+
+# output path is relative to this script that runs the markdown::render
+## not snakemake base
+relative_outdir <- paste0(CD3UP, outdir)
 
 knitr_output_options <- list(
   mathjax = NULL
 )
 
-rmarkdown::render(paste0("workflow/scripts/deseq_report_rmd/_pca_flex.Rmd"),
+rmarkdown::render(
+  report_layout_path,
   output_file = paste0(CD3UP, report_pca_out),
   output_options = knitr_output_options,
   output_format = "all"
