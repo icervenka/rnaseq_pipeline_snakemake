@@ -1,7 +1,6 @@
-suppressMessages(library(readr))
-suppressMessages(library(purrr))
-suppressMessages(library(tidyr))
-suppressMessages(library(dplyr))
+#!/usr/bin/Rscript
+library(magrittr)
+source("workflow/scripts/script_functions.R", local = TRUE)
 
 # read filenames from snakemake and import data
 filenames <- snakemake@input
@@ -21,7 +20,7 @@ combined <- purrr::map_dfr(names(datasets), function(x) {
   distinct(`Gene ID`, sample, .keep_all = TRUE)
 
 tpm <- combined %>%
-  select(sample, `Gene ID`, TPM) %>%
+  dplyr::select(sample, `Gene ID`, TPM) %>%
   tidyr::pivot_wider(
     names_from = "sample",
     values_from = "TPM",
@@ -29,7 +28,7 @@ tpm <- combined %>%
   )
 
 fpkm <- combined %>%
-  select(sample, `Gene ID`, FPKM) %>%
+  dplyr::select(sample, `Gene ID`, FPKM) %>%
   tidyr::pivot_wider(
     names_from = "sample",
     values_from = "FPKM",
