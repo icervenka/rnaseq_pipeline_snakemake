@@ -1,8 +1,51 @@
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Misc functions =====                                                  │
+#└─────────────────────────────────────────────────────────────────────────────┘
 def is_tool(name):
     """Check whether `name` is on PATH and marked as executable."""
 
     from shutil import which
     return which(name)
+
+def print_header(s):
+    header_len = len(s)
+    print("╔"+78*"═"+"╗")
+    print("║"+"  "+s+"  "+(74-header_len)*" "+"║")
+    print("╚"+78*"═"+"╝")
+
+
+def all_paired(Metadata):
+    r1 = sum(Metadata["read"] == "R1")
+    r2 = sum(Metadata["read"] == "R2")
+    if r1 == r2:
+        return True
+    else:
+        return False
+    
+
+def all_single(Metadata):
+    r2 = sum(Metadata["read"] == "R2")
+    if r2 == 0:
+        return True
+    else:
+        return False
+
+        
+def is_set_subsample(s):
+    if s == "" or s == 0 or s == None:
+        return False
+    elif s in ['False', 'false', 'FALSE']:
+        return False
+    else:
+        return True
+
+
+def is_set_trimmer(s):
+    if s in ['fastp', 'trimmomatic', 'cutadapt']:
+        return True
+    else:
+        return False
+
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for retrieving and dumping sra files =====                  │
@@ -20,6 +63,7 @@ def get_paired_end_sra(wildcards):
     m = Metadata[Metadata.duplicated(subset=['sra']).astype(bool)]
     m = m.query('sra == @wildcards.sra').sra.unique()
     return SRA_DIR + m
+
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for retrieving fastq file names =====                       │
@@ -51,9 +95,9 @@ def get_metadata(what, paired = 1):
 #│ ===== Functions for parsing parameters from various tools =====             │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # TODO rsem has overlapping values with featurecounts, will lead to errors
-# tools with empty string in unstranded protocol that also need an argument name
-# need to have the passing of the argument name handled by respecive stranded 
-# function instead of the  wrapper. Currently: hisat
+# NOTE tools with empty string in unstranded protocol that also need an argument 
+# name need to have the passing of the argument name handled by respecive
+# stranded function instead of the wrapper. Currently: hisat
 def get_strandedness(stranded, outtool):
     d = {
         "featurecounts": ["0", "1", "2"],
@@ -103,11 +147,6 @@ def featurecounts_params(wildcards):
     return(param_string)
 
 # htseq ------------------------------------------------------------------------
-# def htseq_stranded(wildcards):
-#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
-#     return "-s " + get_strandedness(s, "htseq") + " "
-
-
 def htseq_params(wildcards):
     param_string = ""
     if config["count"]["overlap"] == "yes":
@@ -117,19 +156,10 @@ def htseq_params(wildcards):
     return(param_string)
 
 # stringtie --------------------------------------------------------------------
-# def stringtie_stranded(wildcards):
-#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
-#     return get_strandedness(m, "stringtie") + " "
-
 def stringtie_params(wildcards):
     return ""
 
 # cufflinks --------------------------------------------------------------------
-# def cufflinks_stranded(wildcards):
-#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
-#     return "--library-type" + get_strandedness(s, "cufflinks") + " "
-
-
 def cufflinks_params(wildcards):
     # -u/–multi-read-correct
     # –max-multiread-fraction <0.0-1.0>
@@ -158,14 +188,10 @@ def hisat_stranded(wildcards):
     return get_strandedness(get_sample_strandedness(wildcards), outtool)
 
 # tophat -----------------------------------------------------------------------
-# def tophat_stranded(wildcards):
-#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
-#     return "--library-type" + get_strandedness(s, "tophat") + " "
+
 
 # kallisto ---------------------------------------------------------------------
-# def kallisto_stranded(wildcards):
-#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
-#     return get_strandedness(s, "kallisto") + " "
+
 
 # salmon -----------------------------------------------------------------------
 def salmon_stranded(wildcards):

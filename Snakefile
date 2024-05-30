@@ -45,10 +45,8 @@ config_extra = load_configfile("config_extra.yaml")
 include: "workflow/rules/_dir_structure.smk"
 include: "workflow/rules/_tool_filenames.smk"
 include: "workflow/rules/_envs.smk"
-# contains input functions for rules
-include: "workflow/rules/input_functions.smk"
-# contains other misc functions rules
-include: "workflow/rules/misc_functions.smk"
+# contains misc functions and input functions for rules
+include: "workflow/rules/functions.smk"
 # contains pipleline rule defitions
 # TODO automated parsing for readme?
 include: "workflow/rules/pipelines.smk"
