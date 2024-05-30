@@ -31,13 +31,15 @@ if (snakemake@params[["kind"]] == "count") {
   # extract gene counts
   gene_rownames <- datasets[[1]] %>%
     dplyr::filter(!grepl("__", geneid)) %>%
-    dplyr::select(geneid)
+    dplyr::pull(geneid)
+  gene_rownames <- remove_ens_gene_version(gene_rownames)
+
   counts <- purrr::map_dfc(datasets, function(x) {
     x %>%
       dplyr::filter(!grepl("__", geneid)) %>%
       dplyr::select(-geneid)
   })
-  gene_counts <- cbind.data.frame(gene_rownames, counts)
+  gene_counts <- cbind.data.frame(GeneId = gene_rownames, counts)
 
   # save count file
   write.table(

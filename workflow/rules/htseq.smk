@@ -5,7 +5,7 @@ def get_count_output_files(wildcards):
 def get_count_log_files(wildcards):
     return expand(rules.move_count_log.output, sample=Samples)
 
-
+# TODO redirect the other out to log file
 rule count:
     input:
         bam=rules.align_out.output,
@@ -13,6 +13,7 @@ rule count:
     output:
         opj(COUNT_OUTDIR, "{sample}", HTSEQ_COUNT_NAME)
     params:
+        stranded=lambda wildcards: stranded_param(wildcards, "htseq"),
         standard=htseq_params,
         extra=has_extra_config(config["count"]["extra"], config_extra["count"])
     threads:
@@ -25,6 +26,7 @@ rule count:
         -n {threads} \
         -f bam \
         -r pos \
+        -s {params.stranded} \
         {params.standard} \
         {params.extra} \
         {input.bam} \
