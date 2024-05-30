@@ -1,3 +1,4 @@
+#!/usr/bin/Rscript
 suppressMessages(library(magrittr))
 source("workflow/scripts/script_functions.R", local = TRUE)
 

@@ -1,5 +1,6 @@
+#!/usr/bin/Rscript
 library(magrittr)
-source("workflow/scripts/script_functions.R")
+source("workflow/scripts/script_functions.R", local = TRUE)
 
 # Parse snakemake items --------------------------------------------------------
 ## input

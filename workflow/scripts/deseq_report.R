@@ -2,7 +2,6 @@
 suppressMessages(library(magrittr))
 source("workflow/scripts/script_functions.R", local = TRUE)
 
-# rmarkdown::find_pandoc(dir = snakemake@params[["pandoc_path"]])
 # Parse snakemake items --------------------------------------------------------
 ## input
 dds <- readRDS(snakemake@input[["dds"]])
