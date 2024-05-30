@@ -24,6 +24,8 @@ pipeline: "deseq"
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Preprocess config =====                                               │
 #└─────────────────────────────────────────────────────────────────────────────┘
+# extra options are found in config_extra.yaml or can be specified directly and
+# will be run 'as is'
 preprocess:
   # can be specified as percentage (number smaller than 1) or absolute number of
   # reads to be kept (whole number 1 or greater). If empty, no subsetting will
@@ -34,8 +36,8 @@ preprocess:
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Trimming config =====                                                 │
 #└─────────────────────────────────────────────────────────────────────────────┘
-# should reads be trimmed for adapters and/or quality, uses cutadapt
-# if no trimming parameters are specified, trimming will be skipped
+# extra options are found in config_extra.yaml or can be specified directly and
+# will be run 'as is'
 trim:
   # one of 'fastp', 'cutadapt' or 'trimmomatic'. If nothing is specified, 
   # trimming will be skipped
@@ -46,7 +48,8 @@ trim:
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Align config =====                                                    │
 #└─────────────────────────────────────────────────────────────────────────────┘
-# extra options are found in config_extra.yaml
+# extra options are found in config_extra.yaml or can be specified directly and
+# will be run 'as is'
 align:
   extra: ""
 
@@ -57,9 +60,11 @@ align:
 # possible choices for normalization: RPKM, CPM, BPM, RPGC, None
 # RPGC normalization requires the --effectiveGenomeSize to be specified in extra
 # https://deeptools.readthedocs.io/en/develop/content/tools/bamCoverage.html
+# extra options are found in config_extra.yaml or can be specified directly and
+# will be run 'as is'
 coverage:
-  calculate: "no"
-  split_strands: "no"
+  calculate: FALSE
+  split_strands: FALSE
   bin_size: "10"
   normalize_using: "BPM"
   extra: ""
@@ -68,18 +73,17 @@ coverage:
 #│ ===== Read counting config =====                                            │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # strandedness is specified in the metadata.tsv file
-# for extra parameters to be passed to counting programs, see config_extra.yaml
+# extra options are found in config_extra.yaml or can be specified directly and
+# will be run 'as is'
 count:
-  # TODO change to bool
   # if multimapping reads should be counted
-  multimap: "no"
+  multimap: FALSE
   # if reads belonging to the overlapping genes should be counted
-  overlap: "yes"
+  overlap: TRUE
   # Several tools, namely Cufflinks and Stringtie offer denovo assembly of
   # transcripts. If FALSE, guided assembly using supplied gft will be performed.
   # If unsupported, this option is ignored.
   denovo_assembly: FALSE
-  # for extra parameters to specify the counting scores use config_extra.yaml
   extra: ""
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
@@ -159,4 +163,4 @@ gsea:
 #└─────────────────────────────────────────────────────────────────────────────┘
 # create tar.gz archive with results for differentially expressed genes, counts
 # and logs
-result_archive: "no"
+result_archive: FALSE

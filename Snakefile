@@ -4,6 +4,8 @@
 # TODO change get_fq input function to already get the correct directory
 # so it doesn't need to be passed to arrange_fq_for_align
 # TODO dir structure as dict and pass it as param to R and python scripts
+# TODO or change to pathlib (for python) and path (for R)
+# TODO add log directives to rules
 
 import pandas as pd
 import numpy as np
@@ -120,7 +122,7 @@ for rule in pipelines[config['pipeline']]:
     include: RULES_DIR + rule + ".smk"
 
 # load rules for calculating coverage - load conditionally
-if config['coverage']['calculate'] == "yes":
+if config['coverage']['calculate']:
     include: "workflow/rules/coverage.smk"
 else:
     include: "workflow/rules/skip_coverage.smk"
@@ -129,7 +131,7 @@ else:
 include: "workflow/rules/multiqc.smk"
 
 # load rule for creating result archive with processed data - load conditionally
-if config['result_archive'] == "yes":
+if config['result_archive']:
     include: "workflow/rules/result_archive.smk"
 else:
     include: "workflow/rules/skip_result_archive.smk"
@@ -149,8 +151,8 @@ onstart:
     for rule in pipelines[config['pipeline']]:
         print(" - " + rule)
     print("Trimming: Using " + config['trim']['trimmer'])
-    print("Coverage calculation: " + config['coverage']['calculate'])
-    print("Creating result archive: " + config['result_archive'])
+    print("Coverage calculation: " + str(config['coverage']['calculate']))
+    print("Creating result archive: " + str(config['result_archive']))
     
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Top level snakemake rule =====                                        │

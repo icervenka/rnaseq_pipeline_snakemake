@@ -30,9 +30,9 @@ properties:
       genome_bed:
         type: string
       multimap:
-        type: string
+        type: boolean
       overlap:
-        type: string
+        type: boolean
 
   diffexp:
     type: object
