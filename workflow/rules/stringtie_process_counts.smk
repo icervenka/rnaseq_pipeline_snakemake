@@ -29,6 +29,9 @@ rule counts_to_matrix:
         -t {output.counts_transcript} \
         """
 
+# TODO remove the ensembl gene version from count matrix
+# remove last row with colsums
+
 rule gather_data:
     input:
         expand(rules.count.output.counts, sample=Samples)
@@ -41,4 +44,4 @@ rule gather_data:
     conda:
         CONDA_R_GENERAL_ENV
     script:
-        "../scripts/stringtie_count_gather.R"
+        "../scripts/stringtie_gather.R"

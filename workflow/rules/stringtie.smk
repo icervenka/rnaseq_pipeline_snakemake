@@ -1,53 +1,101 @@
-# TODO extra params to stringie can only go to one rule. If I want to pass more
-## extra parameters it has to be reflected in the config
-# TODO gather data and counts to matrix might go to separate rule since they are
-## the same for each type of stringtie
-# TODO stringtie guided and denovo only differ in -G in the first step, find
-## a way to do it with param
-
 def get_count_output_files(wildcards):
     return (
-        get_stringtie_processed_output_files(wildcards) + 
+        get_stringtie_processed_output_files(wildcards) +
         expand(rules.count.output.counts, sample=Samples) + 
         expand(rules.count.output.gtf, sample=Samples) + 
-        expand(rules.count.output.ballgown, sample=Samples)
+        expand(rules.count.output.ballgown, sample=Samples) +
+        rules.merge.output
     )
+
 
 def get_count_log_files(wildcards):
     return []
 
+
+rule assemble_transcripts:
+    input:
+        bam=rules.align_out.output
+    output:
+        temp(opj(COUNT_OUTDIR, "{sample}", "temp_" + STRINGTIE_GTF_FILE))
+    params:
+        stranded=lambda wildcards: stranded_param(wildcards, "stringtie"),
+        standard=stringtie_denovo,
+        extra=config_extra["count_other_rules"]["stringtie_assemble_extra"]
+    threads:
+        config['threads']
+    conda:
+       CONDA_COUNT_GENERAL_ENV
+    shell:
+        """
+        stringtie \
+        {params.stranded} \
+        {params.standard} \
+        {params.extra} \
+        -p {threads} \
+        -l {wildcards.sample} \
+        -o {output} \
+        {input.bam} 
+        """
+
+rule merge:
+    input:
+        sample_gtfs=expand(rules.assemble_transcripts.output, sample=Samples),
+    output:
+        merged_gtf=COUNT_OUTDIR + STRINGTIE_MERGED_FILE
+    params:
+        standard=stringtie_denovo,
+        extra=config_extra["count_other_rules"]["stringtie_merge_extra"]
+    threads:
+        config['threads']
+    conda:
+        CONDA_COUNT_GENERAL_ENV
+    shell: 
+        """
+        stringtie \
+        --merge \
+        {params.standard} \
+        {params.extra} \
+        -p {threads} \
+        -o {output} \
+        {input.sample_gtfs}
+        """
+
+# to compare  transcripts with reference
+# gffcompare -r $RNA_REF_GTF -o gffcompare stringtie_merged.gtf
+# cat gffcompare.stats
+
+
 rule count:
     input:
         bam=rules.align_out.output,
-        gtf=config["gtf"]
+        merged=rules.merge.output.merged_gtf
     output:
         counts=opj(COUNT_OUTDIR, "{sample}", STRINGTIE_COUNT_NAME),
         gtf=opj(COUNT_OUTDIR, "{sample}", STRINGTIE_GTF_FILE),
         ballgown=expand(opj(COUNT_OUTDIR, "{{sample}}", "{file}"), file=BALLGOWN_INPUT_FILES)
     params:
-        #stranded=stringtie_stranded,
-        #standard=stringtie_params,
+        stranded=lambda wildcards: stranded_param(wildcards, "stringtie"),
+        standard=stringtie_params,
         extra=has_extra_config(config["count"]["extra"], config_extra["count"])
     threads:
-        config["threads"]
+        config['threads']   
     conda:
-        CONDA_COUNT_GENERAL_ENV
+        CONDA_COUNT_GENERAL_ENV     
     shell:
         """
         stringtie \
+        {params.stranded} \
+        {params.standard} \
         {params.extra} \
-        -p {threads} \
-        -G {input.gtf} \
         -B \
         -e \
-        -A {output.counts}\
+        -p {threads} \
+        -G {input.merged} \
+        -A {output.counts} \
         -o {output.gtf} \
-        {input.bam} 
+        {input.bam}
         """
-            # "{params.stranded} "
-			# "{params.standard} "
 
 
 include: "stringtie_process_counts.smk"
-
 

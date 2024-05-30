@@ -15,12 +15,14 @@ datasets <- purrr::map(filenames, function(x) {
   setNames(snakemake@params[["samples"]])
 
 combined <- purrr::map_dfr(names(datasets), function(x) {
-  datasets[[x]] %>% mutate(sample = x)
+  datasets[[x]] %>%
+    dplyr::mutate(sample = x)
 }) %>%
-  distinct(`Gene ID`, sample, .keep_all = TRUE)
+  dplyr::distinct(`Gene ID`, sample, .keep_all = TRUE) %>%
+  dplyr::mutate(`Gene ID` = remove_ens_gene_version(`Gene ID`))
 
 tpm <- combined %>%
-  dplyr::select(sample, `Gene ID`, TPM) %>%
+  dplyr::select(sample, `Gene ID`, `Gene Name`, TPM) %>%
   tidyr::pivot_wider(
     names_from = "sample",
     values_from = "TPM",
@@ -28,7 +30,7 @@ tpm <- combined %>%
   )
 
 fpkm <- combined %>%
-  dplyr::select(sample, `Gene ID`, FPKM) %>%
+  dplyr::select(sample, `Gene ID`, `Gene Name`, FPKM) %>%
   tidyr::pivot_wider(
     names_from = "sample",
     values_from = "FPKM",
