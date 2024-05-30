@@ -132,13 +132,6 @@ def stranded_param(wildcards, tool):
     return get_strandedness(get_sample_strandedness(wildcards), tool) + " "
 
 # featurecounts ----------------------------------------------------------------
-def featurecounts_multi_stranded(wildcards):
-    s = Metadata.query('sample == @wildcards.sample').stranded.dropna()
-    stranded_arr = [ get_strandedness(x, "featurecounts") for x in s ]
-    stranded_str = ",".join(stranded_arr)
-    return "-s " + stranded_str + " "
-
-
 def featurecounts_params(wildcards):
     param_string = ""
     param_string += "-M " if config["count"]["multimap"] else ""
@@ -157,7 +150,13 @@ def htseq_params(wildcards):
 
 # stringtie --------------------------------------------------------------------
 def stringtie_params(wildcards):
-    return ""
+    return []
+
+def stringtie_denovo(wildcards):
+    if not config['count']['denovo_assembly']:
+        return "-G " + config["gtf"]
+    else:
+        return ""
 
 # cufflinks --------------------------------------------------------------------
 def cufflinks_params(wildcards):

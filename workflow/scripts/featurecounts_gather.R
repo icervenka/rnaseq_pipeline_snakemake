@@ -1,23 +1,27 @@
 #!/usr/bin/Rscript
 source("workflow/scripts/script_functions.R", local = TRUE)
 
-if (length(snakemake@input[[1]]) > 1) {
+print(snakemake@input)
+length(snakemake@input[[1]])
+
+if (length(snakemake@input) > 1) {
   ids <- read.table(
-    snakemake@input[[1]][[1]],
+    snakemake@input[[1]],
     sep = "\t",
-    header = TRUE
+    header = FALSE
   )[, 1]
   ids <- remove_ens_gene_version(ids)
 
-  count_data <- purrr::map_dfc(snakemake@input[[1]], function(x) {
+  count_data <- purrr::map_dfc(snakemake@input, function(x) {
     read.table(
       x,
       sep = "\t",
-      header = TRUE
+      header = FALSE
     )[, 7]
 
-    count_data <- cbind.data.frame(ids, count_data)
   })
+
+  count_data <- cbind.data.frame(ids, count_data)
 } else {
   count_data <- read.table(
     snakemake@input[[1]],
@@ -34,6 +38,6 @@ write.table(
   snakemake@output[[1]],
   sep = "\t",
   quote = FALSE,
-  col.names = TRUE,
+  col.names = FALSE,
   row.names = FALSE
 )
