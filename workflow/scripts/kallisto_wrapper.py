@@ -19,6 +19,7 @@ else:
 
 shell(
     "kallisto quant "
+    "{snakemake.params.stranded} "
     "{snakemake.params.extra} "
     "{fragment_info} "
     "-b 100 "

@@ -5,7 +5,6 @@ def get_align_output_files(wildcards):
 def get_align_log_files(wildcards):
     return expand(rules.move_align_log.output, sample=Samples)
 
-# TODO add library type
 # TODO Coverage-search algorithm is turned on, making this step very slow
 ## Please try running TopHat again with the option (--no-coverage-search) if this step takes too much time or memory.
 # TODO create transcriptome index for tophat only once and reuse it
@@ -22,6 +21,7 @@ rule align:
         fastq_dir=FASTQ_CURRENT_DIR,
         align_outdir=opj(ALIGN_OUTDIR, "{sample}"),
         index=config["index"],
+        stranded=lambda wildcards: stranded_param(wildcards, "tophat"),
         extra=has_extra_config(config["align"]["extra"], config_extra["align"])
     log:
         expand(opj(ALIGN_OUTDIR, "{{sample}}", "{log}"), log=TOPHAT_LOG_FILES),

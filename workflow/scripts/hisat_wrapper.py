@@ -20,6 +20,7 @@ else:
 # TODO check if it works with gz and bz2 files
 shell(
     "hisat2 "
+    "--rna-strandness {snakemake.params.stranded} "
     "{snakemake.params.extra} "
     "-p {snakemake.threads} "
     "-q "

@@ -46,71 +46,94 @@ def get_metadata(what, paired = 1):
         raise ValueError("Value for 'paired' argument can only be 0 or 1.")
     return Metadata[Metadata["paired"] == paired][what].unique()
 
+
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for parsing parameters from various tools =====             │
 #└─────────────────────────────────────────────────────────────────────────────┘
-def featurecounts_stranded(stranded):
-    def stranded_switch(x):
-        select = {
-            "no": "0",
-            "yes": "1",
-            "reverse": "2"
-        }
-        return(select.get(x, "0"))
-    return stranded_switch(stranded)
+# TODO rsem has overlapping values with featurecounts, will lead to errors
+# tools with empty string in unstranded protocol that also need an argument name
+# need to have the passing of the argument name handled by respecive stranded 
+# function instead of the  wrapper. Currently: hisat
+def get_strandedness(stranded, outtool):
+    d = {
+        "featurecounts": ["0", "1", "2"],
+        "htseq": ["yes", "no", "reverse"],
+        "cufflinks": ["fr-unstranded", "fr-secondstrand", "fr-firststrand"],
+        "stringtie": ["", "--fr", "--rf"],
+        # "rsem": ["0.5", "1", "0"],
+        "hisat_se": ["", "F", "R"], 
+        "hisat_pe": ["", "FR", "RF"],
+        "tophat": ["fr-unstranded", "fr-secondstrand", "fr-firststrand"],
+        "kallisto": ["", "--fr-stranded", "--rf-stranded"],
+        "salmon_se": ["U", "SF", "SR"],
+        "salmon_pe": ["IU", "ISF", "ISR"]
+    }
+    df = pd.DataFrame(d)
+    mask = df.map(lambda x: stranded in str(x)).any(axis=1)
+    res = df[mask]
+
+    try:
+        res = res[outtool].tolist()[0]
+    except IndexError:
+        print("No value for strandedness returned, is it " + 
+            "specified correctly in the metadata file")
+        
+    return res
+
+def get_sample_strandedness(wildcards):
+    s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
+    return s
+
+def stranded_param(wildcards, tool):
+    return get_strandedness(get_sample_strandedness(wildcards), tool) + " "
+
+# featurecounts ----------------------------------------------------------------
+def featurecounts_multi_stranded(wildcards):
+    s = Metadata.query('sample == @wildcards.sample').stranded.dropna()
+    stranded_arr = [ get_strandedness(x, "featurecounts") for x in s ]
+    stranded_str = ",".join(stranded_arr)
+    return "-s " + stranded_str + " "
+
 
 def featurecounts_params(wildcards):
     param_string = ""
-    param_string += "-M " if config["count"]["multimap"] == "yes" else ""
-    param_string += "-O " if config["count"]["overlap"] == "yes" else ""
+    param_string += "-M " if config["count"]["multimap"] else ""
+    param_string += "-O " if config["count"]["overlap"] else ""
     param_string += config_extra["count"]["featurecounts_extra"] + " "
     return(param_string)
 
-def htseq_stranded(wildcards):
-    pass
+# htseq ------------------------------------------------------------------------
+# def htseq_stranded(wildcards):
+#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
+#     return "-s " + get_strandedness(s, "htseq") + " "
 
-# TODO move stranded to separate function
 
 def htseq_params(wildcards):
-    s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
     param_string = ""
-    # param_string += s + " "
     if config["count"]["overlap"] == "yes":
         param_string += "--nonunique=all "
-        if config["count"]["multimap"] == "no":
-            param_string += "--secondary-alignments=ignore "
-    param_string += config_extra["count"]["htseq_extra"] + " "
+    if not config["count"]["multimap"]:
+        param_string += "--secondary-alignments=ignore "
     return(param_string)
 
-
-def kallisto_stranded(wildcards):
-    def stranded_switch(x):
-        select = {
-            "no": " ",
-            "yes": "--fr-stranded ",
-            "reverse": "--rf-stranded "
-        }
-        return(select.get(x, " "))
-
-    s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()
-    param_string = ""
-    param_string += stranded_switch(s)
-    return(param_string)
-
-def stringtie_stranded(wildcards):
-    select = {
-        "no": "",
-        "yes": "--rf ",
-        "reverse": "--fr "
-    }
-    s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
-    return(select.get(s, ""))
+# stringtie --------------------------------------------------------------------
+# def stringtie_stranded(wildcards):
+#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
+#     return get_strandedness(m, "stringtie") + " "
 
 def stringtie_params(wildcards):
     return ""
 
+# cufflinks --------------------------------------------------------------------
+# def cufflinks_stranded(wildcards):
+#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
+#     return "--library-type" + get_strandedness(s, "cufflinks") + " "
+
 
 def cufflinks_params(wildcards):
+    # -u/–multi-read-correct
+    # –max-multiread-fraction <0.0-1.0>
+    # –no-effective-length-correction
     if config_extra['count']['cufflinks_mode'] == "classic":
         mode="-G {input.gtf} "
     elif config_extra['count']['cufflinks_mode'] == "guided":
@@ -120,34 +143,35 @@ def cufflinks_params(wildcards):
     else:
         mode="-G {input.gtf} "
 
-    # -u/–multi-read-correct
-    # –max-multiread-fraction <0.0-1.0>
-    # –no-effective-length-correction
-
-# TODO change numbers for yes/no/reverse
-# TODO move stranded to separate function
-def cufflinks_stranded(wildcards):
-    def stranded_switch(x):
-        select = {
-            "1": "ff-firststrand ",
-            "2": "ff-secondstrand ",
-            "3": "ff-unstranded ",
-            "4": "fr-firststrand ",
-            "5": "fr-secondstrand ",
-        }
-        return(select.get(x, "ff-firststrand"))
-
-    s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
-
-    param_string = ""
-    param_string += "--library-type" + stranded_switch(s)
-    param_string += config_extra['count']['cufflinks_extra']
     return(param_string)
 
-# def cuffmerge_params(wildcards):
-#     param_string = ""
-#     param_string += config_extra['count']['cuffmerge_extra']
-#     return(param_string)
+
+def cuffmerge_params(wildcards):
+    param_string = ""
+    param_string += config_extra['count']['cuffmerge_extra']
+    return(param_string)
+
+# hisat ------------------------------------------------------------------------
+def hisat_stranded(wildcards):
+    r = Metadata.query('sample == @wildcards.sample').read.dropna().unique()
+    outtool = "hisat_pe" if len(r.tolist()) > 1 else "hisat_se"
+    return get_strandedness(get_sample_strandedness(wildcards), outtool)
+
+# tophat -----------------------------------------------------------------------
+# def tophat_stranded(wildcards):
+#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
+#     return "--library-type" + get_strandedness(s, "tophat") + " "
+
+# kallisto ---------------------------------------------------------------------
+# def kallisto_stranded(wildcards):
+#     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
+#     return get_strandedness(s, "kallisto") + " "
+
+# salmon -----------------------------------------------------------------------
+def salmon_stranded(wildcards):
+    r = Metadata.query('sample == @wildcards.sample').read.dropna().unique()
+    outtool = "salmon_pe" if len(r.tolist()) > 1 else "salmon_se"
+    return get_strandedness(get_sample_strandedness(wildcards), outtool)
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Input function for creating cuffdiff data payloads =====              │
@@ -177,10 +201,10 @@ def get_cuffdiff_data():
 
     return (labels_str, files_str)
 
+
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Other input/param functions =====                                     │
 #└─────────────────────────────────────────────────────────────────────────────┘
-
 def get_subsample_proportion(n):
     if type(n) != int and type(n) != float:
         raise ValueError("Incorrect value for propotion of sampled reads." + 
@@ -190,3 +214,14 @@ def get_subsample_proportion(n):
             return "-p " + str(n)
         else:
             return "-n " + str(n)
+
+def has_extra_config(conf, conf_extra):
+    conf = conf.strip()
+    if len(conf) > 0:
+        if conf_extra[conf] == None or len(conf_extra[conf]) == 0:
+            return conf + " "
+            
+        else:
+            return conf_extra[conf]
+    else:
+        return " "

@@ -25,10 +25,11 @@ shell(
         "salmon quant "
         "--softclipOverhangs "
         "--validateMappings "
+        "--libType {snakemake.params.stranded} "
         "{snakemake.params.extra} "
         "{fragment_info} "
-        "-i {snakemake.params.index} "
-        "-l {snakemake.params.stranded} "
+        "-i {snakemake.params.index} "    
         "{input_str} "
         "-o {snakemake.params.outdir} "
+        ">> {snakemake.log.runlog} 2>&1 "
 )

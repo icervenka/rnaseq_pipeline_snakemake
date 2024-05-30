@@ -10,7 +10,6 @@ def get_align_log_files(wildcards):
     return expand(rules.move_align_log.output, sample=Samples)
 
 
-# TODO fix passing stranded info
 
 rule align:
     input:
@@ -26,7 +25,7 @@ rule align:
         index=config["index"],
         outdir=opj(ALIGN_OUTDIR, "{sample}"),
         fragment_info=config_extra["align"]["kallisto_single_fragment_info"],
-        #stranded=kallisto_params,
+        stranded=lambda wildcards: stranded_param(wildcards, "kallisto"),
         extra=has_extra_config(config["align"]["extra"], config_extra["align"])
     threads: 
         config["threads"]
@@ -55,7 +54,7 @@ rule align_out:
         opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_NAME + ".bam")
     shell:
         """
-        mv {input.bam} {output.bam}
+        mv {input} {output}
         """
 
 include: "bam_index.smk"

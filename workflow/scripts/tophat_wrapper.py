@@ -13,6 +13,7 @@ input_str = " ".join(input_arr)
 
 shell(
     "tophat2 "
+    "--library-type {snakemake.params.stranded} "
     "{snakemake.params.extra} "
     "-p {snakemake.threads} "
     "-G {snakemake.input.gtf} "

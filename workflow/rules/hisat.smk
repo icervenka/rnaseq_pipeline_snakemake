@@ -14,7 +14,6 @@ def get_align_log_files(wildcards):
 
 # TODO rule for generating splice sites
 
-
 rule align:
     input:
         sample=get_fq
@@ -25,6 +24,7 @@ rule align:
         metadata=Metadata,
         fastq_dir=FASTQ_CURRENT_DIR,
         index=config["index"],
+        stranded=hisat_stranded,
         extra=has_extra_config(config["align"]["extra"], config_extra["align"]),
     log:
         log=expand(opj(ALIGN_LOG_OUTDIR, "{{sample}}", "{log}"), log=HISAT_LOG_FILES),
@@ -36,7 +36,7 @@ rule align:
     script:
         "../scripts/hisat_wrapper.py"
 
-
+# TODO save stdout to log
 rule align_out:
     input:
         rules.align.output.sam,

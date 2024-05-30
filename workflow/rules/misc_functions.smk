@@ -5,14 +5,6 @@ def print_header(s):
     print("╚"+78*"═"+"╝")
 
 
-def has_extra_config(conf, conf_extra):
-    conf = conf.strip()
-    if len(conf) > 0:
-        return conf_extra[conf]
-    else:
-        return " "
-
-
 def all_paired(Metadata):
     r1 = sum(Metadata["read"] == "R1")
     r2 = sum(Metadata["read"] == "R2")

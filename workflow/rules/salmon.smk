@@ -10,8 +10,6 @@ def get_align_log_files(wildcards):
 def get_bam_index_files(wildcards):
     return []
 
-# TODO fix stranded
-
 
 rule align:
     input:
@@ -25,8 +23,8 @@ rule align:
         fastq_dir=FASTQ_CURRENT_DIR,
         outdir=opj(ALIGN_OUTDIR, "{sample}"),
         fragment_info=config_extra["align"]["salmon_single_fragment_info"],
+        stranded=salmon_stranded,
         extra=has_extra_config(config["align"]["extra"], config_extra["align"]),
-        stranded="A"
     log:
         quantlog=expand(opj(ALIGN_OUTDIR, "{{sample}}", "logs", "{log}"), log=["salmon_quant.log"]),
         runlog=expand(opj(ALIGN_OUTDIR, "{{sample}}", "{log}"), log=SALMON_LOG_FILES)
