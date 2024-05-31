@@ -15,10 +15,10 @@ rule multiqc:
         get_align_log_files,
         get_count_log_files
     output:
-        html = LOG_DIR + "multiqc/" + report_basename + ".html",
+        html=opj(MULTIQC_LOG_OUTDIR, report_basename + ".html"),
     params:
-        name = report_basename,
-        outdir = LOG_DIR + "multiqc/"
+        name=report_basename,
+        outdir=MULTIQC_LOG_OUTDIR
     conda:
         CONDA_SHARED_ENV
     script:

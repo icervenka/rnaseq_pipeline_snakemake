@@ -5,7 +5,7 @@ rule bam_index:
     input:
         rules.align_out.output
     output:
-        ALIGN_OUTDIR + "{sample}/"+ COMMON_BAM_NAME + ".bam.bai"
+        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_NAME + ".bam.bai")
     threads:
         config['threads']
     conda:

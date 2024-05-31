@@ -41,7 +41,7 @@ rule merge:
     input:
         sample_gtfs=expand(rules.assemble_transcripts.output, sample=Samples),
     output:
-        merged_gtf=COUNT_OUTDIR + STRINGTIE_MERGED_FILE
+        merged_gtf=opj(COUNT_OUTDIR, STRINGTIE_MERGED_FILE)
     params:
         standard=stringtie_denovo,
         extra=config_extra["count_other_rules"]["stringtie_merge_extra"]

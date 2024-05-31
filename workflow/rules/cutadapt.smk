@@ -25,7 +25,7 @@ rule cutadapt_se:
     input:
         lambda wildcards: get_single_fq(wildcards, FASTQ_CURRENT_DIR)
     output:
-        FASTQ_TRIMMED_DIR + "{filename}{ext}"
+        opj(FASTQ_TRIMMED_DIR, "{filename}{ext}")
     params:
         adapters=config['trim']['adapters_single'],
         quality=config['trim']['quality'],
@@ -33,7 +33,7 @@ rule cutadapt_se:
     threads: 
         4
     log:
-        TRIM_LOG_OUTDIR + "{filename}{ext}.txt"
+        opj(TRIM_LOG_OUTDIR, "{filename}{ext}.txt")
     conda:
         CONDA_SHARED_ENV
     shell:
@@ -52,7 +52,7 @@ rule cutadapt_pe:
     input:
         lambda wildcards: get_paired_fq(wildcards, FASTQ_CURRENT_DIR)
     output:
-        expand(FASTQ_TRIMMED_DIR + "{{filename}}{read}{{ext}}", 
+        expand(opj(FASTQ_TRIMMED_DIR, "{{filename}}{read}{{ext}}"), 
             read=config["paired_read_strings"]
         )
     params:
@@ -60,7 +60,7 @@ rule cutadapt_pe:
         quality=config['trim']['quality'],
         extra=config['trim']['extra']
     log:
-        TRIM_LOG_OUTDIR + "{filename}{ext}.txt"
+        opj(TRIM_LOG_OUTDIR, "{filename}{ext}.txt")
     threads: 
         4
     conda:

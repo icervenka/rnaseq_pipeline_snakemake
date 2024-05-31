@@ -4,7 +4,6 @@
 # TODO change get_fq input function to already get the correct directory
 # so it doesn't need to be passed to arrange_fq_for_align
 # TODO dir structure as dict and pass it as param to R and python scripts
-# TODO or change to pathlib (for python) and path (for R)
 # TODO add log directives to rules
 
 import pandas as pd
@@ -28,28 +27,29 @@ min_version("5.7.0")
 opj = path.join
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
-#│ ===== Load and process config files =====                                   │
-#└─────────────────────────────────────────────────────────────────────────────┘
-configfile: "config.yaml"
-validate(config, schema="workflow/schema/config.schema.yaml")
-config_extra = load_configfile("config_extra.yaml")
-# validate(config, schema="workflow/schema/config_extra.schema.yaml")
-
-#┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Load shared constants and functions =====                             │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # load global string constants:
 # - directory structure for input output and workflow
 # - filenames created by different tools used in workflow
 # - conda environment names
-include: "workflow/rules/_dir_structure.smk"
-include: "workflow/rules/_tool_filenames.smk"
-include: "workflow/rules/_envs.smk"
+# include: "workflow/rules/_dir_structure.smk"
+# include: "workflow/rules/_envs.smk"
+include: "workflow/rules/_globals.smk"
+include: opj(RULES_DIR, "_tool_filenames.smk")
 # contains misc functions and input functions for rules
-include: "workflow/rules/functions.smk"
+include: opj(RULES_DIR, "functions.smk")
 # contains pipleline rule defitions
 # TODO automated parsing for readme?
-include: "workflow/rules/pipelines.smk"
+include: opj(RULES_DIR, "pipelines.smk")
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Load and process config files =====                                   │
+#└─────────────────────────────────────────────────────────────────────────────┘
+configfile: "config.yaml"
+validate(config, schema="workflow/schema/config.schema.yaml")
+config_extra = load_configfile("config_extra.yaml")
+# validate(config, schema="workflow/schema/config_extra.schema.yaml")
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Process metadata =====                                                │
@@ -88,9 +88,7 @@ Metadata["filename_sans_read"] = Metadata["filename_sans_ext"].str.replace(
 )
 
 Metadata["filename_compression"] = Metadata["fq"].str.extract(compression_ext_regex)
-
 Metadata["filename_ext"] = Metadata["filename_sans_compression"].str.extract(rnaseq_ext_regex)
-
 Metadata["filename_full_ext"] = Metadata["filename_ext"] + Metadata["filename_compression"]
 
 Metadata = Metadata.sort_values(by=['sample', 'lane', 'read'])
@@ -105,34 +103,34 @@ Fqs = list(Metadata["fq"].unique())
 #│ ===== Load pipleline rules =====                                            │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # download sra files, skips if sra files are not defined
-# include: "workflow/rules/sra.smk"
+include: opj(RULES_DIR, "sra.smk")
 
 # makes sure that certain files that might be needed for analysis are created
 # - fasta index file
-include: "workflow/rules/preprocess.smk"
+include: opj(RULES_DIR, "preprocess.smk")
 
 # run fastqc quality control - load always
-include: "workflow/rules/fastqc.smk"
+include: opj(RULES_DIR, "fastqc.smk")
 
 # TODO add the ability to run multiple diffexp configurations at once
 # load pipline rules for selected pipeline from config.yaml 
 for rule in pipelines[config['pipeline']]:
-    include: RULES_DIR + rule + ".smk"
+    include: opj(RULES_DIR, rule + ".smk")
 
 # load rules for calculating coverage - load conditionally
 if config['coverage']['calculate']:
-    include: "workflow/rules/coverage.smk"
+    include: opj(RULES_DIR, "coverage.smk")
 else:
-    include: "workflow/rules/skip_coverage.smk"
+    include: opj(RULES_DIR, "skip_coverage.smk")
 
 # multiqc - load always
-include: "workflow/rules/multiqc.smk"
+include: opj(RULES_DIR, "multiqc.smk")
 
 # load rule for creating result archive with processed data - load conditionally
 if config['result_archive']:
-    include: "workflow/rules/result_archive.smk"
+    include: opj(RULES_DIR, "result_archive.smk")
 else:
-    include: "workflow/rules/skip_result_archive.smk"
+    include: opj(RULES_DIR, "skip_result_archive.smk")
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Execute before starting the workflow =====                            │
@@ -161,8 +159,7 @@ rule all:
         ### needed for rsem and cufflinks
         config['fasta'] + ".fai",
         ### check if fastq files are present otherwise download sra
-        # ancient(expand(FASTQ_DIR + "{file}", file=Metadata.fq)),
-        
+        ancient(expand(FASTQ_DIR + "{file}", file=Metadata.fq)),
         ### subsample
         get_subsample_pe_output_files,
         get_subsample_se_output_files,

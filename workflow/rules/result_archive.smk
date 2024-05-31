@@ -13,7 +13,7 @@ rule result_archive:
         get_diffexp_output_files,
         get_multiqc_output_files
     output:
-        ARCHIVE_DIR + config["experiment_name"] + ".tar.gz"
+        opj(ARCHIVE_DIR, config["experiment_name"] + ".tar.gz")
     params:
         RESULT_ARCHIVE_DIRS
     run:

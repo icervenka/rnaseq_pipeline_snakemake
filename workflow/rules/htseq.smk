@@ -5,6 +5,7 @@ def get_count_output_files(wildcards):
 def get_count_log_files(wildcards):
     return expand(rules.move_count_log.output, sample=Samples)
 
+
 # TODO redirect the other out to log file
 rule count:
     input:
@@ -39,7 +40,7 @@ rule move_count_log:
     input:
         rules.count.output
     output:
-        opj(COUNT_LOG_OUTDIR, "{sample}", HTSEQ_LOG_FILES[0])
+        expand(opj(COUNT_LOG_OUTDIR, "{{sample}}", "{log}"), log=HTSEQ_LOG_FILES))
     params:
         kind="log"
     conda:

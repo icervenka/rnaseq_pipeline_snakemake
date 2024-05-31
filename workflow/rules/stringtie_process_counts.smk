@@ -7,12 +7,15 @@
         rules.gather_data.output.samples_combined] 
     )
 
+
+# TODO remove the ensembl gene version from count matrix
+##  remove last row with colsums
 rule counts_to_matrix:
     input:
         expand(rules.count.output.counts, sample=Samples)
     output:
-        counts_gene=COUNT_OUTDIR + COMMON_COUNT_NAME,
-        counts_transcript=COUNT_OUTDIR + COMMON_TRANSCRIPT_COUNT_NAME
+        counts_gene=opj(COUNT_OUTDIR, COMMON_COUNT_NAME,)
+        counts_transcript=opj(COUNT_OUTDIR, COMMON_TRANSCRIPT_COUNT_NAME)
     params:
         input_dir=COUNT_OUTDIR,
         length=75
@@ -29,16 +32,14 @@ rule counts_to_matrix:
         -t {output.counts_transcript} \
         """
 
-# TODO remove the ensembl gene version from count matrix
-# remove last row with colsums
 
 rule gather_data:
     input:
         expand(rules.count.output.counts, sample=Samples)
     output:
-        tpm=COUNT_OUTDIR + STRINGTIE_TPM_FILE,
-        fpkm=COUNT_OUTDIR + STRINGTIE_FPKM_FILE,
-        samples_combined=COUNT_OUTDIR + STRINGTIE_COMBINED_FILE
+        tpm=opj(COUNT_OUTDIR, STRINGTIE_TPM_FILE),
+        fpkm=opj(COUNT_OUTDIR, STRINGTIE_FPKM_FILE),
+        samples_combined=opj(COUNT_OUTDIR, STRINGTIE_COMBINED_FILE)
     params:
         samples=expand("{sample}", sample=Samples)
     conda:

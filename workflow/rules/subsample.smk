@@ -23,12 +23,12 @@ rule subsample_se:
     input:
         lambda wildcards: get_single_fq(wildcards, FASTQ_CURRENT_DIR)
     output:
-        FASTQ_PREPROCESSED_DIR + "{filename}{ext}"
+        opj(FASTQ_PREPROCESSED_DIR, "{filename}{ext}")
     params:
         proportion=get_subsample_proportion(config['preprocess']['subsample']),
         extra=config['preprocess']['extra']
     log:
-        SUBSAMPLE_LOG_OUTDIR + "{filename}{ext}.log"
+        opj(SUBSAMPLE_LOG_OUTDIR, "{filename}{ext}.log")
     threads: 
         1
     conda:
@@ -40,14 +40,14 @@ rule subsample_pe:
     input:
         lambda wildcards: get_paired_fq(wildcards, FASTQ_CURRENT_DIR)
     output:
-        expand(FASTQ_PREPROCESSED_DIR + "{{filename}}{read}{{ext}}", 
+        expand(opj(FASTQ_PREPROCESSED_DIR, "{{filename}}{read}{{ext}}"), 
             read=config["paired_read_strings"]
         )
     params:
         proportion=get_subsample_proportion(config['preprocess']['subsample']),
         extra=config['preprocess']['extra']
     log:
-        SUBSAMPLE_LOG_OUTDIR + "{filename}{ext}.log"
+        opj(SUBSAMPLE_LOG_OUTDIR, "{filename}{ext}.log")
     threads: 
         1
     conda:
