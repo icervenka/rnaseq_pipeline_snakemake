@@ -89,7 +89,6 @@ count:
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Differential expression config =====                                  │
 #└─────────────────────────────────────────────────────────────────────────────┘
-# TODO enable multiple diffexp runs from one config
 diffexp:
   # name of the analysis and final output directory
   outdir: "default"

@@ -1,11 +1,3 @@
-# TODO create a default config and the config.yaml will only overwrite the default values
-# TODO make aligner specific directories for logs
-# TODO switch paths from appending strings to os.path.join
-# TODO change get_fq input function to already get the correct directory
-# so it doesn't need to be passed to arrange_fq_for_align
-# TODO dir structure as dict and pass it as param to R and python scripts
-# TODO add log directives to rules
-
 import pandas as pd
 import numpy as np
 import datetime
@@ -16,15 +8,18 @@ from snakemake.utils import validate, min_version
 from snakemake.io import load_configfile
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
-#│ ===== Set minimum snakemake version =====                                   │
-#└─────────────────────────────────────────────────────────────────────────────┘
-min_version("5.7.0")
-
-#┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Misc setup =====                                                      │
 #└─────────────────────────────────────────────────────────────────────────────┘
 # Is used a lot in all the rules, this might save some typing
 opj = path.join
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Load and process config files =====                                   │
+#└─────────────────────────────────────────────────────────────────────────────┘
+configfile: "config.yaml"
+validate(config, schema="workflow/schema/config.schema.yaml")
+config_extra = load_configfile("config_extra.yaml")
+# validate(config, schema="workflow/schema/config_extra.schema.yaml")
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Load shared constants and functions =====                             │
@@ -40,20 +35,16 @@ include: opj(RULES_DIR, "_tool_filenames.smk")
 # contains misc functions and input functions for rules
 include: opj(RULES_DIR, "functions.smk")
 # contains pipleline rule defitions
-# TODO automated parsing for readme?
 include: opj(RULES_DIR, "pipelines.smk")
-
-#┌─────────────────────────────────────────────────────────────────────────────┐
-#│ ===== Load and process config files =====                                   │
-#└─────────────────────────────────────────────────────────────────────────────┘
-configfile: "config.yaml"
-validate(config, schema="workflow/schema/config.schema.yaml")
-config_extra = load_configfile("config_extra.yaml")
-# validate(config, schema="workflow/schema/config_extra.schema.yaml")
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Process metadata =====                                                │
 #└─────────────────────────────────────────────────────────────────────────────┘
+# load and validate metadata ---------------------------------------------------
+Metadata = pd.read_table(config["metadata"], dtype=str)
+validate(Metadata, schema="workflow/schema/metadata.schema.yaml")
+
+# add other useful file columns ------------------------------------------------
 # regex to determine compression of files
 compression_ext = ["gz", "bz2"]
 compression_ext_regex = "(\\." + "|\.".join([e + "$" for e in compression_ext]) + ")"
@@ -66,10 +57,6 @@ rnaseq_ext_regex = "(\\." + "|\.".join([e + "$" for e in rnaseq_ext]) + ")"
 paired_read_strings_regex = "|".join(
     [e + "$" for e in config["paired_read_strings"]]
 )
-
-# load and validate metadata
-Metadata = pd.read_table(config["metadata"], dtype=str)
-validate(Metadata, schema="workflow/schema/metadata.schema.yaml")
 
 Metadata["paired"] = np.where(
     Metadata.duplicated(subset=['sample', 'lane'], keep=False), 1, 0
