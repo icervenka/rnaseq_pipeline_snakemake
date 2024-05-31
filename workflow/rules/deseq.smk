@@ -24,7 +24,7 @@ rule diffexp_init:
         count_data=rules.counts_to_matrix.output,
         col_data=ancient(config["metadata"])
     output:
-        dds=RDS_OUTDIR + "dds.rds"
+        dds=opj(RDS_OUTDIR, "dds.rds")
     params:
         design=config['diffexp']["design"],
         ref_levels=config['diffexp']["reference_levels"],
@@ -43,7 +43,7 @@ rule diffexp_results:
         dds=rules.diffexp_init.output.dds,
         col_data=ancient(config["metadata"])
     output:
-        result_array=RDS_OUTDIR + "result_array.rds",
+        result_array=opj(RDS_OUTDIR, "result_array.rds"),
     params:
         contrast_type=config['diffexp']["contrast_type"],
         contrasts=config['diffexp']["contrasts"],
@@ -62,8 +62,8 @@ rule diffexp_save:
         dds=rules.diffexp_init.output.dds,
         result_array=rules.diffexp_results.output.result_array
     output:
-        sample_expression=DEGFILES_OUTDIR + "sample_expression.txt",
-        result_array_ids=RDS_OUTDIR + "result_array_ids.rds"
+        sample_expression=opj(DEGFILES_OUTDIR, "sample_expression.txt"),
+        result_array_ids=opj(RDS_OUTDIR + "result_array_ids.rds")
     params:
         outdir=DEGFILES_OUTDIR,
         species=config["species"],
@@ -80,7 +80,7 @@ rule diffexp_report:
         result_array=rules.diffexp_results.output.result_array,
         result_array_ids=rules.diffexp_save.output.result_array_ids
     output:
-        report=REPORTS_OUTDIR + "report.html"
+        report=opj(REPORTS_OUTDIR, "report.html")
     params:
         experiment_name=config["experiment_name"],
         outdir=REPORTS_OUTDIR,
@@ -109,7 +109,7 @@ rule diffexp_report_pca:
     input:
         dds=rules.diffexp_init.output.dds
     output:
-        report_pca=REPORTS_OUTDIR + "pca.html"
+        report_pca=opj(REPORTS_OUTDIR, "pca.html")
     params:
         outdir=REPORTS_OUTDIR,
         dir_structure=_ds,
@@ -134,7 +134,7 @@ rule diffexp_report_glimma:
         dds=rules.diffexp_init.output.dds,
         result_array=rules.diffexp_results.output.result_array
     output:
-        report_glimma=REPORTS_OUTDIR + "mds-plot.html"
+        report_glimma=opj(REPORTS_OUTDIR, "mds-plot.html")
     params:
         outdir=REPORTS_OUTDIR,
         species=config['species'],
@@ -152,7 +152,7 @@ rule diffexp_copy_config:
         config="config.yaml",
         metadata=ancient(config["metadata"])
     output:
-        config=OUTDIR + "analysis_params/config.yaml",
-        metadata=OUTDIR + "analysis_params/" + config["metadata"]
+        config=opj(OUTDIR, "analysis_params", "config.yaml"),
+        metadata=opj(OUTDIR, "analysis_params", config["metadata"])
     shell:
         "cp {input.config} {output.config}; cp {input.metadata} {output.metadata}"
