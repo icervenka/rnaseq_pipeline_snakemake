@@ -1,0 +1,14 @@
+ - `download_only` - skip_align, skip_count, skip_diffexp
+ - `star_only` - star, skip_count, skip_diffexp
+ - `hisat_only` - hisat, skip_count, skip_diffexp
+ - `tophat_only` - tophat, skip_count, skip_diffexp
+ - `bowtie2_only` - bowtie2, skip_count, skip_diffexp
+ - `salmon_only` - salmon, skip_count, skip_diffexp
+ - `kallisto_only` - kallisto, skip_count, skip_diffexp
+ - `featurecounts_only` - skip_align, featurecounts, skip_diffexp
+ - `htseq_only` - skip_align, htseq, skip_diffexp
+ - `stringtie_only` - skip_align, stringtie, skip_diffexp
+ - `stringtie_expression_only` - skip_align, stringtie_expression, skip_diffexp
+ - `cufflinks_only` - skip_align, cufflinks, skip_diffexp
+ - `deseq_only` - skip_align, featurecounts, deseq
+ - `deseq` - star, featurecounts, deseq
