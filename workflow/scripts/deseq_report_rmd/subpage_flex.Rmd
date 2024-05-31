@@ -64,27 +64,7 @@ show_table <- result_ids %>%
   ) %>%
   dplyr::select(-GENENAME)
 
-# TODO change to default_dt
-DT::datatable(show_table,
-  escape = FALSE,
-  rownames = FALSE,
-  filter = "top",
-  extensions = c("Buttons", "Scroller"),
-  style = "bootstrap",
-  class = "compact  stripe",
-  width = "100%",
-  options = list(
-    dom = "Blrtip", # specify content (search box, etc)
-    deferRender = FALSE,
-    scrollY = 600,
-    scroller = TRUE,
-    buttons = list(
-      I("colvis"),
-      "csv", # download as .csv
-      "excel" # download as .xlsx
-    )
-  )
-) %>%
+default_dt(show_table) %>%
   DT::formatRound(columns = c(4, 5, 6, 7), digits = 4)
 ```
 
