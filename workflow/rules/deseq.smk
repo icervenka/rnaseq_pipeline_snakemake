@@ -123,6 +123,7 @@ rule diffexp_report_pca:
     output:
         report_pca=REPORTS_OUTDIR + "pca.html"
     params:
+        outdir=REPORTS_OUTDIR,
         species=config['species'],
         ids_in=config['diffexp']["input_gene_ids"],
         group=config['report']["pca"]['groups'],

@@ -23,6 +23,10 @@ KALLISTO_LOGFILES = ["run_info.json"]
 SALMON_QUANT_NAME = "quant"
 SALMON_LOG_FILES = ['cmd_info.json', 'lib_format_counts.json']
 
+
+## Samtools
+SAMTOOLS_LOG_FILES = ['samtools.log']
+
 # Read counting tools ----------------------------------------------------------
 COMMON_COUNT_NAME = "count_matrix.txt"
 COMMON_TRANSCRIPT_COUNT_NAME = "transcript_count_matrix.txt"

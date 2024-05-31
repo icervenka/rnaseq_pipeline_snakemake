@@ -29,7 +29,7 @@ align:
     "-N 18
     --read-edit-dist 18"
   # optimized extra parameters for star
-  star_extra_1:
+  star_extra:
     "--outFilterMismatchNmax 33
     --alignEndsType Local
     --alignSJoverhangMin 8
@@ -42,7 +42,6 @@ align:
     "--mp 1,0
     --sp 3,1
     --pen-noncansplice 15"
-  # extra parameters for kallisto, if unknown, leave these defaults
   kallisto_extra:
     ""
   # required for single end run, estimated for paired end
@@ -56,17 +55,18 @@ align:
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Read counting config =====                                            │
 #└─────────────────────────────────────────────────────────────────────────────┘
+
 count:
   featurecounts_extra: ""
   htseq_extra: ""
+  stringtie_extra: ""
+
+
+count_other_rules:
   stringtie_assemble_extra: ""
   stringtie_merge_extra: ""
-  stringtie_count_extra: ""
-  # type of cufflinks assembly to perform. One of 'classic', 'guided', 'denovo'
-  # differs in usage of refernce gtf file to perform assembly
-  cufflinks_mode: "classic"
-  cufflinks_extra: "--multi-read-correct "
-  cuffmerge_extra: "--multi-read-correct "
+  cufflinks_extra: ""
+  cuffmerge_extra: ""
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Differential expression config =====                                  │

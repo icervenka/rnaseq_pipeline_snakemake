@@ -36,6 +36,7 @@ rule align:
     script:
         "../scripts/kallisto_wrapper.py"
 
+
 rule move_align_log:
     input:
         rules.align.log

@@ -48,8 +48,6 @@ knitr_output_options <- list(
   lib_dir = paste0(relative_outdir, "/libs")
 )
 
-# FIXME gives warning for diffexp dir creation permission denied, but works ok
-# render html document
 rmarkdown::render(
   report_layout_path,
   output_file = paste0(CD3UP, report_out),

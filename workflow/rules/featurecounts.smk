@@ -32,6 +32,7 @@ rule count:
     script:
         "../scripts/featurecounts_wrapper.py"
 
+
 rule counts_to_matrix:
     input:
         expand(rules.count.output.counts, sample=Samples),
@@ -43,7 +44,6 @@ rule counts_to_matrix:
         "../scripts/featurecounts_gather.R"
 
 
-# TODO think about merging into one file
 rule move_count_summary:
     input:
         rules.count.output.summary,

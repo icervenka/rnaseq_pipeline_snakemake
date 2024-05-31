@@ -42,7 +42,7 @@ result_array <- purrr::map(selected_contrasts, function(x) {
   res <- DESeq2::results(dds, contrast = sc, alpha = fdr)
   if (lfc_shrink == "apeglm") {
     suppressMessages(library(apeglm))
-    # TODO
+    # TODO implement apeglm
     lfc_res <- DESeq2::lfcShrink(dds, contrast = sc, res = res, type = "ashr")
   } else if (lfc_shrink == "ashr") {
     suppressMessages(library(ashr))
