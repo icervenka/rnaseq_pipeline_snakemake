@@ -9,6 +9,7 @@ dds <- readRDS(snakemake@input[["dds"]])
 report_pca_out <- snakemake@output[["report_pca"]]
 # params
 outdir <- snakemake@params[["outdir"]]
+dir_structure <- snakemake@params[["dir_structure"]]
 sp_info <- get_species_info(snakemake@params[["species"]])
 ids_in <- snakemake@params[["ids_in"]]
 group <- snakemake@params[["group"]][1] # FIXME why [1]?
@@ -56,7 +57,7 @@ report_layout_path <- paste0(
 
 # output path is relative to this script that runs the markdown::render
 ## not snakemake base
-relative_outdir <- paste0(CD3UP, outdir)
+relative_outdir <- paste0(dir_structure[["CD3UP"]], outdir)
 
 knitr_output_options <- list(
   mathjax = NULL
@@ -64,7 +65,7 @@ knitr_output_options <- list(
 
 rmarkdown::render(
   report_layout_path,
-  output_file = paste0(CD3UP, report_pca_out),
+  output_file = paste0(dir_structure[["CD3UP"]], report_pca_out),
   output_options = knitr_output_options,
   output_format = "all"
 )

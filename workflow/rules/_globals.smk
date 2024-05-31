@@ -22,7 +22,7 @@ _ds = {
 }
 
 # folder organization of the pipelline log_files
-_ds_log = {
+_ds.update({
     "SUBSAMPLE_LOG_OUTDIR": opj(_ds["LOG_DIR"], "subsample/"),
     "TRIM_LOG_OUTDIR": opj(_ds["LOG_DIR"], "trim/"),
     "ALIGN_LOG_OUTDIR": opj(_ds["LOG_DIR"], "align/"),
@@ -30,7 +30,17 @@ _ds_log = {
     "DIFFEXP_LOG_OUTDIR": opj(_ds["LOG_DIR"], "diffexp/"),
     "FASTQC_LOG_OUTDIR": opj(_ds["LOG_DIR"], "fastqc/"),
     "MULTIQC_LOG_OUTDIR":opj( _ds["LOG_DIR"], "multiqc/")
-}
+})
+
+_ds.update({
+    "DIFFEXP_ANALYSIS_OUTDIR": opj(_ds["DIFFEXP_OUTDIR"], config["diffexp"]["outdir"])
+})
+
+_ds.update({
+    "DEGFILES_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "degfiles/"),
+    "REPORTS_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "reports/"),
+    "RDS_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "rds/")
+})
 
 # conda environments
 _envs = {
@@ -49,5 +59,4 @@ _envs = {
 
 # update into global environment
 globals().update(_ds)
-globals().update(_ds_log)
 globals().update(_envs)

@@ -1,17 +1,4 @@
 #┌─────────────────────────────────────────────────────────────────────────────┐
-#│ ===== Setup =====                                                           │
-#└─────────────────────────────────────────────────────────────────────────────┘
-# TODO maybe move the new folder constants somewhere else
-DIFFEXP_ANALYSIS = "{}_{}/".format(
-    pipelines[config['pipeline']][-1], config["diffexp"]["outdir"])
-
-OUTDIR = DIFFEXP_OUTDIR + DIFFEXP_ANALYSIS
-DEGFILES_OUTDIR = OUTDIR + "degfiles/"
-REPORTS_OUTDIR = OUTDIR + "reports/"
-DDS_OUTDIR = OUTDIR + "dds/"
-
-
-#┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Output functions =====                                                │
 #└─────────────────────────────────────────────────────────────────────────────┘
 def get_diffexp_output_files(wildcards):
@@ -37,7 +24,7 @@ rule diffexp_init:
         count_data=rules.counts_to_matrix.output,
         col_data=ancient(config["metadata"])
     output:
-        dds=DDS_OUTDIR + "dds.rds"
+        dds=RDS_OUTDIR + "dds.rds"
     params:
         design=config['diffexp']["design"],
         ref_levels=config['diffexp']["reference_levels"],
@@ -56,7 +43,7 @@ rule diffexp_results:
         dds=rules.diffexp_init.output.dds,
         col_data=ancient(config["metadata"])
     output:
-        result_array=DDS_OUTDIR + "result_array.rds",
+        result_array=RDS_OUTDIR + "result_array.rds",
     params:
         contrast_type=config['diffexp']["contrast_type"],
         contrasts=config['diffexp']["contrasts"],
@@ -76,7 +63,7 @@ rule diffexp_save:
         result_array=rules.diffexp_results.output.result_array
     output:
         sample_expression=DEGFILES_OUTDIR + "sample_expression.txt",
-        result_array_ids=DDS_OUTDIR + "result_array_ids.rds"
+        result_array_ids=RDS_OUTDIR + "result_array_ids.rds"
     params:
         outdir=DEGFILES_OUTDIR,
         species=config["species"],
@@ -97,6 +84,7 @@ rule diffexp_report:
     params:
         experiment_name=config["experiment_name"],
         outdir=REPORTS_OUTDIR,
+        dir_structure=_ds,
         species=config["species"],
         ids_in=config['diffexp']["input_gene_ids"],
         fdr=config['diffexp']["fdr"],
@@ -124,6 +112,7 @@ rule diffexp_report_pca:
         report_pca=REPORTS_OUTDIR + "pca.html"
     params:
         outdir=REPORTS_OUTDIR,
+        dir_structure=_ds,
         species=config['species'],
         ids_in=config['diffexp']["input_gene_ids"],
         group=config['report']["pca"]['groups'],

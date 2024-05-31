@@ -1,11 +1,5 @@
 suppressMessages(library(magrittr))
 
-# global constants for ease of dir access
-CD1UP <- "../" # nolint
-CD2UP <- "../../" # nolint
-CD3UP <- "../../../" # nolint
-
-
 modify_tilda <- function(x, add = TRUE) {
   if (add == TRUE) {
     if (!startsWith(x, "~")) {
@@ -199,4 +193,8 @@ get_order_func <- function(mode) {
     ordering by row variance.")
     return(matrixStats::rowVars)
   }
+}
+
+remove_ens_gene_version <- function(vec) {
+  stringr::str_replace(vec, "(EN[[:alnum:]]+)\\.\\d+$", "\\1")
 }
