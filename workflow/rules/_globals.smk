@@ -1,6 +1,5 @@
 # folder organization of the pipelline input and output files
 _ds = {
-    "RULES_DIR": "workflow/rules/",
     "SCRIPT_DIR": "workflow/scripts/",
     "ENV_DIR": "envs/",
     "SRA_DIR": "sra/",
@@ -11,7 +10,7 @@ _ds = {
     "ALIGN_OUTDIR": "align/",
     "COVERAGE_OUTDIR": "coverage/",
     "COUNT_OUTDIR": "counts/",
-    "MERGE_OUTDIR": "merged/",
+    # "MERGE_OUTDIR": "merged/",
     "DIFFEXP_OUTDIR": "diffexp/",
     "GSEA_INPUT_OUTDIR": "misc/gsea_input/",
     "LOG_DIR": "logs/",
@@ -39,7 +38,8 @@ _ds.update({
 _ds.update({
     "DEGFILES_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "degfiles/"),
     "REPORTS_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "reports/"),
-    "RDS_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "rds/")
+    "RDS_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "rds/"),
+    "ANALYSIS_PARAM_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "analysis_params/")
 })
 
 # conda environments

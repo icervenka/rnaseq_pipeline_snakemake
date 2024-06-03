@@ -52,6 +52,7 @@ BALLGOWN_INPUT_FILES = ["e_data.ctab", "i_data.ctab", "t_data.ctab", "e2t.ctab",
 ## Cufflinks
 CUFFLINKS_GTF_FILE = "transcripts.gtf"
 CUFFLINKS_MERGED_FILE = "merged.gtf"
+CUFFQUANT_COUNT_NAME = "abundances.cxb"
 
 # Diffexp tools ----------------------------------------------------------------
 

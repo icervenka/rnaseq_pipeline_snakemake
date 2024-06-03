@@ -1,3 +1,6 @@
+# TODO add the ability to run multiple diffexp configurations at once
+# TODO add align, count and diffexp keys to pipeline dictionary
+
 import pandas as pd
 import numpy as np
 import datetime
@@ -18,6 +21,7 @@ opj = path.join
 #└─────────────────────────────────────────────────────────────────────────────┘
 configfile: "config.yaml"
 validate(config, schema="workflow/schema/config.schema.yaml")
+
 config_extra = load_configfile("config_extra.yaml")
 # validate(config, schema="workflow/schema/config_extra.schema.yaml")
 
@@ -28,9 +32,8 @@ config_extra = load_configfile("config_extra.yaml")
 # - directory structure for input output and workflow
 # - filenames created by different tools used in workflow
 # - conda environment names
-# include: "workflow/rules/_dir_structure.smk"
-# include: "workflow/rules/_envs.smk"
-include: "workflow/rules/_globals.smk"
+RULES_DIR = opj("workflow", "rules")
+include: opj(RULES_DIR, "_globals.smk")
 include: opj(RULES_DIR, "_tool_filenames.smk")
 # contains misc functions and input functions for rules
 include: opj(RULES_DIR, "functions.smk")
@@ -59,7 +62,7 @@ paired_read_strings_regex = "|".join(
 )
 
 Metadata["paired"] = np.where(
-    Metadata.duplicated(subset=['sample', 'lane'], keep=False), 1, 0
+    Metadata.duplicated(subset=["sample", "lane"], keep=False), 1, 0
 )
 
 # Add additional columns to metadata 
@@ -78,7 +81,7 @@ Metadata["filename_compression"] = Metadata["fq"].str.extract(compression_ext_re
 Metadata["filename_ext"] = Metadata["filename_sans_compression"].str.extract(rnaseq_ext_regex)
 Metadata["filename_full_ext"] = Metadata["filename_ext"] + Metadata["filename_compression"]
 
-Metadata = Metadata.sort_values(by=['sample', 'lane', 'read'])
+Metadata = Metadata.sort_values(by=["sample", "lane", "read"])
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Global sample and fastq file variables =====                          │
@@ -99,13 +102,13 @@ include: opj(RULES_DIR, "preprocess.smk")
 # run fastqc quality control - load always
 include: opj(RULES_DIR, "fastqc.smk")
 
-# TODO add the ability to run multiple diffexp configurations at once
 # load pipline rules for selected pipeline from config.yaml 
-for rule in pipelines[config['pipeline']]:
+pipeline = pipelines[config["pipeline"]]
+for key, rule in pipeline.items():
     include: opj(RULES_DIR, rule + ".smk")
 
 # load rules for calculating coverage - load conditionally
-if config['coverage']['calculate']:
+if config["coverage"]["calculate"]:
     include: opj(RULES_DIR, "coverage.smk")
 else:
     include: opj(RULES_DIR, "skip_coverage.smk")
@@ -114,7 +117,7 @@ else:
 include: opj(RULES_DIR, "multiqc.smk")
 
 # load rule for creating result archive with processed data - load conditionally
-if config['result_archive']:
+if config["result_archive"]:
     include: opj(RULES_DIR, "result_archive.smk")
 else:
     include: opj(RULES_DIR, "skip_result_archive.smk")
@@ -129,13 +132,23 @@ onstart:
     print("Number of samples: " + str(len(Samples)))
     print()
     print_header("Workflow parameters")
-    print("Selected pipeline: " + config['pipeline'])
+    print("Selected pipeline: " + config["pipeline"])
     print("Pipeline steps:")
-    for rule in pipelines[config['pipeline']]:
-        print(" - " + rule)
-    print("Trimming: Using " + config['trim']['trimmer'])
-    print("Coverage calculation: " + str(config['coverage']['calculate']))
-    print("Creating result archive: " + str(config['result_archive']))
+    for key, rule in pipeline.items():
+        print(" - ",  key , " ", rule)
+    
+    if is_set_subsample(config["preprocess"]["subsample"]):
+        print("Subsampling:  ", config["preprocess"]["subsample"])
+    else:
+        print("Subsampling:  No")
+    
+    if is_set_trimmer(config["trim"]["trimmer"]):
+        print("Trimming:  Using " + config["trim"]["trimmer"])
+    else:
+        print("Trimming:  No")
+    
+    print("Coverage calculation: " + str(config["coverage"]["calculate"]))
+    print("Creating result archive: " + str(config["result_archive"]))
     
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Top level snakemake rule =====                                        │
@@ -144,7 +157,7 @@ rule all:
     input:
         ### check if genomic fasta index file exists
         ### needed for rsem and cufflinks
-        config['fasta'] + ".fai",
+        config["fasta"] + ".fai",
         ### check if fastq files are present otherwise download sra
         ancient(expand(FASTQ_DIR + "{file}", file=Metadata.fq)),
         ### subsample
@@ -179,10 +192,10 @@ rule all:
 #└─────────────────────────────────────────────────────────────────────────────┘
 onsuccess:
     from datetime import datetime
-    print_header(str(datetime.today().strftime('%Y-%m-%d %H:%M:%S')) + 
+    print_header(str(datetime.today().strftime("%Y-%m-%d %H:%M:%S")) + 
     " - RNA-Seq workflow finished successfully!")
 
 onerror:
     from datetime import datetime
-    print_header(str(datetime.today().strftime('%Y-%m-%d %H:%M:%S')) + 
+    print_header(str(datetime.today().strftime("%Y-%m-%d %H:%M:%S")) + 
     " - There was and ERROR running RNA-Seq workflow!")
