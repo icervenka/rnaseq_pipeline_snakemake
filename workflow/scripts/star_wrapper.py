@@ -23,6 +23,7 @@ shell(
     "--readFilesIn {input_str} "
     "--outFileNamePrefix {outprefix} "
     "--readFilesCommand {read_cmd} "
+    "--outSAMstrandField intronMotif "
     "--outSAMtype BAM SortedByCoordinate "
     "--outFilterType BySJout "
     "--limitBAMsortRAM 20000000000 "
