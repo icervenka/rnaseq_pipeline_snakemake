@@ -13,7 +13,6 @@ def get_align_log_files(wildcards):
 
 
 # TODO rule for generating splice sites
-
 rule align:
     input:
         sample=get_fq
@@ -36,7 +35,6 @@ rule align:
     script:
         "../scripts/hisat_wrapper.py"
 
-# TODO save stdout to log
 rule align_out:
     input:
         rules.align.output.sam,
@@ -44,6 +42,8 @@ rule align_out:
         opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_NAME + ".bam"),
     params:
         compression=9,
+    log:
+        expand(opj(ALIGN_LOG_OUTDIR, "{{sample}}", "{log}"), log=SAMTOOLS_LOG_FILES),
     threads: 
         config["threads"]
     conda:
@@ -58,6 +58,7 @@ rule align_out:
         -@ {threads} \
         --output-fmt BAM \
         -o {output}
+        > 2>&1 {log}
         """
 
 
