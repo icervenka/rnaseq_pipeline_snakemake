@@ -14,23 +14,36 @@ def get_count_log_files(wildcards):
 
 rule count:
     input:
-        bam=rules.align_out.output,
-        gtf=config["gtf"],
+        bam=rules.align_out.output
     output:
         counts=opj(COUNT_OUTDIR, "{sample}", FEATURECOUNTS_COUNT_NAME),
         summary=opj(COUNT_OUTDIR, "{sample}", FEATURECOUNTS_SUMMARY_NAME)
     params:
+        gtf=config["gtf"],
+        fasta=config["fasta"],
         stranded=lambda wildcards: stranded_param(wildcards, "featurecounts"),
         standard=featurecounts_params,
         extra=has_extra_config(config["count"]["extra"], config_extra["count"])
     log:
-        opj(COUNT_LOG_OUTDIR, "{sample}", FEATURECOUNTS_LOG_FILES[0]), 
+        expand(opj(COUNT_LOG_OUTDIR, "{{sample}}", "{log}"), log=FEATURECOUNTS_LOG_FILES)
     threads: 
         config["threads"]
     conda:
         CONDA_COUNT_GENERAL_ENV
-    script:
-        "../scripts/featurecounts_wrapper.py"
+    shell:
+        """
+        featureCounts \
+        -a {params.gtf} \
+        -o {output.counts} \
+        -T {threads} \
+        -G {params.fasta} \
+        -s {params.stranded} \
+        {params.standard} \
+        {params.extra} \
+        {input.bam} \
+        2> {snakemake.log}
+        """
+        #"../scripts/featurecounts_wrapper.py"
 
 
 rule counts_to_matrix:
