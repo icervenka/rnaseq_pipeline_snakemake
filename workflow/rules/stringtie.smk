@@ -9,18 +9,25 @@ def get_count_output_files(wildcards):
 
 
 def get_count_log_files(wildcards):
-    return []
+    return (
+        expand(rules.assemble_transcripts.log, sample=Samples)
+        expand(rules.merge.log, sample=Samples)
+        expand(rules.count.log, sample=Samples)
+    )
 
 
 rule assemble_transcripts:
     input:
         bam=rules.align_out.output
     output:
-        temp(opj(COUNT_OUTDIR, "{sample}", "temp_" + STRINGTIE_GTF_FILE))
+        gtf=temp(opj(COUNT_OUTDIR, "{sample}", "temp_" + STRINGTIE_GTF_FILE))
     params:
         stranded=lambda wildcards: stranded_param(wildcards, "stringtie"),
-        standard=stringtie_denovo,
+        denovo=stringtie_denovo,
+        standard=stringtie_params,
         extra=config_extra["count_other_rules"]["stringtie_assemble_extra"]
+    log:
+        expand(opj(COUNT_LOG_OUTDIR, "{{sample}}", "{log}"), log=STRINGTIE_LOG_FILES)
     threads:
         config['threads']
     conda:
@@ -28,7 +35,9 @@ rule assemble_transcripts:
     shell:
         """
         stringtie \
+        -v \
         {params.stranded} \
+        {params.denovo} \
         {params.standard} \
         {params.extra} \
         -p {threads} \
@@ -39,12 +48,14 @@ rule assemble_transcripts:
 
 rule merge:
     input:
-        sample_gtfs=expand(rules.assemble_transcripts.output, sample=Samples),
+        sample_gtfs=expand(rules.assemble_transcripts.output.gtf, sample=Samples),
     output:
         merged_gtf=opj(COUNT_OUTDIR, STRINGTIE_MERGED_FILE)
     params:
-        standard=stringtie_denovo,
+        denovo=stringtie_denovo,
         extra=config_extra["count_other_rules"]["stringtie_merge_extra"]
+    log:
+        expand(opj(COUNT_LOG_OUTDIR, "{{sample}}", "{log}"), log=STRINGTIE_MERGE_LOG_FILES)
     threads:
         config['threads']
     conda:
@@ -53,7 +64,8 @@ rule merge:
         """
         stringtie \
         --merge \
-        {params.standard} \
+        -v \
+        {params.denovo} \
         {params.extra} \
         -p {threads} \
         -o {output} \
@@ -77,6 +89,8 @@ rule count:
         stranded=lambda wildcards: stranded_param(wildcards, "stringtie"),
         standard=stringtie_params,
         extra=has_extra_config(config["count"]["extra"], config_extra["count"])
+    log:
+        expand(opj(COUNT_LOG_OUTDIR, "{{sample}}", "{log}"), log=STRINGTIE_COUNT_LOG_FILES)
     threads:
         config['threads']   
     conda:
@@ -84,6 +98,7 @@ rule count:
     shell:
         """
         stringtie \
+        -v \
         {params.stranded} \
         {params.standard} \
         {params.extra} \
