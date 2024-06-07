@@ -34,6 +34,7 @@ def arrange_fq_for_align(sample, metadata, fastq_dir):
     input_arr = fq_meta.groupby(['read'])['fq_full'].apply(lambda x: x.to_list())
     return input_arr
 
+
 ##### functions for parsing parameters from various tools  #####
 def read_command(filename):
     if(filename.endswith(".bz2")):

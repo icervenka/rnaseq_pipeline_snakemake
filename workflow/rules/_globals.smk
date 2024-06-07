@@ -31,10 +31,13 @@ _ds.update({
     "MULTIQC_LOG_OUTDIR":opj( _ds["LOG_DIR"], "multiqc/")
 })
 
+# folder organization of other folders that depend on the default organization
 _ds.update({
-    "DIFFEXP_ANALYSIS_OUTDIR": opj(_ds["DIFFEXP_OUTDIR"], config["diffexp"]["outdir"])
+    "DIFFEXP_ANALYSIS_OUTDIR": opj(_ds["DIFFEXP_OUTDIR"], config["diffexp"]["outdir"]),
+    "CUFFNORM_OUTDIR": opj(_ds["COUNT_OUTDIR"], "cuffnorm")
 })
 
+# folder organization of the diffexp files
 _ds.update({
     "DEGFILES_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "degfiles/"),
     "REPORTS_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "reports/"),

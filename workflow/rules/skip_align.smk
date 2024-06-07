@@ -6,14 +6,14 @@ def get_bam_index_files(wildcards):
     return []
 
 
-if "skip_count" in config['pipeline']:
+if "skip_count" == pipeline["diffexp"]:
     def get_align_output_files(wildcards):
         return []
 else:
     def get_align_output_files(wildcards):
         return expand(rules.align_out.output, sample=Samples)
 
-    if "sleuth" in config['pipeline']:
+    if "sleuth" == pipeline["diffexp"]:
         if "h5" in present_ext:
             COMMON_ALIGN_NAME = KALLISTO_QUANT_NAME
             ext = "h5"

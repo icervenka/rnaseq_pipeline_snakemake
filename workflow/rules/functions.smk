@@ -54,10 +54,12 @@ def get_sra(wildcards):
     sra = Metadata.query('sra == @wildcards.sra').sra.dropna().unique()
     return sra
 
+
 def get_single_end_sra(wildcards):
     m = Metadata[~Metadata.duplicated(subset=['sra'], keep=False).astype(bool)]
     m = m.query('sra == @wildcards.sra').sra.unique()
     return SRA_DIR + m
+
 
 def get_paired_end_sra(wildcards):
     m = Metadata[Metadata.duplicated(subset=['sra']).astype(bool)]
@@ -70,6 +72,8 @@ def get_paired_end_sra(wildcards):
 #└─────────────────────────────────────────────────────────────────────────────┘
 def get_fq(wildcards):
     m = Metadata.query('sample == @wildcards.sample').dropna()
+    # current fastq dir needs to be specified otherwise snakemake fill not find
+    # the file
     return FASTQ_CURRENT_DIR + m.fq
 
 
@@ -136,49 +140,58 @@ def featurecounts_params(wildcards):
     param_string = ""
     param_string += "-M " if config["count"]["multimap"] else ""
     param_string += "-O " if config["count"]["overlap"] else ""
-    param_string += config_extra["count"]["featurecounts_extra"] + " "
-    return(param_string)
+    return param_string
 
 # htseq ------------------------------------------------------------------------
 def htseq_params(wildcards):
     param_string = ""
-    if config["count"]["overlap"] == "yes":
+    if config["count"]["overlap"]:
         param_string += "--nonunique=all "
     if not config["count"]["multimap"]:
         param_string += "--secondary-alignments=ignore "
-    return(param_string)
+    return param_string
 
 # stringtie --------------------------------------------------------------------
 def stringtie_params(wildcards):
-    return []
+    param_string = ""
+    if not config['count']['multimap']:
+        param_string += "-M 0 -u  "
+    return param_string
 
 def stringtie_denovo(wildcards):
+    param_string = ""
     if not config['count']['denovo_assembly']:
-        return "-G " + config["gtf"]
-    else:
-        return ""
+        param_string += "-G " + config["gtf"] + " "
+
+    return param_string
 
 # cufflinks --------------------------------------------------------------------
 def cufflinks_params(wildcards):
-    # -u/–multi-read-correct
-    # –max-multiread-fraction <0.0-1.0>
-    # –no-effective-length-correction
-    if config_extra['count']['cufflinks_mode'] == "classic":
-        mode="-G {input.gtf} "
-    elif config_extra['count']['cufflinks_mode'] == "guided":
-        mode="-g {input.gtf} "
-    elif config_extra['count']['cufflinks_mode'] == "denovo":
-        mode=""
-    else:
-        mode="-G {input.gtf} "
-
-    return(param_string)
-
-
-def cuffmerge_params(wildcards):
     param_string = ""
-    param_string += config_extra['count']['cuffmerge_extra']
-    return(param_string)
+    if pipeline["diffexp"] in ["edger", "deseq", "limma"]:
+        param_string += "--no-length-correction --no-effective-length-correction "
+
+    if not config['count']['multimap']:
+        param_string += "--max-multiread-fraction 0.0 "
+    else:
+        param_string += "--multi-read-correct "
+
+    return param_string
+
+def cufflinks_denovo(wildcards):
+    param_string = ""
+    if not config['count']['denovo_assembly']:
+        param_string += "-g " + config["gtf"] + " "
+    
+    return param_string
+
+
+def cuffnorm_params(wildcards):
+    param_string = ""
+    if pipeline["diffexp"] in ["edger", "deseq", "limma"]:
+        param_string += "--library-norm-method classic-fpkm "
+    return param_string
+    
 
 # hisat ------------------------------------------------------------------------
 def hisat_stranded(wildcards):
@@ -244,8 +257,7 @@ def has_extra_config(conf, conf_extra):
     conf = conf.strip()
     if len(conf) > 0:
         if conf_extra[conf] == None or len(conf_extra[conf]) == 0:
-            return conf + " "
-            
+            return conf + " "    
         else:
             return conf_extra[conf]
     else:

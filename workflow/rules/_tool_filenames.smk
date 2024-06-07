@@ -48,14 +48,29 @@ STRINGTIE_TPM_FILE = "stringtie_tpm.txt"
 STRINGTIE_FPKM_FILE = "stringtie_fpkm.txt"
 STRINGTIE_COMBINED_FILE = "stringtie_samples_combined.txt"
 BALLGOWN_INPUT_FILES = ["e_data.ctab", "i_data.ctab", "t_data.ctab", "e2t.ctab", "i2t.ctab"]
+STRINGTIE_LOG_FILES = ["stringtie.log"]
+STRINGTIE_MERGE_LOG_FILES = ["stringtie_merge.log"]
+STRINGTIE_COUNT_LOG_FILES = ["stringtie_quant.log"]
 
 ## Cufflinks
 CUFFLINKS_GTF_FILE = "transcripts.gtf"
 CUFFLINKS_MERGED_FILE = "merged.gtf"
 CUFFQUANT_COUNT_NAME = "abundances.cxb"
+CUFFNORM_COUNT_NAMES =  [
+    "cds.attr_table", "cds.count_table", "cds.fpkm_table", "genes.attr_table",  
+    "genes.count_table", "genes.fpkm_table", "isoforms.attr_table", 
+    "isoforms.count_table", "isoforms.fpkm_table", "samples.table", 
+    "tss_groups.attr_table", "tss_groups.count_table", "tss_groups.fpkm_table"
+]
+CUFFLINKS_LOG_FILES = ["cufflinks.log"]
+CUFFMERGE_LOG_FILES = ["cuffmerge.log"]
+CUFFQUANT_LOG_FILES = ["cuffquant.log"]
+CUFFNORM_LOG_FILES = ["cuffnorm.log"]
 
 # Diffexp tools ----------------------------------------------------------------
 
+
+CUFFDIFF_LOG_FILES = ["cuffdiff.log"]
 
 
 # Result archive ---------------------------------------------------------------
