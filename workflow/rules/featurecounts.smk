@@ -43,7 +43,6 @@ rule count:
         {input.bam} \
         2> {snakemake.log}
         """
-        #"../scripts/featurecounts_wrapper.py"
 
 
 rule counts_to_matrix:
