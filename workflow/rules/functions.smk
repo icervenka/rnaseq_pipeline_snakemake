@@ -7,6 +7,7 @@ def is_tool(name):
     from shutil import which
     return which(name)
 
+
 def print_header(s):
     header_len = len(s)
     print("╔"+78*"═"+"╗")
@@ -210,35 +211,6 @@ def salmon_stranded(wildcards):
     r = Metadata.query('sample == @wildcards.sample').read.dropna().unique()
     outtool = "salmon_pe" if len(r.tolist()) > 1 else "salmon_se"
     return get_strandedness(get_sample_strandedness(wildcards), outtool)
-
-#┌─────────────────────────────────────────────────────────────────────────────┐
-#│ ===== Input function for creating cuffdiff data payloads =====              │
-#└─────────────────────────────────────────────────────────────────────────────┘
-def get_cuffdiff_data():
-    cond = config['diffexp']['design']
-    cond = cond.replace('~', '')
-    cond = cond.strip()
-
-    ref_levels = config['diffexp']['ref_levels']
-
-    if len(ref_levels) > 0:
-        ref_levels = "".join(ref_levels.split())
-        groups = ref_levels.split(',')
-        labels_str = ref_levels
-    else:
-        groups = Metadata[cond].unique()
-        labels_str = ','.join(groups)
-
-    files = []
-    for group in groups:
-        sample_files = Metadata[Metadata[cond].eq(group)]['sample'].to_list()
-        files.append(','.join([ALIGN_OUTDIR + x + "/" +
-                               COMMON_BAM_NAME + ".bam" for x in sample_files]))
-
-    files_str = " ".join(files)
-
-    return (labels_str, files_str)
-
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Other input/param functions =====                                     │

@@ -90,23 +90,6 @@ rule cuffmerge:
         """
 
 
-rule make_cuffdiff_gtf:
-    input:
-        rules.cuffmerge.output.merged_gtf
-    output:
-        temp(opj(COUNT_OUTDIR, "cuffcompare.combined.gtf"))
-    params:
-        fasta=config["fasta"]
-    threads:
-        config["threads"]
-    conda:
-        CONDA_COUNT_CUFFLINKS_ENV
-    shell:
-        """
-        cuffcompare -s {params.fasta} -CG {input} {output}
-        """
-
-
 # TODO hard coded file names
 rule cuffmerge_move_log:
     input:
@@ -213,5 +196,5 @@ rule cuffnorm:
 
 
 
-include "cuffnorm_to_raw.smk"
+include: "cuffnorm_to_raw.smk"
 
