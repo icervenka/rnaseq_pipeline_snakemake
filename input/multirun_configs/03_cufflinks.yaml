@@ -1,0 +1,44 @@
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Pipeline config =====                                                 │
+#└─────────────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+# pipelines are defined in snakemake/rules/pipelines.smk
+# see README for list of available pipelines
+pipeline: "cufflinks"
+
+
+#┌─────────────────────────────────────────────────────────────────────────────┐
+#│ ===== Differential expression config =====                                  │
+#└─────────────────────────────────────────────────────────────────────────────┘
+diffexp:
+  # name of the analysis and final output directory
+  outdir: "cufflinks"
+  # the default value for one design variable is 'group'
+  # if only one grouping variable is present, specify it as is
+  # if you wish to use formula to combine multiple groups, mark the beginning
+  # with ~ any combination of columns present in metadata file is possible
+  design: "group"
+  # ordering of the reference levels from which contrasts will be costructed
+  # name is a column in the metadata file
+  # if only one level is specified it is taken as baseline
+  # if empty, alphabetical order will be used
+  reference_levels:
+    group: ["alg", "lmcd", "sra"]
+  # see README for explanation of different contrast types
+  contrast_type: "A"
+  contrasts: "group"
+  fdr: 0.05
+  # filter out genes that have smaller total amount of reads across all samples
+  gene_min_readcount: 10
+  input_gene_ids: "ENSEMBL"
+  output_gene_ids: "SYMBOL"
+  # drop genes from output that don't map to any gene symbol
+  # otherwise they will be replaced by gene id
+  drop_no_sybmol: TRUE
+
+
+
