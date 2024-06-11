@@ -1,8 +1,10 @@
 # string constants of filenames created by different programs
-# TODO move to dict and update globals
+# TODO include extensions in the bamfiles
+# TODO if passing rules directly, there might not be a need to unify the align/count names
+## might be preferrable due to ease of access
 
 _tf = {
-    # TODO include extensions in the bamfiles
+    
     # Aligners ---------------------------------------------------------------------
     "COMMON_BAM_NAME": "aligned_sorted",
 
@@ -11,6 +13,8 @@ _tf = {
     "STAR_LOGFILES": ['Log.out', 'Log.final.out', 'Log.progress.out'],
 
     ## Hisat2
+    "HISAT_BAM_NAME": "aligned_sorted",
+    "HISAT_SAM_NAME": "aligned_sorted",
     "HISAT_LOG_FILES": ['hisat.log'],
 
     ## Tophat
@@ -58,7 +62,10 @@ _tf = {
     ## Cufflinks
     "CUFFLINKS_GTF_FILE": "transcripts.gtf",
     "CUFFLINKS_MERGED_FILE": "merged.gtf",
-    "CUFFQUANT_COUNT_NAME": "abundances.cxb",
+    # "CUFFQUANT_COUNT_NAME": "abundances.cxb",
+    "CUFFCOMPARE_NAMES": [
+        ".combined.gtf", ".loci", ".merged.gtf.tmap", ".stats", ".tracking"
+    ]
     "CUFFNORM_COUNT_NAMES":  [
         "cds.attr_table", "cds.count_table", "cds.fpkm_table", "genes.attr_table",  
         "genes.count_table", "genes.fpkm_table", "isoforms.attr_table", 
@@ -66,6 +73,7 @@ _tf = {
         "tss_groups.attr_table", "tss_groups.count_table", "tss_groups.fpkm_table"
     ],
     "CUFFLINKS_LOG_FILES": ["cufflinks.log"],
+    "CUFFMERGE_RUN_LOG_FILES": ["cuffmerge_run.log"],
     "CUFFMERGE_LOG_FILES": ["cuffmerge.log"],
     "CUFFQUANT_LOG_FILES": ["cuffquant.log"],
     "CUFFNORM_LOG_FILES": ["cuffnorm.log"],
@@ -86,8 +94,3 @@ _tf = {
 }
 
 globals().update(_tf)
-
-
-# # Result archive ---------------------------------------------------------------
-# RESULT_ARCHIVE_DIRS = [COVERAGE_OUTDIR, COUNT_OUTDIR, DIFFEXP_OUTDIR, LOG_DIR,
-# GSEA_INPUT_OUTDIR]

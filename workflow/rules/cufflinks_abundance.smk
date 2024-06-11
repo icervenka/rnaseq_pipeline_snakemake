@@ -56,8 +56,8 @@ rule cuffnorm:
         expand(opj(COUNT_OUTDIR, "cuffnorm", "{files}"), files=CUFFNORM_COUNT_NAMES) 
     params:
         outdir=opj(COUNT_OUTDIR, "cuffnorm"),
+        metadata=Metadata,
         labels=",".join(Samples),
-        # stranded=lambda wildcards: stranded_param(wildcards, "cufflinks"),
         extra=config_extra["count_other_rules"]["cuffnorm_extra"]
     log:
         expand(opj(COUNT_LOG_OUTDIR, "{log}"), log=CUFFNORM_LOG_FILES)
@@ -65,38 +65,9 @@ rule cuffnorm:
         config['threads']
     conda:
         CONDA_COUNT_CUFFLINKS_ENV
-    shell:
-        """
-        cuffnorm \
-        -q \
-        --no-update-check \
-        --output-format simple-table \
-        -p {threads} \
-        -o {params.outdir} \
-        -L {params.labels} \
-        {params.extra} \
-        {input.gtf} \
-        {input.bam} \
-        > {log} 2>&1; 
-        rm {params.outdir}/run.info
-        """
+    script:
+        # used a wrapper to unify strandedness info
+        "../scripts/cuffnorm_wrapper.py"
 
 
-rule make_cuffdiff_gtf:
-    input:
-        config["gtf"]
-    output:
-        temp(opj(COUNT_OUTDIR, "cuffcompare.combined.gtf"))
-    params:
-        fasta=config["fasta"]
-    threads:
-        config["threads"]
-    conda:
-        CONDA_COUNT_CUFFLINKS_ENV
-    shell:
-        """
-        cuffcompare -s {params.fasta} -CG {input} {output}
-        """
-
-
-include "cuffnorm_to_raw.smk"
+include "cuffnorm_to_count_matrix.smk"

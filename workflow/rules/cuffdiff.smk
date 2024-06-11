@@ -6,25 +6,7 @@ def get_diffexp_output_files(wildcards):
 def get_diffexp_log_files(wildcards):
     return [rules.diffexp.log]
 
-
-# gtf has to have certain attributes
-# Note: If an arbitrary GTF/GFF3 file is used as input (instead of the 
-# .combined.gtf file produced by Cuffcompare), these attributes will not be 
-# present, but Cuffcompare can still be used to obtain these attributes with a command like this:
-# cuffcompare -s /path/to/genome_seqs.fa -CG -r annotation.gtf annotation.gtf
-
-from pprint import pprint
-pprint(vars(rules))
-print(print([rule.name for rule in workflow.rules]))
-
-def has_rule(rule):
-    rule_names = [rule.name for rule in workflow.rules]
-    if rule in rule_names:
-        return True
-    else:
-        return False
-    
-
+ 
 # TODO maybe put into function
 if has_rule("cuffmerge"):
     def get_gtf_for_cuffdiff(wildcards):
@@ -41,9 +23,9 @@ rule make_cuffdiff_gtf:
     input:
         get_gtf_for_cuffdiff
     output:
-        temp(opj(COUNT_OUTDIR, "cuffcompare", "cuffcmp.combined.gtf"))
+        temp(expand(opj(CUFFCOMPARE_OUTDIR, "cuffdiff" + "{files}"), files=CUFFCOMPARE_NAMES))
     params:
-        outprefix=opj(COUNT_OUTDIR, "cuffcompare", "cuffcmp"),
+        outprefix=opj(CUFFCOMPARE_OUTDIR, "cuffdiff"),
         fasta=config["fasta"]
     threads:
         config["threads"]
@@ -55,7 +37,6 @@ rule make_cuffdiff_gtf:
         """
 
 
-# function for arranging files for input output
 rule diffexp:
     input:
         bam=expand(rules.align_out.output, sample=Samples),
@@ -81,22 +62,6 @@ rule diffexp:
         "../scripts/cuffdiff_wrapper.py"
 
 
-    # shell:
-    #     """
-    #     cuffdiff \
-    #     --no-update-check
-    #     -q \
-    #     -p {threads} \
-    #     -o {params.outdir} \
-    #     --frag-bias-correct {params.fasta} \
-    #     --FDR
-    #     -u {input.gtf} \
-    #     --labels {params.labels} \
-    #     {params.files} \
-    #     > {log} 2>&1
-    #     """
-
-
 # rule separate_diffexp:
 #     input:
 #         ""
@@ -107,3 +72,4 @@ rule diffexp:
 #     script:
 #         ""
 
+include: "copy_config.smk"

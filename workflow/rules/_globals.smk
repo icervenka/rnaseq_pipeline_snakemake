@@ -41,7 +41,9 @@ _ds.update({
 # folder organization of other folders that depend on the default organization
 _ds.update({
     "DIFFEXP_ANALYSIS_OUTDIR": opj(_ds["DIFFEXP_OUTDIR"], config["diffexp"]["outdir"]),
+    "CUFFCOMPARE_OUTDIR": opj(_ds["COUNT_OUTDIR"], "cuffcompare"),
     "CUFFNORM_OUTDIR": opj(_ds["COUNT_OUTDIR"], "cuffnorm")
+
 })
 
 # folder organization of the diffexp files

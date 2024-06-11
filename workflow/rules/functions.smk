@@ -48,6 +48,13 @@ def is_set_trimmer(s):
         return False
 
 
+def has_rule(rule):
+    rule_names = [rule.name for rule in workflow.rules]
+    if rule in rule_names:
+        return True
+    else:
+        return False
+
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for retrieving and dumping sra files =====                  │
 #└─────────────────────────────────────────────────────────────────────────────┘
