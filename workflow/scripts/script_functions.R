@@ -87,7 +87,6 @@ translate_gene_ids <- function(gene_ids,
     }
     ids <- ids[!duplicated(ids[[from_type]]), ]
   } else if (method == "biomart") {
-
     # TODO default to_type
     suppressMessages(library(biomaRt))
     mart <- useMart(
@@ -199,26 +198,21 @@ remove_ens_gene_version <- function(vec) {
   stringr::str_replace(vec, "(EN[[:alnum:]]+)\\.\\d+$", "\\1")
 }
 
-set_tximport_type = function(rules) {
-    supported_types = c("kallisto", "stringtie", "rsem", "cufflinks")
+set_tximport_type <- function(tool) {
+  supported_types <- c("kallisto", "stringtie", "rsem") # cufflinks?
 
-    type_lgl = purrr::map_lgl(supported_types, function(x, r) {
-        if(x %in% rules) {
-            return(TRUE)
-        } else {
-            return(FALSE)
-        }
-    }, r = rules)
+  type_lgl <- purrr::map_lgl(supported_types, function(s, t) {
+    any(stringr::str_detect(t, s))
+  }, t = tool)
 
-    if(sum(type_lgl) > 1) {
-        tximport_type = supported_types[type_lgl][1]
-        warnings::warn("Several rules that can be converted to counts were 
-        detected, selecting the first one. To remove this warning, select rule 
-        explicitely in the config_extra.yaml file.")
-    } else {
-        tximport_type = supported_types[type_lgl]
-    }
+  if (sum(type_lgl) > 1) {
+    tximport_type <- supported_types[type_lgl][1]
+    warnings::warn(paste0("Several tools that can be converted to counts were
+        detected, selecting ", tximport_type, ". To remove this warning, select 
+        tool explicitely in the config_extra.yaml file."))
+  } else {
+    tximport_type <- supported_types[type_lgl]
+  }
 
-    return(tximport_type)
-
+  return(tximport_type)
 }

@@ -52,13 +52,15 @@ txi <- tximport::tximport(files,
   ignoreTxVersion = TRUE,
   ignoreAfterBar = TRUE
   # !!!extra
-) %>%
-  tibble::rownames_to_column(var = ids_in)
+)
 
+count_matrix <- txi[[out_type]] %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = ids_in)
 
 # Save -------------------------------------------------------------------------
 write.table(
-  txi[[out_type]],
+  count_matrix,
   snakemake@output[[1]],
   sep = "\t",
   quote = FALSE,

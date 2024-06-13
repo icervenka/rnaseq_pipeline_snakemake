@@ -1,9 +1,11 @@
+
+
 def get_count_output_files(wildcards):
     return (
-        get_stringtie_processed_output_files(wildcards) + 
         expand(rules.count.output.counts, sample=Samples) + 
         expand(rules.count.output.gtf, sample=Samples) + 
-        expand(rules.count.output.ballgown, sample=Samples)
+        expand(rules.count.output.ballgown, sample=Samples) + 
+        get_stringtie_processed_output_files(wildcards)
     )
 
 def get_count_log_files(wildcards):
@@ -37,7 +39,7 @@ rule count:
         -e \
         -A {output.counts}\
         -o {output.gtf} \
-        {input.bam} 
+        {input.bam}
         """
 
 

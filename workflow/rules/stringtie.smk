@@ -10,9 +10,9 @@ def get_count_output_files(wildcards):
 
 def get_count_log_files(wildcards):
     return (
-        expand(rules.assemble_transcripts.log, sample=Samples)
-        expand(rules.merge.log, sample=Samples)
-        expand(rules.count.log, sample=Samples)
+        expand(rules.assemble_transcripts.log, sample=Samples) +
+        expand(rules.count.log, sample=Samples) +
+        rules.merge.log
     )
 
 
@@ -35,15 +35,15 @@ rule assemble_transcripts:
     shell:
         """
         stringtie \
-        -v \
         {params.stranded} \
         {params.denovo} \
         {params.standard} \
         {params.extra} \
         -p {threads} \
         -l {wildcards.sample} \
-        -o {output} \
-        {input.bam} 
+        -o {output.gtf} \
+        {input.bam} \
+        > {log} 2>&1
         """
 
 rule merge:
@@ -55,7 +55,7 @@ rule merge:
         denovo=stringtie_denovo,
         extra=config_extra["count_other_rules"]["stringtie_merge_extra"]
     log:
-        expand(opj(COUNT_LOG_OUTDIR, "{{sample}}", "{log}"), log=STRINGTIE_MERGE_LOG_FILES)
+        expand(opj(COUNT_LOG_OUTDIR, "{log}"), log=STRINGTIE_MERGE_LOG_FILES)
     threads:
         config['threads']
     conda:
@@ -64,12 +64,12 @@ rule merge:
         """
         stringtie \
         --merge \
-        -v \
         {params.denovo} \
         {params.extra} \
         -p {threads} \
         -o {output} \
         {input.sample_gtfs}
+        > {log} 2>&1
         """
 
 # to compare  transcripts with reference
@@ -108,7 +108,8 @@ rule count:
         -G {input.merged} \
         -A {output.counts} \
         -o {output.gtf} \
-        {input.bam}
+        {input.bam} \
+        > {log} 2>&1
         """
 
 
