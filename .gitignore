@@ -12,6 +12,7 @@ logs/
 archive/
 counts/
 diffexp/*
+temp/
 
 # test files
 test_configs/

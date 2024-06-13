@@ -8,7 +8,10 @@
  - `featurecounts_only` - skip_align, featurecounts, skip_diffexp
  - `htseq_only` - skip_align, htseq, skip_diffexp
  - `stringtie_only` - skip_align, stringtie, skip_diffexp
- - `stringtie_expression_only` - skip_align, stringtie_expression, skip_diffexp
+ - `stringtie_abundance_only` - skip_align, stringtie_abundance, skip_diffexp
  - `cufflinks_only` - skip_align, cufflinks, skip_diffexp
+ - `cufflinks_abundance_only` - skip_align, cufflinks_abundance, skip_diffexp
+ - `cufflinks_abundance_cuffdiff` - skip_align, cufflinks_abundance, cuffdiff
  - `deseq_only` - skip_align, featurecounts, deseq
  - `deseq` - star, featurecounts, deseq
+ - `cufflinks_cuffdiff` - skip_align, cufflinks, cuffdiff

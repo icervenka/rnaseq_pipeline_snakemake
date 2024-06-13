@@ -10,10 +10,10 @@ def get_count_log_files(wildcards):
 rule count:
     input:
         bam=rules.align_out.output,
-        gtf=config["gtf"]
     output:
         opj(COUNT_OUTDIR, "{sample}", HTSEQ_COUNT_NAME)
     params:
+        gtf=config["gtf"],
         stranded=lambda wildcards: stranded_param(wildcards, "htseq"),
         standard=htseq_params,
         extra=has_extra_config(config["count"]["extra"], config_extra["count"])
@@ -31,7 +31,7 @@ rule count:
         {params.standard} \
         {params.extra} \
         {input.bam} \
-        {input.gtf} \
+        {params.gtf} \
         > {output}
         """
 
@@ -40,7 +40,7 @@ rule move_count_log:
     input:
         rules.count.output
     output:
-        expand(opj(COUNT_LOG_OUTDIR, "{{sample}}", "{log}"), log=HTSEQ_LOG_FILES))
+        expand(opj(COUNT_LOG_OUTDIR, "{{sample}}", "{log}"), log=HTSEQ_LOG_FILES)
     params:
         kind="log"
     conda:

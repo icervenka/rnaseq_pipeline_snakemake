@@ -1,6 +1,3 @@
-# TODO add the ability to run multiple diffexp configurations at once
-# TODO add align, count and diffexp keys to pipeline dictionary
-
 import pandas as pd
 import numpy as np
 import datetime
@@ -128,24 +125,24 @@ else:
 onstart:
     print()
     print_header("Workflow starting")
-    print("Number of fastq files: " + str(len(Fqs)))
-    print("Number of samples: " + str(len(Samples)))
+    print("Number of fastq files:", len(Fqs))
+    print("Number of samples:", len(Samples))
     print()
     print_header("Workflow parameters")
-    print("Selected pipeline: " + config["pipeline"])
+    print("Selected pipeline:", config["pipeline"])
     print("Pipeline steps:")
     for key, rule in pipeline.items():
-        print(" - ",  key , " ", rule)
+        print(" -",  key , ":", rule)
     
     if is_set_subsample(config["preprocess"]["subsample"]):
-        print("Subsampling:  ", config["preprocess"]["subsample"])
+        print("Subsampling:", config["preprocess"]["subsample"])
     else:
-        print("Subsampling:  No")
+        print("Subsampling:  False")
     
     if is_set_trimmer(config["trim"]["trimmer"]):
-        print("Trimming:  Using " + config["trim"]["trimmer"])
+        print("Trimming: Using", config["trim"]["trimmer"])
     else:
-        print("Trimming:  No")
+        print("Trimming: False")
     
     print("Coverage calculation: " + str(config["coverage"]["calculate"]))
     print("Creating result archive: " + str(config["result_archive"]))

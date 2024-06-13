@@ -65,7 +65,7 @@ _tf = {
     # "CUFFQUANT_COUNT_NAME": "abundances.cxb",
     "CUFFCOMPARE_NAMES": [
         ".combined.gtf", ".loci", ".merged.gtf.tmap", ".stats", ".tracking"
-    ]
+    ],
     "CUFFNORM_COUNT_NAMES":  [
         "cds.attr_table", "cds.count_table", "cds.fpkm_table", "genes.attr_table",  
         "genes.count_table", "genes.fpkm_table", "isoforms.attr_table", 

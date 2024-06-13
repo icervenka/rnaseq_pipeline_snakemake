@@ -57,8 +57,8 @@ rule align_out:
         -l {params.compression}  \
         -@ {threads} \
         --output-fmt BAM \
-        -o {output}
-        > 2>&1 {log}
+        -o {output} \
+        > {log} 2>&1
         """
 
 

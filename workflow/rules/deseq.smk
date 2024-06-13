@@ -152,7 +152,7 @@ rule diffexp_copy_config:
         config="config.yaml",
         metadata=ancient(config["metadata"])
     output:
-        config=opj(OUTDIR, "analysis_params", "config.yaml"),
-        metadata=opj(OUTDIR, "analysis_params", config["metadata"])
+        config=opj(ANALYSIS_PARAM_OUTDIR, "config.yaml"),
+        metadata=opj(ANALYSIS_PARAM_OUTDIR, config["metadata"])
     shell:
         "cp {input.config} {output.config}; cp {input.metadata} {output.metadata}"

@@ -248,5 +248,16 @@ def has_extra_config(conf, conf_extra):
 def get_tximport_files(wildcards):
     if pipeline["align"] == "kallisto":
         return expand(rules.align.output.h5, sample=Samples)
+    elif pipeline["count"] in ["stringtie", "stringtie_abundance"]:
+        # TODO nicer specification via rule
+        return expand(opj(COUNT_OUTDIR, "{sample}", "t_data.ctab"), sample=Samples)
     else:
         return rules.count.output.counts
+
+def get_gtf():
+    if has_rule("cuffmerge"):
+        return rules.cuffmerge.output.merged_gtf
+    elif has_rule("merge"):
+        return rules.merge.output.merged_gtf
+    else:
+        return config["gtf"]
