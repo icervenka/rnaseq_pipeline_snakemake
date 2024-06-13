@@ -198,3 +198,27 @@ get_order_func <- function(mode) {
 remove_ens_gene_version <- function(vec) {
   stringr::str_replace(vec, "(EN[[:alnum:]]+)\\.\\d+$", "\\1")
 }
+
+set_tximport_type = function(rules) {
+    supported_types = c("kallisto", "stringtie", "rsem", "cufflinks")
+
+    type_lgl = purrr::map_lgl(supported_types, function(x, r) {
+        if(x %in% rules) {
+            return(TRUE)
+        } else {
+            return(FALSE)
+        }
+    }, r = rules)
+
+    if(sum(type_lgl) > 1) {
+        tximport_type = supported_types[type_lgl][1]
+        warnings::warn("Several rules that can be converted to counts were 
+        detected, selecting the first one. To remove this warning, select rule 
+        explicitely in the config_extra.yaml file.")
+    } else {
+        tximport_type = supported_types[type_lgl]
+    }
+
+    return(tximport_type)
+
+}

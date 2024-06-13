@@ -49,11 +49,14 @@ def is_set_trimmer(s):
 
 
 def has_rule(rule):
-    rule_names = [rule.name for rule in workflow.rules]
+    rule_names = get_rule_names()
     if rule in rule_names:
         return True
     else:
         return False
+
+def get_rule_names():
+    return [rule.name for rule in workflow.rules]
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Functions for retrieving and dumping sra files =====                  │
@@ -241,3 +244,9 @@ def has_extra_config(conf, conf_extra):
             return conf_extra[conf]
     else:
         return " "
+
+def get_tximport_files(wildcards):
+    if pipeline["align"] == "kallisto":
+        return expand(rules.align.output.h5, sample=Samples)
+    else:
+        return rules.count.output.counts

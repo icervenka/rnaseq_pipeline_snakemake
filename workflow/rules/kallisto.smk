@@ -2,7 +2,8 @@ def get_align_output_files(wildcards):
     return  (
         expand(rules.align.output.h5,sample=Samples) + 
         expand(rules.align.output.tsv, sample=Samples) + 
-        expand(rules.align_out.output, sample=Samples)
+        expand(rules.align_out.output, sample=Samples) +
+        rules.counts_to_matrix.output
     )
 
 
@@ -46,8 +47,6 @@ rule move_align_log:
         "mv {input} {output}"
 
 
-# TODO snakemake needs to modify files to avoid cyclic dependencies, it can't do noop
-# later when feeding this to diffexp it might become a problem, renaming to common files would work
 rule align_out:
     input:
         rules.align.output.bam
@@ -59,3 +58,4 @@ rule align_out:
         """
 
 include: "bam_index.smk"
+include: "counts_to_matrix.smk"

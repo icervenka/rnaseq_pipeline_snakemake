@@ -32,6 +32,16 @@ dependencies:
  - bioconductor-org.mm.eg.db
  - bioconductor-org.hs.eg.db
  - bioconductor-org.rn.eg.db
+ - bioconductor-tximport
+ - bioconductor-genomicfeatures
+#  - bioconductor-txdbmaker
+ - bioconductor-rhdf5
+ - bioconductor-annotationdbi
+
+# rhdf5
+# GenomicFeatures
+# tximport
+# txdbmaker
 
 #  - bioconductor-tximport
 #  - bioconductor-apeglm

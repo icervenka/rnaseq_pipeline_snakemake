@@ -12,7 +12,7 @@ if len(input_arr) == 1:
     input_str = "--single " + " ".join(input_arr.iloc[0])
     fragment_info = snakemake.params.fragment_info
 elif len(input_arr) == 2:
-    input_str = " ".join(zip(input_arr.iloc[0], input_arr.iloc[1]))
+    input_str =" ".join([ " ".join(x) for x in zip(input_arr.iloc[0], input_arr.iloc[1])])
     fragment_info = ""
 else:
     raise ValueError("Too many read types.")

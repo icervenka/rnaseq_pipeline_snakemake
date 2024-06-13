@@ -92,19 +92,34 @@ count:
 diffexp:
   # name of the analysis and final output directory
   outdir: "default"
-  # the default value for one design variable is 'group'
-  # if only one grouping variable is present, specify it as is
-  # if you wish to use formula to combine multiple groups, mark the beginning
-  # with ~ any combination of columns present in metadata file is possible
-  design: "group"
   # ordering of the reference levels from which contrasts will be costructed
   # name is a column in the metadata file
   # if only one level is specified it is taken as baseline
   # if empty, alphabetical order will be used
   reference_levels:
     group: ["alg", "lmcd", "sra"]
+  # the default value for one design variable is 'group'
+  # if only one grouping variable is present, specify it as is
+  # if you wish to use formula to combine multiple groups, mark the beginning
+  # with ~ any combination of columns present in metadata file is possible
+  # for sleuth this corresponds to the full model
+  # TODO maybe rename to model_design
+  # TODO for sleuth if multiple groups are present, the design matrix needs
+  ## to be reconstructed with different terms to generate all combinations
+  design: "group"
+  # used in sleuth
+  model_reduced: "~1"
   # see README for explanation of different contrast types
+  # TODO for cufdiff only simple contrast is possible
+  # TODO rename contrast types. suggestions
+  # A - simple
+  # B - named
+  # C - numeric
+  # D - sleuth_lrt - reduced model
+  # E - design_matrix
   contrast_type: "A"
+  # for contrast type 'simple', values are taken from 'design'
+  # TODO maybe rename to results or something similar
   contrasts: "group"
   fdr: 0.05
   # filter out genes that have smaller total amount of reads across all samples
@@ -115,9 +130,11 @@ diffexp:
   # otherwise they will be replaced by gene id
   drop_no_sybmol: TRUE
 
+
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Reporting config =====                                                │
 #└─────────────────────────────────────────────────────────────────────────────┘
+# TODO change annotation to list to support multi level annotation
 report:
   # one of:
   # 'default' - regular web page

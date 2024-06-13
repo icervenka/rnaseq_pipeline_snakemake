@@ -55,7 +55,6 @@ align:
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Read counting config =====                                            │
 #└─────────────────────────────────────────────────────────────────────────────┘
-
 count:
   featurecounts_extra: ""
   htseq_extra: ""
@@ -66,7 +65,17 @@ count_other_rules:
   stringtie_assemble_extra: ""
   stringtie_merge_extra: ""
   cufflinks_extra: ""
+  cuffquant_extra: ""
   cuffmerge_extra: ""
+  cuffnorm_extra: ""
+
+tximport_count_matrix:
+  # leave empty or use auto to determine automatically from which tool output
+  # will the count matrix be created
+  tool: ""
+  # supply either as dictionary or yaml entries that will be parsed to named
+  # vector in R script
+  extra: ""
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Differential expression config =====                                  │
