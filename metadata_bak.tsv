@@ -1,0 +1,16 @@
+sample	fq	lane	read	stranded	group	condition	sra
+algmut	algmut_L1.fastq.gz	1	R1	no	alg	A	
+algwt	algwt_L1.fastq.gz	1	R1	no	alg	B	
+algwt	algwt_L2.fastq.gz	2	R1	no	alg	B	
+albm	liver_albm_L1_2.fastq.gz	1	R2	reverse	liver	A	
+albm	liver_albm_L1_1.fastq.gz	1	R1	reverse	liver	A	
+albm	liver_albm_L2_1.fastq.gz	2	R1	reverse	liver	A	
+albm	liver_albm_L2_2.fastq.gz	2	R2	reverse	liver	A	
+lkof	liver_lkof_L1_1.fastq.gz	1	R1	reverse	liver	B	
+lkof	liver_lkof_L1_2.fastq.gz	1	R2	reverse	liver	B	
+lmcd1tg	lmcd1tg_L1.fastq.gz	1	R1	reverse	lmcd	A	
+lmcd1wt	lmcd1wt_L1.fastq.gz	1	R1	reverse	lmcd	B	
+lmcd1wt	lmcd1wt_L2.fastq.gz	2	R1	reverse	lmcd	B	
+sra1	SRR14063315_1.fastq.gz	1	R1	reverse	sra	A	SRR14063315
+sra1	SRR14063315_2.fastq.gz	1	R2	reverse	sra	A	SRR14063315
+sra2	SRR14063317.fastq.gz	1	R1	reverse	sra	B	SRR14063317
