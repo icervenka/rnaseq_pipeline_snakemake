@@ -141,23 +141,5 @@ rule cuffnorm:
         "../scripts/cuffnorm_wrapper.py"
 
 
-    # shell:
-    #     """
-    #     cuffnorm \
-    #     -q \
-    #     --no-update-check \
-    #     --output-format simple-table \
-    #     --library-norm-method classic-fpkm \
-    #     -p {threads} \
-    #     -o {params.outdir} \
-    #     -L {params.labels} \
-    #     {params.extra} \
-    #     {input.gtf} \
-    #     {input.bam} \
-    #     > {log} 2>&1; 
-    #     rm {params.outdir}/run.info
-    #     """
-
-
-include: "cuffnorm_to_raw.smk"
+include "counts_to_matrix.smk"
 

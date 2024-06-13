@@ -1,10 +1,9 @@
 rule counts_to_matrix:
     input:
         files=get_tximport_files,
-        gtf=config["gtf"]
+        gtf=lambda wildcards: get_gtf() # config["gtf"]
     output:
-        #opj(COUNT_OUTDIR, COMMON_COUNT_NAME)
-        "counts/count_matrix.txt"
+        opj(COUNT_OUTDIR, COMMON_COUNT_NAME)
     params:
         metadata=config["metadata"],
         samples=Samples,

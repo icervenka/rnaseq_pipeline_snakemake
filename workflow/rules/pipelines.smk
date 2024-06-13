@@ -28,7 +28,8 @@ pipelines = {
     "deseq_only": {"align": "skip_align", "count": "featurecounts", "diffexp": "deseq"},
     
     # full diffexp pipelines
-    "deseq" : {"align": "star", "count": "featurecounts", "diffexp": "deseq"}
+    "deseq" : {"align": "star", "count": "featurecounts", "diffexp": "deseq"},
+    "cufflinks_cuffdiff": {"align": "skip_align", "count": "cufflinks", "diffexp": "cuffdiff"},
     # "deseq_alt" : {"align": "hisat", "count": "featurecounts", "diffexp": "deseq"},
     # "edger" : {"align": "star", "count": "featurecounts", "diffexp": "edger"},
     # "edger_alt" : {"align": "hisat", "count": "featurecounts", "diffexp": "edger"},

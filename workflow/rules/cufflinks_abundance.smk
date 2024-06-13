@@ -70,4 +70,4 @@ rule cuffnorm:
         "../scripts/cuffnorm_wrapper.py"
 
 
-include "cuffnorm_to_count_matrix.smk"
+include "counts_to_matrix.smk"

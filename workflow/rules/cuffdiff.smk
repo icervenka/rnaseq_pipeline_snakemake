@@ -6,22 +6,10 @@ def get_diffexp_output_files(wildcards):
 def get_diffexp_log_files(wildcards):
     return [rules.diffexp.log]
 
- 
-# TODO maybe put into function
-if has_rule("cuffmerge"):
-    def get_gtf_for_cuffdiff(wildcards):
-        return rules.cuffmerge.output.merged_gtf
-elif has_rule("merge"):
-    def get_gtf_for_cuffdiff(wildcards):
-        return rules.merge.output.merged_gtf
-else:
-    def get_gtf_for_cuffdiff(wildcards):
-        return config["gtf"]
-
 
 rule make_cuffdiff_gtf:
     input:
-        get_gtf_for_cuffdiff
+        lambda wildcards: get_gtf()
     output:
         temp(expand(opj(CUFFCOMPARE_OUTDIR, "cuffdiff" + "{files}"), files=CUFFCOMPARE_NAMES))
     params:
