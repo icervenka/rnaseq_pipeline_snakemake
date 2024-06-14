@@ -1,6 +1,7 @@
 def get_diffexp_output_files(wildcards):
     return (
-        rules.diffexp.output
+        rules.diffexp.output + 
+        rules.scatter_diffexp.output
     )
 
 def get_diffexp_log_files(wildcards):
@@ -11,7 +12,8 @@ rule make_cuffdiff_gtf:
     input:
         lambda wildcards: get_gtf()
     output:
-        temp(expand(opj(CUFFCOMPARE_OUTDIR, "cuffdiff" + "{files}"), files=CUFFCOMPARE_NAMES))
+        gtf=temp(opj(CUFFCOMPARE_OUTDIR, "cuffdiff" + CUFFCOMPARE_GTF_NAME)),
+        other=temp(expand(opj(CUFFCOMPARE_OUTDIR, "cuffdiff" + "{files}"), files=CUFFCOMPARE_NAMES))
     params:
         outprefix=opj(CUFFCOMPARE_OUTDIR, "cuffdiff"),
         fasta=config["fasta"]
@@ -28,7 +30,7 @@ rule make_cuffdiff_gtf:
 rule diffexp:
     input:
         bam=expand(rules.align_out.output, sample=Samples),
-        gtf=rules.make_cuffdiff_gtf.output,
+        gtf=rules.make_cuffdiff_gtf.output.gtf,
     output:
         expand(opj(DEGFILES_OUTDIR, "{file}"), file=CUFFDIFF_DIFFEXP_FILES)
     params:
@@ -50,14 +52,19 @@ rule diffexp:
         "../scripts/cuffdiff_wrapper.py"
 
 
-# rule separate_diffexp:
-#     input:
-#         ""
-#     output:
-#         ""
-#     params:
-#         ""
-#     script:
-#         ""
+rule scatter_diffexp:
+    input:
+        lambda wildcards: [ x for x in rules.diffexp.output if x == CUFFDIFF_DEG_FILE ]
+    output:
+        opj(DEGFILES_OUTDIR, "cuffdiff_contrasts.txt")
+    params:
+        outdir=DEGFILES_OUTDIR,
+        fdr=config["diffexp"]["fdr"]
+    threads:
+        1
+    conda:
+        CONDA_DIFFEXP_GENERAL_ENV
+    script:
+        "../scripts/cuffdiff_separate.R"
 
 include: "copy_config.smk"

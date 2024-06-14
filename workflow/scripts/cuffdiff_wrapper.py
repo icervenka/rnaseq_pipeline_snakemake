@@ -11,10 +11,10 @@ samples_stranded = Metadata["stranded"].unique().tolist()
 
 group = snakemake.params.diffexp["design"].replace('~', '').strip()
 ref_levels = snakemake.params.diffexp["reference_levels"][group]
-print(ref_levels)
 fdr = snakemake.params.diffexp["fdr"]
 _ds = snakemake.params.ds
 _tf = snakemake.params.tf
+extra = snakemake.params.diffexp["extra"]
 
 
 if len(samples_stranded) > 1:
@@ -49,6 +49,7 @@ shell(
     cuffdiff \
     --no-update-check \
     -q \
+    {extra} \
     -p {snakemake.threads} \
     -o {snakemake.params.outdir} \
     --frag-bias-correct {snakemake.params.fasta} \

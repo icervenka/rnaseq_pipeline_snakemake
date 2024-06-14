@@ -64,8 +64,9 @@ _tf = {
     "CUFFLINKS_MERGED_FILE": "merged.gtf",
     # "CUFFQUANT_COUNT_NAME": "abundances.cxb",
     "CUFFCOMPARE_NAMES": [
-        ".combined.gtf", ".loci", ".merged.gtf.tmap", ".stats", ".tracking"
+        ".loci", ".stats", ".tracking"
     ],
+    "CUFFCOMPARE_GTF_NAME": ".combined.gtf",
     "CUFFNORM_COUNT_NAMES":  [
         "cds.attr_table", "cds.count_table", "cds.fpkm_table", "genes.attr_table",  
         "genes.count_table", "genes.fpkm_table", "isoforms.attr_table", 
@@ -79,7 +80,7 @@ _tf = {
     "CUFFNORM_LOG_FILES": ["cuffnorm.log"],
 
     # Diffexp tools ----------------------------------------------------------------
-    "CUFFDIFF_DIFFEXP_FILES":  [
+    "CUFFDIFF_DIFFEXP_FILES": [
         "bias_params.info", "cds.count_tracking", "cds.diff", "cds.fpkm_tracking", 
         "cds.read_group_tracking", "cds_exp.diff", "gene_exp.diff", 
         "genes.count_tracking", "genes.fpkm_tracking", "genes.read_group_tracking", 
@@ -88,7 +89,7 @@ _tf = {
         "run.info", "splicing.diff", "tss_group_exp.diff", "tss_groups.count_tracking", 
         "tss_groups.fpkm_tracking", "tss_groups.read_group_tracking", "var_model.info"
     ],
-
+    "CUFFDIFF_DEG_FILE": "gene_exp.diff",
     "CUFFDIFF_LOG_FILES": ["cuffdiff.log"]
 
 }
