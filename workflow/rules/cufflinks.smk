@@ -107,7 +107,8 @@ rule cuffcompare:
     input:
         rules.cuffmerge.output.merged_gtf
     output:
-        expand(opj(CUFFCOMPARE_OUTDIR, "cuffcmp" + "{files}"), files=CUFFCOMPARE_NAMES)
+        gtf=opj(CUFFCOMPARE_OUTDIR, "cuffcmp" + CUFFCOMPARE_GTF_NAME),
+        other=expand(opj(CUFFCOMPARE_OUTDIR, "cuffcmp" + "{files}"), files=CUFFCOMPARE_NAMES)
     params:
         outprefix=opj(CUFFCOMPARE_OUTDIR, "cuffcmp"),
         gtf=config["gtf"]

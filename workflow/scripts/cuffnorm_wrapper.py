@@ -20,7 +20,7 @@ shell(
     -q \
     --no-update-check \
     --output-format simple-table \
-    --library-norm-method classic-fpkm \
+    --library-norm-method geometric \
     -p {snakameke.threads} \
     -o {snakemake.params.outdir} \
     -L {snakemake.params.labels} \

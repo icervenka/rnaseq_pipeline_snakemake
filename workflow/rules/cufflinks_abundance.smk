@@ -1,5 +1,5 @@
 def get_count_output_files(wildcards):
-    return (
+    return  (
         expand(rules.cufflinks.output, sample=Samples) +
         rules.cuffnorm.output
     )
@@ -70,4 +70,4 @@ rule cuffnorm:
         "../scripts/cuffnorm_wrapper.py"
 
 
-include "counts_to_matrix.smk"
+# include: "counts_to_matrix.smk"

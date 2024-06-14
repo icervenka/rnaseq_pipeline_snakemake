@@ -181,7 +181,7 @@ def cufflinks_params(wildcards):
     param_string = ""
     if pipeline["diffexp"] in ["edger", "deseq", "limma"]:
         param_string += "--no-length-correction --no-effective-length-correction "
-
+        
     if not config['count']['multimap']:
         param_string += "--max-multiread-fraction 0.0 "
     else:
@@ -197,11 +197,11 @@ def cufflinks_denovo(wildcards):
     return param_string
 
 
-def cuffnorm_params(wildcards):
-    param_string = ""
-    if pipeline["diffexp"] in ["edger", "deseq", "limma"]:
-        param_string += "--library-norm-method classic-fpkm "
-    return param_string
+# def cuffnorm_params(wildcards):
+#     param_string = ""
+#     if pipeline["diffexp"] in ["edger", "deseq", "limma"]:
+#         param_string += "--library-norm-method classic-fpkm "
+#     return param_string
     
 
 # hisat ------------------------------------------------------------------------
