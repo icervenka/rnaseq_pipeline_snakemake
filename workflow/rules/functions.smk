@@ -166,14 +166,13 @@ def htseq_params(wildcards):
 def stringtie_params(wildcards):
     param_string = ""
     if not config['count']['multimap']:
-        param_string += "-M 0 -u  "
+        param_string += "-M 0 -u "
     return param_string
 
-def stringtie_denovo(wildcards):
+def stringtie_assembly(wildcards):
     param_string = ""
-    if not config['count']['denovo_assembly']:
-        param_string += "-G " + config["gtf"] + " "
-
+    if config['count']['transcript_assembly'] in ["guided", "Guided"]:
+        param_string += "-G " + config["gtf"] 
     return param_string
 
 # cufflinks --------------------------------------------------------------------
@@ -189,10 +188,15 @@ def cufflinks_params(wildcards):
 
     return param_string
 
-def cufflinks_denovo(wildcards):
+def cufflinks_assembly(wildcards):
     param_string = ""
-    if not config['count']['denovo_assembly']:
-        param_string += "-g " + config["gtf"] + " "
+
+    if config['count']['transcript_assembly'] in ["guided", "Guided"]:
+        param_string += "-g " + config["gtf"]
+    elif config['count']['transcript_assembly'] in ["denovo", "Denovo"]:
+         param_string += ""
+    else:
+        param_string += "-G " + config["gtf"]
     
     return param_string
 

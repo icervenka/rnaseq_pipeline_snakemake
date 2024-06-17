@@ -21,7 +21,7 @@ shell(
     --no-update-check \
     --output-format simple-table \
     --library-norm-method geometric \
-    -p {snakameke.threads} \
+    -p {snakemake.threads} \
     -o {snakemake.params.outdir} \
     -L {snakemake.params.labels} \
     --library-type {stranded} \

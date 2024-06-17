@@ -11,15 +11,11 @@ source("workflow/scripts/script_functions.R", local = TRUE)
 ## input
 count_table <- snakemake@input[["count_table"]]
 attr_table <- snakemake@input[["attr_table"]]
-samples_table <- snakemake@input[["sample_table"]]
-# count_table="counts/cuffnorm/genes.count_table"
-# attr_table="counts/cuffnorm/genes.attr_table"
-# samples_table="counts/cuffnorm/samples.table"
+samples_table <- snakemake@input[["samples_table"]]
 ## output
 
 ## params
 samples <- snakemake@params[["samples"]]
-# samples = c("algwt", "lmcd1tg", "sra2", "algmut")
 
 # Run --------------------------------------------------------------------------
 # load the tables
@@ -30,7 +26,7 @@ cuffnorm_samples <- read.delim(samples_table)
 # create unnormalization size factor vector
 unnorm_vector <- cuffnorm_samples$internal_scale %>%
   setNames(cuffnorm_samples$sample_id)
-unnorm_vector <- norm_vector[names(counts)[-1]]
+unnorm_vector <- unnorm_vector[names(counts)[-1]]
 
 # unnormalize the count matrix and round the counts to whole numbers
 count_matrix <- round(sweep(counts[, -1], MARGIN = 2, unnorm_vector, `*`))

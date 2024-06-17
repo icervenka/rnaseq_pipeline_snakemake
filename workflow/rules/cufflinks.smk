@@ -1,8 +1,9 @@
 def get_count_output_files(wildcards):
     return (
         expand(rules.cufflinks.output, sample=Samples) +
+        rules.cuffmerge.output + 
         rules.cuffnorm.output +
-        rules.cuffmerge.output
+        get_cuffnorm_to_matrix(wildcards)
     )
 
 
@@ -25,7 +26,7 @@ rule cufflinks:
         fasta=config["fasta"],
         stranded=lambda wildcards: stranded_param(wildcards, "cufflinks"),
         # supplies gtf file
-        denovo=cufflinks_denovo,
+        assembly=cufflinks_assembly,
         standard=cufflinks_params,
         extra=has_extra_config(config["count"]["extra"], config_extra["count"])
     log:
@@ -41,7 +42,7 @@ rule cufflinks:
         --no-update-check \
         -p {threads} \
         --library-type {params.stranded} \
-        {params.denovo} \
+        {params.assembly} \
         {params.standard} \
         {params.extra} \
         -o {params.outdir}{wildcards.sample} \
@@ -68,7 +69,8 @@ rule cuffmerge:
     params:
         outdir=COUNT_OUTDIR,
         fasta=config["fasta"],
-        denovo=cufflinks_denovo,
+        gtf=config["gtf"],
+        # assembly=cufflinks_assembly,
         extra=config_extra["count_other_rules"]["cuffmerge_extra"]
     log:
         runlog=opj(COUNT_OUTDIR, "logs", "run.log"),
@@ -82,7 +84,7 @@ rule cuffmerge:
         cuffmerge \
         -p {threads} \
         -s {params.fasta} \
-        {params.denovo} \
+        -g {params.gtf} \
         {params.extra} \
         -o {params.outdir} \
         {input.gathered} \
@@ -107,8 +109,8 @@ rule cuffcompare:
     input:
         rules.cuffmerge.output.merged_gtf
     output:
-        gtf=opj(CUFFCOMPARE_OUTDIR, "cuffcmp" + CUFFCOMPARE_GTF_NAME),
-        other=expand(opj(CUFFCOMPARE_OUTDIR, "cuffcmp" + "{files}"), files=CUFFCOMPARE_NAMES)
+        gtf=opj(CUFFCOMPARE_OUTDIR, "cuffcmp" + CUFFCOMPARE_GTF_FILE),
+        other=expand(opj(CUFFCOMPARE_OUTDIR, "cuffcmp" + "{files}"), files=CUFFCOMPARE_FILES)
     params:
         outprefix=opj(CUFFCOMPARE_OUTDIR, "cuffcmp"),
         gtf=config["gtf"]
@@ -125,7 +127,7 @@ rule cuffnorm:
         bam=expand(rules.align_out.output, sample=Samples),
         gtf=rules.cuffmerge.output.merged_gtf
     output:
-        expand(opj(CUFFNORM_OUTDIR, "{files}"), files=CUFFNORM_COUNT_NAMES) 
+        expand(opj(CUFFNORM_OUTDIR, "{files}"), files=CUFFNORM_COUNT_FILES) 
     params:
         outdir=opj(CUFFNORM_OUTDIR),
         metadata=Metadata,
@@ -142,5 +144,5 @@ rule cuffnorm:
         "../scripts/cuffnorm_wrapper.py"
 
 
-include "counts_to_matrix.smk"
+include: "cuffnorm_to_matrix.smk"
 
