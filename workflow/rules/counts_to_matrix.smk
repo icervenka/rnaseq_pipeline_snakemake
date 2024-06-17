@@ -1,9 +1,16 @@
+
+def get_counts_to_matrix_output_files(wildcards):
+    return rules.counts_to_matrix.output
+
+
+# https://github.com/maplexuci/stringtie_gene_id_replacement
+# https://www.reddit.com/r/bioinformatics/comments/6xd4py/anyone_have_a_good_script_for_turning_mstrg_gene/
 rule counts_to_matrix:
     input:
         files=get_tximport_files,
-        gtf=lambda wildcards: get_gtf() # config["gtf"]
+        gtf=lambda wildcards: get_gtf() 
     output:
-        opj(COUNT_OUTDIR, COMMON_COUNT_NAME)
+        opj(COUNT_OUTDIR, COMMON_COUNT_FILE)
     params:
         metadata=config["metadata"],
         samples=Samples,
