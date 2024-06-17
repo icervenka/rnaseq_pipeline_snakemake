@@ -8,7 +8,7 @@ rule align:
     input:
         sample=get_fq
     output:
-        bam=opj(ALIGN_OUTDIR, "{sample}", STAR_BAM_NAME + ".bam")
+        bam=opj(ALIGN_OUTDIR, "{sample}", STAR_BAM_FILE + ".bam")
     params:
         metadata=Metadata,
         fastq_dir=FASTQ_CURRENT_DIR,
@@ -27,7 +27,7 @@ rule align_out:
     input:
         rules.align.output.bam
     output:
-        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_NAME + ".bam")
+        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_FILE + ".bam")
     shell:
         "mv {input} {output}"
 

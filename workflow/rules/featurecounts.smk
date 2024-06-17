@@ -16,8 +16,8 @@ rule count:
     input:
         bam=rules.align_out.output
     output:
-        counts=opj(COUNT_OUTDIR, "{sample}", FEATURECOUNTS_COUNT_NAME),
-        summary=opj(COUNT_OUTDIR, "{sample}", FEATURECOUNTS_SUMMARY_NAME)
+        counts=opj(COUNT_OUTDIR, "{sample}", FEATURECOUNTS_COUNT_FILE),
+        summary=opj(COUNT_OUTDIR, "{sample}", FEATURECOUNTS_SUMMARY_FILE)
     params:
         gtf=config["gtf"],
         fasta=config["fasta"],
@@ -49,7 +49,7 @@ rule counts_to_matrix:
     input:
         expand(rules.count.output.counts, sample=Samples),
     output:
-        opj(COUNT_OUTDIR, COMMON_COUNT_NAME),
+        opj(COUNT_OUTDIR, COMMON_COUNT_FILE),
     conda:
         CONDA_R_GENERAL_ENV
     script:
@@ -60,6 +60,6 @@ rule move_count_summary:
     input:
         rules.count.output.summary,
     output:
-        opj(COUNT_LOG_OUTDIR, "{sample}", FEATURECOUNTS_SUMMARY_NAME)
+        opj(COUNT_LOG_OUTDIR, "{sample}", FEATURECOUNTS_SUMMARY_FILE)
     shell:
         "mv {input} {output}"

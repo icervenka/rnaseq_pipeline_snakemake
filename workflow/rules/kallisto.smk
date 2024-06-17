@@ -3,7 +3,7 @@ def get_align_output_files(wildcards):
         expand(rules.align.output.h5,sample=Samples) + 
         expand(rules.align.output.tsv, sample=Samples) + 
         expand(rules.align_out.output, sample=Samples) +
-        rules.counts_to_matrix.output
+        get_counts_to_matrix_output_files(wildcards)
     )
 
 
@@ -17,9 +17,9 @@ rule align:
         sample=get_fq,
         gtf=config["gtf"],
     output:
-        h5=opj(ALIGN_OUTDIR, "{sample}", KALLISTO_QUANT_NAME + ".h5"),
-        tsv=opj(ALIGN_OUTDIR, "{sample}", KALLISTO_QUANT_NAME + ".tsv"),
-        bam=opj(ALIGN_OUTDIR, "{sample}/", KALLISTO_BAM_NAME + ".bam"),
+        h5=opj(ALIGN_OUTDIR, "{sample}", KALLISTO_QUANT_FILE + ".h5"),
+        tsv=opj(ALIGN_OUTDIR, "{sample}", KALLISTO_QUANT_FILE + ".tsv"),
+        bam=opj(ALIGN_OUTDIR, "{sample}/", KALLISTO_BAM_FILE + ".bam"),
     params:
         metadata=Metadata,
         fastq_dir=FASTQ_CURRENT_DIR,
@@ -51,7 +51,7 @@ rule align_out:
     input:
         rules.align.output.bam
     output:
-        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_NAME + ".bam")
+        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_FILE + ".bam")
     shell:
         """
         mv {input} {output}

@@ -12,8 +12,8 @@ rule make_cuffdiff_gtf:
     input:
         lambda wildcards: get_gtf()
     output:
-        gtf=temp(opj(CUFFCOMPARE_OUTDIR, "cuffdiff" + CUFFCOMPARE_GTF_NAME)),
-        other=temp(expand(opj(CUFFCOMPARE_OUTDIR, "cuffdiff" + "{files}"), files=CUFFCOMPARE_NAMES))
+        gtf=temp(opj(CUFFCOMPARE_OUTDIR, "cuffdiff" + CUFFCOMPARE_GTF_FILE)),
+        other=temp(expand(opj(CUFFCOMPARE_OUTDIR, "cuffdiff" + "{files}"), files=CUFFCOMPARE_FILES))
     params:
         outprefix=opj(CUFFCOMPARE_OUTDIR, "cuffdiff"),
         fasta=config["fasta"]
@@ -54,7 +54,7 @@ rule diffexp:
 
 rule scatter_diffexp:
     input:
-        lambda wildcards: [ x for x in rules.diffexp.output if x == CUFFDIFF_DEG_FILE ]
+        lambda wildcards: [ x for x in rules.diffexp.output if CUFFDIFF_GENE_DEG_FILE in x ]
     output:
         opj(DEGFILES_OUTDIR, "cuffdiff_contrasts.txt")
     params:
@@ -66,5 +66,6 @@ rule scatter_diffexp:
         CONDA_DIFFEXP_GENERAL_ENV
     script:
         "../scripts/cuffdiff_separate.R"
+
 
 include: "copy_config.smk"

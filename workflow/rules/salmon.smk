@@ -16,7 +16,7 @@ rule align:
         fq=get_fq,
         gtf=config["gtf"]
     output: 
-        bam=opj(ALIGN_OUTDIR, "{sample}", SALMON_QUANT_NAME + ".sf")
+        bam=opj(ALIGN_OUTDIR, "{sample}", SALMON_QUANT_FILE + ".sf")
     params:
         index=config["index"],
         metadata=Metadata,
@@ -42,7 +42,7 @@ rule align:
 #     input:
 #         rules.align.output.bam
 #     output:
-#         ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_NAME + ".bam"
+#         ALIGN_OUTDIR + "{sample}/" + COMMON_BAM_FILE + ".bam"
 #     shell:
 #         "mv {input} {output}"
 

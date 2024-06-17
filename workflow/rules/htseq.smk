@@ -11,7 +11,7 @@ rule count:
     input:
         bam=rules.align_out.output,
     output:
-        opj(COUNT_OUTDIR, "{sample}", HTSEQ_COUNT_NAME)
+        opj(COUNT_OUTDIR, "{sample}", HTSEQ_COUNT_FILE)
     params:
         gtf=config["gtf"],
         stranded=lambda wildcards: stranded_param(wildcards, "htseq"),
@@ -53,7 +53,7 @@ rule counts_to_matrix:
     input:
         expand(rules.count.output, sample=Samples)
     output:
-        opj(COUNT_OUTDIR, COMMON_COUNT_NAME)
+        opj(COUNT_OUTDIR, COMMON_COUNT_FILE)
     params:
         kind="count"
     conda:

@@ -1,33 +1,30 @@
 # string constants of filenames created by different programs
 # TODO include extensions in the bamfiles
-# TODO if passing rules directly, there might not be a need to unify the align/count names
-## might be preferrable due to ease of access
-
 _tf = {
     
     # Aligners ---------------------------------------------------------------------
-    "COMMON_BAM_NAME": "aligned_sorted",
+    "COMMON_BAM_FILE": "aligned_sorted",
 
     ## STAR
-    "STAR_BAM_NAME": "Aligned.sortedByCoord.out",
+    "STAR_BAM_FILE": "Aligned.sortedByCoord.out",
     "STAR_LOGFILES": ['Log.out', 'Log.final.out', 'Log.progress.out'],
 
     ## Hisat2
-    "HISAT_BAM_NAME": "aligned_sorted",
-    "HISAT_SAM_NAME": "aligned_sorted",
+    "HISAT_BAM_FILE": "aligned_sorted",
+    "HISAT_SAM_FILE": "aligned_sorted",
     "HISAT_LOG_FILES": ['hisat.log'],
 
     ## Tophat
-    "TOPHAT_BAM_NAME": "accepted_hits",
+    "TOPHAT_BAM_FILE": "accepted_hits",
     "TOPHAT_LOG_FILES": ["align_summary.txt"],
 
     ## Kallisto
-    "KALLISTO_QUANT_NAME": "abundance",
-    "KALLISTO_BAM_NAME": "pseudoalignments",
+    "KALLISTO_QUANT_FILE": "abundance",
+    "KALLISTO_BAM_FILE": "pseudoalignments",
     "KALLISTO_LOGFILES": ["run_info.json"],
 
     ## Salmon
-    "SALMON_QUANT_NAME": "quant",
+    "SALMON_QUANT_FILE": "quant",
     "SALMON_LOG_FILES": ['cmd_info.json', 'lib_format_counts.json'],
 
 
@@ -35,21 +32,21 @@ _tf = {
     "SAMTOOLS_LOG_FILES": ['samtools.log'],
 
     # Read counting tools ----------------------------------------------------------
-    "COMMON_COUNT_NAME": "count_matrix.txt",
-    "COMMON_TRANSCRIPT_COUNT_NAME": "transcript_count_matrix.txt",
+    "COMMON_COUNT_FILE": "count_matrix.txt",
+    "COMMON_TRANSCRIPT_COUNT_FILE": "transcript_count_matrix.txt",
 
     ## Featurecounts
-    "FEATURECOUNTS_COUNT_NAME": "gene_counts.txt",
-    "FEATURECOUNTS_SUMMARY_NAME": "gene_counts.txt.summary",
+    "FEATURECOUNTS_COUNT_FILE": "gene_counts.txt",
+    "FEATURECOUNTS_SUMMARY_FILE": "gene_counts.txt.summary",
     "FEATURECOUNTS_LOG_FILES": ["featurecounts.log"],
 
     ## HTSeq count
-    "HTSEQ_COUNT_NAME": "gene_counts.txt",
+    "HTSEQ_COUNT_FILE": "gene_counts.txt",
     "HTSEQ_LOG_FILES": ["htseq.log"],
 
     ## Stringtie
     "STRINGTIE_GTF_FILE": "transcripts.gtf",
-    "STRINGTIE_COUNT_NAME": "gene_counts.txt",
+    "STRINGTIE_COUNT_FILE": "gene_counts.txt",
     "STRINGTIE_MERGED_FILE": "merged.gtf",
     "STRINGTIE_TPM_FILE": "stringtie_tpm.txt",
     "STRINGTIE_FPKM_FILE": "stringtie_fpkm.txt",
@@ -62,12 +59,14 @@ _tf = {
     ## Cufflinks
     "CUFFLINKS_GTF_FILE": "transcripts.gtf",
     "CUFFLINKS_MERGED_FILE": "merged.gtf",
-    # "CUFFQUANT_COUNT_NAME": "abundances.cxb",
-    "CUFFCOMPARE_NAMES": [
+    "CUFFCOMPARE_FILES": [
         ".loci", ".stats", ".tracking"
     ],
-    "CUFFCOMPARE_GTF_NAME": ".combined.gtf",
-    "CUFFNORM_COUNT_NAMES":  [
+    "CUFFCOMPARE_GTF_FILE": ".combined.gtf",
+    "CUFFNORM_COUNT_TABLE_FILE": "genes.count_table",
+    "CUFFNORM_ATTR_TABLE_FILE": "genes.attr_table",
+    "CUFFNORM_SAMPLE_TABLE_FILE": "samples.table",
+    "CUFFNORM_COUNT_FILES":  [
         "cds.attr_table", "cds.count_table", "cds.fpkm_table", "genes.attr_table",  
         "genes.count_table", "genes.fpkm_table", "isoforms.attr_table", 
         "isoforms.count_table", "isoforms.fpkm_table", "samples.table", 
@@ -80,6 +79,7 @@ _tf = {
     "CUFFNORM_LOG_FILES": ["cuffnorm.log"],
 
     # Diffexp tools ----------------------------------------------------------------
+    "CUFFDIFF_GENE_DEG_FILE": "gene_exp.diff",
     "CUFFDIFF_DIFFEXP_FILES": [
         "bias_params.info", "cds.count_tracking", "cds.diff", "cds.fpkm_tracking", 
         "cds.read_group_tracking", "cds_exp.diff", "gene_exp.diff", 
@@ -89,7 +89,6 @@ _tf = {
         "run.info", "splicing.diff", "tss_group_exp.diff", "tss_groups.count_tracking", 
         "tss_groups.fpkm_tracking", "tss_groups.read_group_tracking", "var_model.info"
     ],
-    "CUFFDIFF_DEG_FILE": "gene_exp.diff",
     "CUFFDIFF_LOG_FILES": ["cuffdiff.log"]
 
 }
