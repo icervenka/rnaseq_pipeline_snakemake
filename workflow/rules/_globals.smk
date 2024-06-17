@@ -1,4 +1,4 @@
-# folder organization of the pipelline input and output files
+# folder organization of the pipelline input and output files ------------------
 
 _ds_new = {
     "INPUT_DIR": "input",
@@ -42,8 +42,8 @@ _ds.update({
 _ds.update({
     "DIFFEXP_ANALYSIS_OUTDIR": opj(_ds["DIFFEXP_OUTDIR"], config["diffexp"]["outdir"]),
     "CUFFCOMPARE_OUTDIR": opj(_ds["COUNT_OUTDIR"], "cuffcompare"),
-    "CUFFNORM_OUTDIR": opj(_ds["COUNT_OUTDIR"], "cuffnorm")
-
+    "CUFFNORM_OUTDIR": opj(_ds["COUNT_OUTDIR"], "cuffnorm"),
+    "STRINGTIE_OUTDIR": opj(_ds["COUNT_OUTDIR"], "stringtie")
 })
 
 # folder organization of the diffexp files
@@ -54,7 +54,18 @@ _ds.update({
     "ANALYSIS_PARAM_OUTDIR": opj(_ds["DIFFEXP_ANALYSIS_OUTDIR"], "analysis_params/")
 })
 
-# conda environments
+# folders to include in result archive
+_ds.update({
+    "RESULT_ARCHIVE_DIRS": [
+        _ds["COVERAGE_OUTDIR"], 
+        _ds["COUNT_OUTDIR"], 
+        _ds["DIFFEXP_OUTDIR"], 
+        _ds["LOG_DIR"], 
+        _ds["GSEA_INPUT_OUTDIR"], 
+    ]
+})
+
+# conda environments -----------------------------------------------------------
 # conda environments are invoked from rules dir, and directory structure is organized
 # in relation to base Snakemake dir, going up 2 dirs has to be prepended to the path
 _envs = {
@@ -71,10 +82,7 @@ _envs = {
     "CONDA_DIFFEXP_GENERAL_ENV":  opj(_ds["CD2UP"], _ds["ENV_DIR"], "diffexp_general.yaml")
 }
 
-# TODO implement
-# # Result archive ---------------------------------------------------------------
-# RESULT_ARCHIVE_DIRS = [COVERAGE_OUTDIR, COUNT_OUTDIR, DIFFEXP_OUTDIR, LOG_DIR,
-# GSEA_INPUT_OUTDIR]
+
 
 # update into global environment
 globals().update(_ds)
