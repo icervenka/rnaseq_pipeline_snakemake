@@ -6,39 +6,42 @@ pipelines = {
     # only download sra archive or zip files
     "download_only" : {"align": "skip_align", "count": "skip_count", "diffexp": "skip_diffexp"},
 
-    # align only
+    # align only pipelines
     "star_only" : {"align": "star", "count": "skip_count", "diffexp": "skip_diffexp"},
     "hisat_only" : {"align": "hisat", "count": "skip_count", "diffexp": "skip_diffexp"},
     "tophat_only": {"align": "tophat", "count": "skip_count", "diffexp": "skip_diffexp"},
-    "bowtie2_only": {"align": "bowtie2", "count": "skip_count", "diffexp": "skip_diffexp"},
+    # "bowtie2_only": {"align": "bowtie2", "count": "skip_count", "diffexp": "skip_diffexp"},
     "salmon_only": {"align": "salmon", "count": "skip_count", "diffexp": "skip_diffexp"},
     "kallisto_only": {"align": "kallisto", "count": "skip_count", "diffexp": "skip_diffexp"},
     
-    # intermediate pipelines
+    # count only pipelines
     "featurecounts_only": {"align": "skip_align", "count": "featurecounts", "diffexp": "skip_diffexp"},
     "htseq_only": {"align": "skip_align", "count": "htseq", "diffexp": "skip_diffexp"},
     "stringtie_only": {"align": "skip_align", "count": "stringtie", "diffexp": "skip_diffexp"},
-    "stringtie_abundance_only": {"align": "skip_align", "count": "stringtie_abundance", "diffexp": "skip_diffexp"},
     "cufflinks_only": {"align": "skip_align", "count": "cufflinks", "diffexp": "skip_diffexp"},
-    "cufflinks_abundance_only": {"align": "skip_align", "count": "cufflinks_abundance", "diffexp": "skip_diffexp"},
 
-    "cufflinks_abundance_cuffdiff": {"align": "skip_align", "count": "cufflinks_abundance", "diffexp": "cuffdiff"},
+    # diffexp only pipelines
+    "deseq_only": {"align": "skip_align", "count": "skip_count", "diffexp": "deseq"},
+    "cuffdiff_only": {"align": "skip_align", "count": "skip_count", "diffexp": "deseq"},
 
-
-    "deseq_only": {"align": "skip_align", "count": "featurecounts", "diffexp": "deseq"},
+    # intermediate pipelines
+    "featurecounts_deseq": {"align": "skip_align", "count": "featurecounts", "diffexp": "deseq"},
+    "htseq_deseq": {"align": "skip_align", "count": "htseq", "diffexp": "deseq"},
+    "stringtie_deseq": {"align": "skip_align", "count": "stringtie", "diffexp": "deseq"},
     
-    # full diffexp pipelines
-    "deseq" : {"align": "star", "count": "featurecounts", "diffexp": "deseq"},
     "cufflinks_cuffdiff": {"align": "skip_align", "count": "cufflinks", "diffexp": "cuffdiff"},
-    # "deseq_alt" : {"align": "hisat", "count": "featurecounts", "diffexp": "deseq"},
-    # "edger" : {"align": "star", "count": "featurecounts", "diffexp": "edger"},
-    # "edger_alt" : {"align": "hisat", "count": "featurecounts", "diffexp": "edger"},
-    # "limma" : {"align": "star", "count": "featurecounts", "diffexp": "limma"},
-    # "limma_alt" : {"align": "hisat", "count": "featurecounts", "diffexp": "limma"},
-    # "stringtie" : {"align": "hisat", "count": "stringtie", "diffexp": "ballgown"},
-    # "kallisto" : {"align": "kallisto", "diffexp": "sleuth"},
-    # "cuffdiff" : {"align": "tophat", "count": "cufflinks", "diffexp": "cuffdiff"},
-    # "cuffdiff_denovo": {"align": "star", "count": "cufflinks_denovo", "diffexp": "cuffdiff"}
+    "stringtie_cuffdiff": {"align": "skip_align", "count": "stringtie", "diffexp": "cuffdiff"},
+    
+    # full pipelines
+    "deseq" : {"align": "star", "count": "featurecounts", "diffexp": "deseq"},
+    "deseq" : {"align": "hisat", "count": "htseq", "diffexp": "deseq"},
+    "edger" : {"align": "star", "count": "featurecounts", "diffexp": "edger"},
+    "edger_alt" : {"align": "hisat", "count": "htseq", "diffexp": "edger"},
+    "limma" : {"align": "star", "count": "featurecounts", "diffexp": "limma"},
+    "limma_alt" : {"align": "hisat", "count": "htseq", "diffexp": "limma"},
+    "stringtie" : {"align": "hisat", "count": "stringtie", "diffexp": "ballgown"},
+    "kallisto" : {"align": "kallisto", "diffexp": "sleuth"},
+    "cufflinks": {"align": "tophat", "count": "cufflinks", "diffexp": "cuffdiff"},
 }
 
 pipelines_str = ""
