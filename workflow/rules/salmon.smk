@@ -16,7 +16,7 @@ rule align:
         fq=get_fq,
         gtf=config["gtf"]
     output: 
-        bam=opj(ALIGN_OUTDIR, "{sample}", SALMON_QUANT_FILE + ".sf")
+        bam=opj(ALIGN_OUTDIR, "{sample}", SALMON_QUANT_FILE)
     params:
         index=config["index"],
         metadata=Metadata,
