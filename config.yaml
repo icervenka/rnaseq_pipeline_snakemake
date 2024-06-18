@@ -3,10 +3,15 @@
 #║ Main config file for snakemake run                                          ║
 #║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
 #╚═════════════════════════════════════════════════════════════════════════════╝
+
+# TODO add location of config extra relative to the base folder
 experiment_name: "Test stringie"
+rungroup: ""
 threads: 15
 
 metadata: "metadata.tsv"
+# if empty, default 'config_extra.yaml' will be loaded
+extra_config: 
 paired_read_strings: ["_1", "_2"]
 
 species: "mouse"
@@ -80,10 +85,11 @@ count:
   multimap: FALSE
   # if reads belonging to the overlapping genes should be counted
   overlap: TRUE
-  # Several tools, namely Cufflinks and Stringtie offer denovo assembly of
-  # transcripts. If FALSE, guided assembly using supplied gft will be performed.
+  # Several tools, namely Cufflinks and Stringtie offer refererence guided and
+  # denovo assembly of transcripts.
+  # One of: "none", "guided", "denovo". If empty, no assembly will be used.
   # If unsupported, this option is ignored.
-  denovo_assembly: FALSE
+  transcript_assembly: "none"
   extra: ""
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
@@ -97,7 +103,7 @@ diffexp:
   # if only one level is specified it is taken as baseline
   # if empty, alphabetical order will be used
   reference_levels:
-    group: ["alg", "lmcd", "sra"]
+    group: ["alg", "lmcd"]
   # the default value for one design variable is 'group'
   # if only one grouping variable is present, specify it as is
   # if you wish to use formula to combine multiple groups, mark the beginning
@@ -129,6 +135,7 @@ diffexp:
   # drop genes from output that don't map to any gene symbol
   # otherwise they will be replaced by gene id
   drop_no_sybmol: TRUE
+  extra: ""
 
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
@@ -156,7 +163,7 @@ report:
   sample_heatmap:
     # can be one of the following: mean, variance, diff
     mode: "variance"
-    n_genes: 1000
+    ngenes: 1000
     # one of the following: euclidean, correlation or none for no clustering
     cluster_metric_col: "euclidean"
     cluster_metric_row: "euclidean"

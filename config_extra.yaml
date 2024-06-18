@@ -4,10 +4,6 @@
 #║ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
 #╚═════════════════════════════════════════════════════════════════════════════╝
 
-# To be able to reuse and store extra configs, create a unique extra config
-# name under appropriate step (align, count, etc.) and then pass this name into 
-# the extra parameter in the config.yaml file.
-
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Trim config =====                                                     │
 #└─────────────────────────────────────────────────────────────────────────────┘
@@ -23,6 +19,7 @@ trim:
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Align config =====                                                    │
 #└─────────────────────────────────────────────────────────────────────────────┘
+# extra config for align rule, referenced from main config file
 align:
   # optimized extra parameters for tophat
   tophat_extra:
@@ -55,17 +52,18 @@ align:
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Read counting config =====                                            │
 #└─────────────────────────────────────────────────────────────────────────────┘
+# extra config for count rule, referenced from main config file
 count:
   featurecounts_extra: ""
   htseq_extra: ""
   stringtie_extra: ""
+  cufflinks_extra: ""
 
-
+# extra config for other rules related to gne/transcript quantifications
+# NOT referenced from main config file, will be run as specified here
 count_other_rules:
   stringtie_assemble_extra: ""
   stringtie_merge_extra: ""
-  cufflinks_extra: ""
-  cuffquant_extra: ""
   cuffmerge_extra: ""
   cuffnorm_extra: ""
 

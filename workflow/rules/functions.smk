@@ -3,7 +3,6 @@
 #└─────────────────────────────────────────────────────────────────────────────┘
 def is_tool(name):
     """Check whether `name` is on PATH and marked as executable."""
-
     from shutil import which
     return which(name)
 
@@ -49,11 +48,8 @@ def is_set_trimmer(s):
 
 
 def has_rule(rule):
-    rule_names = get_rule_names()
-    if rule in rule_names:
-        return True
-    else:
-        return False
+    return rule in get_rule_names()
+
 
 def get_rule_names():
     return [rule.name for rule in workflow.rules]
@@ -111,8 +107,8 @@ def get_metadata(what, paired = 1):
 #└─────────────────────────────────────────────────────────────────────────────┘
 # TODO rsem has overlapping values with featurecounts, will lead to errors
 # NOTE tools with empty string in unstranded protocol that also need an argument 
-# name need to have the passing of the argument name handled by respecive
-# stranded function instead of the wrapper. Currently: hisat
+### name need to have the passing of the argument name handled by respecive
+### stranded function instead of the wrapper. Currently: hisat
 def get_strandedness(stranded, outtool):
     d = {
         "featurecounts": ["0", "1", "2"],
@@ -139,12 +135,15 @@ def get_strandedness(stranded, outtool):
         
     return res
 
+
 def get_sample_strandedness(wildcards):
     s = Metadata.query('sample == @wildcards.sample').stranded.dropna().unique()[0]
     return s
 
+
 def stranded_param(wildcards, tool):
     return get_strandedness(get_sample_strandedness(wildcards), tool) + " "
+
 
 # featurecounts ----------------------------------------------------------------
 def featurecounts_params(wildcards):
@@ -152,6 +151,7 @@ def featurecounts_params(wildcards):
     param_string += "-M " if config["count"]["multimap"] else ""
     param_string += "-O " if config["count"]["overlap"] else ""
     return param_string
+
 
 # htseq ------------------------------------------------------------------------
 def htseq_params(wildcards):
@@ -162,6 +162,7 @@ def htseq_params(wildcards):
         param_string += "--secondary-alignments=ignore "
     return param_string
 
+
 # stringtie --------------------------------------------------------------------
 def stringtie_params(wildcards):
     param_string = ""
@@ -169,11 +170,13 @@ def stringtie_params(wildcards):
         param_string += "-M 0 -u "
     return param_string
 
+
 def stringtie_assembly(wildcards):
     param_string = ""
     if config['count']['transcript_assembly'] in ["guided", "Guided"]:
         param_string += "-G " + config["gtf"] 
     return param_string
+
 
 # cufflinks --------------------------------------------------------------------
 def cufflinks_params(wildcards):
@@ -187,6 +190,7 @@ def cufflinks_params(wildcards):
         param_string += "--multi-read-correct "
 
     return param_string
+
 
 def cufflinks_assembly(wildcards):
     param_string = ""
@@ -239,6 +243,7 @@ def get_subsample_proportion(n):
         else:
             return "-n " + str(n)
 
+
 def has_extra_config(conf, conf_extra):
     conf = conf.strip()
     if len(conf) > 0:
@@ -249,6 +254,7 @@ def has_extra_config(conf, conf_extra):
     else:
         return " "
 
+
 def get_tximport_files(wildcards):
     if pipeline["align"] == "kallisto":
         return expand(rules.align.output.h5, sample=Samples)
@@ -257,6 +263,7 @@ def get_tximport_files(wildcards):
         return expand(opj(COUNT_OUTDIR, "{sample}", "t_data.ctab"), sample=Samples)
     else:
         return rules.count.output.counts
+
 
 def get_gtf():
     if has_rule("cuffmerge"):
