@@ -15,19 +15,16 @@ else:
 
     if "sleuth" == pipeline["diffexp"]:
         if "h5" in present_ext:
-            COMMON_ALIGN_FILE = KALLISTO_QUANT_FILE
-            ext = "h5"
+            COMMON_ALIGN_FILE = KALLISTO_QUANT_H5_FILE
         else:
-            ext = "sf"
             COMMON_ALIGN_FILE = SALMON_QUANT_FILE
     else:
         COMMON_ALIGN_FILE = COMMON_BAM_FILE
-        ext = "bam"
 
     rule align_out:
         input:
-            glob_wildcards(opj(ALIGN_OUTDIR, "{sample}", "{file}" + "." + ext))
+            glob_wildcards(opj(ALIGN_OUTDIR, "{sample}", "{file}"))
         output:
-            expand(opj(ALIGN_OUTDIR, "{{sample}}", "{file}" + "." + ext), file = COMMON_ALIGN_FILE)
+            expand(opj(ALIGN_OUTDIR, "{{sample}}", "{file}"), file = COMMON_ALIGN_FILE)
         shell:
             "mv {input} {output}"

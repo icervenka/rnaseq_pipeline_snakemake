@@ -38,7 +38,7 @@ for item in labels:
     sample_files = Metadata[Metadata[group].eq(item)]['sample'].to_list()
     files.append(
         ','.join(
-            [ path.join(_ds["ALIGN_OUTDIR"], x, _tf["COMMON_BAM_FILE"] + ".bam") for x in sample_files ]
+            [ path.join(_ds["ALIGN_OUTDIR"], x, _tf["COMMON_BAM_FILE"]) for x in sample_files ]
         )
     )
 

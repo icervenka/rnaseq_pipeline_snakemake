@@ -17,7 +17,7 @@ rule align:
     input:
         sample=get_fq
     output:
-        sam=temp(opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_FILE + ".sam")),
+        sam=temp(opj(ALIGN_OUTDIR, "{sample}", COMMON_SAM_FILE)),
         splicesite=opj(ALIGN_OUTDIR, "{sample}", "splice_sites.txt"),  
     params:
         metadata=Metadata,
@@ -40,7 +40,7 @@ rule align_out:
     input:
         rules.align.output.sam,
     output:
-        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_FILE + ".bam"),
+        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_FILE),
     params:
         compression=9,
     log:

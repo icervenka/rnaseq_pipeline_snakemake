@@ -1,30 +1,39 @@
 # string constants of filenames created by different programs
-# TODO include extensions in the bamfiles
+# NOTES
+# - files are included with extension
+# - format is roughly <TOOL>_<TYPE>_<SUBTYPES>_FILES(S)
+# - prefix COMMON is used to unify filenames between tools that are then 
+#   consumed by other steps
+# - ending with _FILE denotes a string, ending with _FILES denotes array of 
+#   strings
+# - full cuffcompare files are specified in the command with an outprefix
+
 _tf = {
     
     # Aligners ---------------------------------------------------------------------
-    "COMMON_BAM_FILE": "aligned_sorted",
+    "COMMON_BAM_FILE": "aligned_sorted.bam",
 
     ## STAR
-    "STAR_BAM_FILE": "Aligned.sortedByCoord.out",
+    "STAR_BAM_FILE": "Aligned.sortedByCoord.out.bam",
     "STAR_LOGFILES": ['Log.out', 'Log.final.out', 'Log.progress.out'],
 
     ## Hisat2
-    "HISAT_BAM_FILE": "aligned_sorted",
-    "HISAT_SAM_FILE": "aligned_sorted",
+    "HISAT_BAM_FILE": "aligned_sorted.bam",
+    "HISAT_SAM_FILE": "aligned_sorted.sam",
     "HISAT_LOG_FILES": ['hisat.log'],
 
     ## Tophat
-    "TOPHAT_BAM_FILE": "accepted_hits",
+    "TOPHAT_BAM_FILE": "accepted_hits.bam",
     "TOPHAT_LOG_FILES": ["align_summary.txt"],
 
     ## Kallisto
-    "KALLISTO_QUANT_FILE": "abundance",
-    "KALLISTO_BAM_FILE": "pseudoalignments",
+    "KALLISTO_QUANT_H5_FILE": "abundance.h5",
+    "KALLISTO_QUANT_TSV_FILE": "abundance.tsv",
+    "KALLISTO_BAM_FILE": "pseudoalignments.bam",
     "KALLISTO_LOGFILES": ["run_info.json"],
 
     ## Salmon
-    "SALMON_QUANT_FILE": "quant",
+    "SALMON_QUANT_FILE": "quant.sf",
     "SALMON_LOG_FILES": ['cmd_info.json', 'lib_format_counts.json'],
 
 
@@ -78,7 +87,7 @@ _tf = {
     "CUFFQUANT_LOG_FILES": ["cuffquant.log"],
     "CUFFNORM_LOG_FILES": ["cuffnorm.log"],
 
-    # Diffexp tools ----------------------------------------------------------------
+    # Diffexp tools ------------------------------------------------------------
     "CUFFDIFF_GENE_DEG_FILE": "gene_exp.diff",
     "CUFFDIFF_DIFFEXP_FILES": [
         "bias_params.info", "cds.count_tracking", "cds.diff", "cds.fpkm_tracking", 

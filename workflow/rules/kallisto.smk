@@ -17,9 +17,9 @@ rule align:
         sample=get_fq,
         gtf=config["gtf"],
     output:
-        h5=opj(ALIGN_OUTDIR, "{sample}", KALLISTO_QUANT_FILE + ".h5"),
-        tsv=opj(ALIGN_OUTDIR, "{sample}", KALLISTO_QUANT_FILE + ".tsv"),
-        bam=opj(ALIGN_OUTDIR, "{sample}/", KALLISTO_BAM_FILE + ".bam"),
+        h5=opj(ALIGN_OUTDIR, "{sample}", KALLISTO_QUANT_H5_FILE),
+        tsv=opj(ALIGN_OUTDIR, "{sample}", KALLISTO_QUANT_TSV_FILE),
+        bam=opj(ALIGN_OUTDIR, "{sample}/", KALLISTO_BAM_FILE),
     params:
         metadata=Metadata,
         fastq_dir=FASTQ_CURRENT_DIR,
@@ -51,7 +51,7 @@ rule align_out:
     input:
         rules.align.output.bam
     output:
-        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_FILE + ".bam")
+        opj(ALIGN_OUTDIR, "{sample}", COMMON_BAM_FILE)
     shell:
         """
         mv {input} {output}
