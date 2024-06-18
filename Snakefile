@@ -19,7 +19,10 @@ opj = path.join
 configfile: "config.yaml"
 validate(config, schema="workflow/schema/config.schema.yaml")
 
-config_extra = load_configfile("config_extra.yaml")
+if config["extra_config"] in [None, ""]:
+    config_extra = load_configfile("config_extra.yaml")
+else:
+    config_extra = load_configfile(config["extra_config"])
 # validate(config, schema="workflow/schema/config_extra.schema.yaml")
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
@@ -113,11 +116,9 @@ else:
 # multiqc - load always
 include: opj(RULES_DIR, "multiqc.smk")
 
-# load rule for creating result archive with processed data - load conditionally
-if config["result_archive"]:
-    include: opj(RULES_DIR, "result_archive.smk")
-else:
-    include: opj(RULES_DIR, "skip_result_archive.smk")
+# load rule for creating result archive with processed data
+include: opj(RULES_DIR, "result_archive.smk")
+
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Execute before starting the workflow =====                            │
