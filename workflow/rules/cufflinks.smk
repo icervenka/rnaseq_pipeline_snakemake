@@ -141,7 +141,7 @@ rule cuffnorm:
         CONDA_COUNT_CUFFLINKS_ENV
     script:
         # used a wrapper to unify strandedness info
-        "../scripts/cuffnorm_wrapper.py"
+        opj(CD2UP, SCRIPT_DIR, "cuffnorm_wrapper.py")
 
 
 include: "cuffnorm_to_matrix.smk"

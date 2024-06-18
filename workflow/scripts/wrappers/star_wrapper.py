@@ -1,7 +1,7 @@
 """Wrapper for star alignment."""
 
 import os
-from script_functions import read_command, arrange_fq_for_align
+from wrapper_functions import read_command, arrange_fq_for_align
 from snakemake.shell import shell
 
 input_arr = arrange_fq_for_align(

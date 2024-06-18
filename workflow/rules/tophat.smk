@@ -30,7 +30,7 @@ rule align:
     conda:
         CONDA_ALIGN_OTHER_ENV
     script:
-        "../scripts/tophat_wrapper.py"
+        opj(CD2UP, WRAPPER_DIR, "tophat_wrapper.py")
 
 
 rule align_out:

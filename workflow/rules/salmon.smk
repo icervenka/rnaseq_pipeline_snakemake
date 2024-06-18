@@ -33,7 +33,7 @@ rule align:
     conda:
         CONDA_ALIGN_GENERAL_ENV
     script:
-        "../scripts/salmon_wrapper.py"
+        opj(CD2UP, WRAPPER_DIR, "salmon_wrapper.py")
 
 
 # TODO snakemake needs to modify files to avoid cyclic dependencies, it can't do noop

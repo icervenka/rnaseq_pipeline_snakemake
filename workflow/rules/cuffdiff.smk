@@ -49,7 +49,7 @@ rule diffexp:
     conda:
         CONDA_COUNT_CUFFLINKS_ENV
     script:
-        "../scripts/cuffdiff_wrapper.py"
+        opj(CD2UP, WRAPPER_DIR, "cuffdiff_wrapper.py")
 
 
 rule scatter_diffexp:
@@ -65,7 +65,7 @@ rule scatter_diffexp:
     conda:
         CONDA_DIFFEXP_GENERAL_ENV
     script:
-        "../scripts/cuffdiff_separate.R"
+        opj(CD2UP, WRAPPER_DIR, "cuffdiff_separate.R")
 
 
 include: "copy_config.smk"

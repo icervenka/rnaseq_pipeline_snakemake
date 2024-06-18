@@ -12,6 +12,7 @@ _ds = {
     "CD3UP": "../../../",
     "ENV_DIR": "workflow/envs/",
     "SCRIPT_DIR": "workflow/scripts/",
+    "WRAPPER_DIR": "workflow/scripts/wrappers",
     "SRA_DIR": "sra/",
     "FASTQ_DIR": "fastq/",
     "FASTQ_CURRENT_DIR": "fastq/",

@@ -22,6 +22,6 @@ rule multiqc:
     conda:
         CONDA_SHARED_ENV
     script:
-        "../scripts/multiqc_wrapper.py"
+        opj(CD2UP, WRAPPER_DIR, "multiqc_wrapper.py")
 
         

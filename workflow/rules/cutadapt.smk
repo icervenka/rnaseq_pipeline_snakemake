@@ -66,5 +66,5 @@ rule cutadapt_pe:
     conda:
         CONDA_SHARED_ENV
     script:
-        "../scripts/cutadapt_pe_wrapper.py"
+        opj(CD2UP, WRAPPER_DIR, "cutadapt_pe_wrapper.py")
 

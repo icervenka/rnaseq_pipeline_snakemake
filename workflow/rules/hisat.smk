@@ -33,7 +33,8 @@ rule align:
     conda:
         CONDA_ALIGN_GENERAL_ENV
     script:
-        "../scripts/hisat_wrapper.py"
+        opj(CD2UP, WRAPPER_DIR, "hisat_wrapper.py")
+
 
 rule align_out:
     input:

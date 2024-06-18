@@ -14,7 +14,8 @@ rule sra_download:
     conda:
         CONDA_SRA_TOOLS_ENV
     script:
-        "../scripts/sra_download_wrapper.py"
+        opj(CD2UP, WRAPPER_DIR, "sra_download_wrapper.py")
+        
 
 rule fastq_dump_se:
     input:

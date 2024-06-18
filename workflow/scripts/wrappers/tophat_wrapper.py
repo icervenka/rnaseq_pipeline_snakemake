@@ -1,6 +1,6 @@
 """Wrapper for tophat alignment."""
 
-from script_functions import arrange_fq_for_align
+from wrapper_functions import arrange_fq_for_align
 from snakemake.shell import shell
 
 input_arr = arrange_fq_for_align(

@@ -53,5 +53,5 @@ rule subsample_pe:
     conda:
         CONDA_SHARED_ENV
     script:
-        "../scripts/subsample_pe_wrapper.py"
+        opj(CD2UP, WRAPPER_DIR, "subsample_wrapper.py")
 

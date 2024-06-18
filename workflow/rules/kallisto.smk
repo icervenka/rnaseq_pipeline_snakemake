@@ -35,7 +35,7 @@ rule align:
     conda:
         CONDA_ALIGN_GENERAL_ENV
     script:
-        "../scripts/kallisto_wrapper.py"
+        opj(CD2UP, WRAPPER_DIR, "kallisto_wrapper.py")
 
 
 rule move_align_log:
