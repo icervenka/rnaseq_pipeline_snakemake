@@ -9,11 +9,12 @@ dds <- readRDS(snakemake@input[["dds"]])
 ## output
 result_array_out <- snakemake@output[["result_array"]]
 ## params
-contrasts <- snakemake@params[["contrasts"]]
+contrasts <- snakemake@params[["diffexp"]][["contrasts"]]
 contrast_names <- names(contrasts)
-contrast_type <- snakemake@params[["contrast_type"]]
-lfc_shrink <- snakemake@params[["lfc_shrink"]]
-fdr <- snakemake@params[["fdr"]]
+contrast_type <- snakemake@params[["diffexp"]][["contrast_type"]]
+lfc_shrink <- snakemake@params[["diffexp"]][["lfc_shrink"]]
+fdr <- snakemake@params[["diffexp"]][["fdr"]]
+extra <- snakemake@params[["diffexp_extra"]]
 
 # Run --------------------------------------------------------------------------
 if (contrast_type == "A") {

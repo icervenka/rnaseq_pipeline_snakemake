@@ -11,14 +11,19 @@ report_pca_out <- snakemake@output[["report_pca"]]
 outdir <- snakemake@params[["outdir"]]
 dir_structure <- snakemake@params[["dir_structure"]]
 sp_info <- get_species_info(snakemake@params[["species"]])
-ids_in <- snakemake@params[["ids_in"]]
-group <- snakemake@params[["group"]][1] # FIXME why [1]?
-top_pcas <- snakemake@params[["top_pcas"]]
-pca_ngenes <- snakemake@params[["ngenes"]]
-top_gene_loadings <- snakemake@params[["top_gene_loadings"]]
-pca2go_ngenes <- snakemake@params[["pca2go_ngenes"]]
-pca2go_loadings_ngenes <- snakemake@params[["pca2go_loadings_ngenes"]]
+ids_in <- snakemake@params[["diffexp"]][["ids_in"]]
 
+
+report_params <- snakemake@params[["report"]]
+group <- report_params[["pca"]][["group"]][1] # FIXME why [1]?
+top_pcas <- report_params[["pca"]][["top_pcas"]]
+pca_ngenes <- report_params[["pca"]][["ngenes"]]
+top_gene_loadings <- report_params[["pca"]][["top_gene_loadings"]]
+pca2go_ngenes <- report_params[["pca"]][["pca2go_ngenes"]]
+pca2go_loadings_ngenes <- report_params[["pca"]][["pca2go_loadings_ngenes"]]
+
+diffexp_extra <- snakemake@params[["diffexp_extra"]]
+report_extra <- snakemake@params[["report_extra"]]
 # Run --------------------------------------------------------------------------
 r <- DESeq2::rlog(dds, blind = TRUE)
 

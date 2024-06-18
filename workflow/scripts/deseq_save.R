@@ -12,7 +12,8 @@ sample_expression_out <- snakemake@output[["sample_expression"]]
 ## params
 outdir <- snakemake@params[["outdir"]]
 sp_info <- get_species_info(snakemake@params[["species"]])
-ids_in <- snakemake@params[["ids_in"]]
+ids_in <- snakemake@params[["diffexp"]][["ids_in"]]
+extra <- snakemake@params[["diffexp_extra"]]
 
 # Run --------------------------------------------------------------------------
 # create a dataframes with IDs

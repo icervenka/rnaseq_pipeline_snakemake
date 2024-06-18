@@ -10,11 +10,12 @@ count_data <- snakemake@input[["count_data"]]
 output <- snakemake@output[["dds"]]
 ## params
 # check if design is a formula, if not prepend a tilda
-design <- modify_tilda(snakemake@params[["design"]])
-ref_levels <- snakemake@params[["ref_levels"]]
-min_count <- snakemake@params[["min_count"]]
-contrast_type <- snakemake@params[["contrast_type"]]
-lfc_shrink <- snakemake@params[["lfc_shrink"]]
+design <- modify_tilda(snakemake@params[["diffexp"]][["design"]])
+ref_levels <- snakemake@params[["diffexp"]][["ref_levels"]]
+min_count <- snakemake@params[["diffexp"]][["min_count"]]
+contrast_type <- snakemake@params[["diffexp"]][["contrast_type"]]
+lfc_shrink <- snakemake@params[["diffexp"]][["lfc_shrink"]]
+extra <- snakemake@params[["diffexp_extra"]]
 threads <- snakemake@threads
 
 # Run --------------------------------------------------------------------------

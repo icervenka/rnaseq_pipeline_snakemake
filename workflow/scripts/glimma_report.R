@@ -12,10 +12,12 @@ no_contrasts <- length(result_array)
 ## params
 outdir <- snakemake@params[["outdir"]]
 species <- snakemake@params[["species"]]
-ids_in <- snakemake@params[["ids_in"]]
-fdr <- snakemake@params[["fdr"]]
-group <- snakemake@params[["mdplot_group"]]
+ids_in <- snakemake@params[["diffexp"]][["ids_in"]]
+fdr <- snakemake@params[["diffexp"]][["fdr"]]
+group <- snakemake@params[["report"]][["mdplot_group"]]
 
+diffexp_extra <- snakemake@params[["diffexp_extra"]]
+report_extra <- snakemake@params[["report_extra"]]
 # Run --------------------------------------------------------------------------
 Glimma::glMDSPlot(
   dds,

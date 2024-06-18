@@ -12,6 +12,7 @@ def get_diffexp_output_files(wildcards):
         rules.diffexp_copy_config.output.config,
         rules.diffexp_copy_config.output.metadata]
 
+
 def get_diffexp_log_files(wildcards):
     return []
 
@@ -26,11 +27,8 @@ rule diffexp_init:
     output:
         dds=opj(RDS_OUTDIR, "dds.rds")
     params:
-        design=config['diffexp']["design"],
-        ref_levels=config['diffexp']["reference_levels"],
-        min_count=config['diffexp']["gene_min_readcount"],
-        contrast_type=config['diffexp']["contrast_type"],
-        lfc_shrink=config_extra['diffexp']["deseq_lfc_shrink"]
+        diffexp=config["diffexp"],
+        diffexp_extra=config_extra["diffexp"]
     conda:
         CONDA_DIFFEXP_GENERAL_ENV
     script:
@@ -45,10 +43,8 @@ rule diffexp_results:
     output:
         result_array=opj(RDS_OUTDIR, "result_array.rds"),
     params:
-        contrast_type=config['diffexp']["contrast_type"],
-        contrasts=config['diffexp']["contrasts"],
-        lfc_shrink=config_extra['diffexp']["deseq_lfc_shrink"],
-        fdr=config['diffexp']["fdr"]
+        diffexp=config["diffexp"],
+        diffexp_extra=config_extra["diffexp"]
     conda:
         CONDA_DIFFEXP_GENERAL_ENV
     script:
@@ -67,7 +63,8 @@ rule diffexp_save:
     params:
         outdir=DEGFILES_OUTDIR,
         species=config["species"],
-        ids_in=config['diffexp']["input_gene_ids"]
+        diffexp=config["diffexp"],
+        diffexp_extra=config_extra["diffexp"]
     conda:
         CONDA_DIFFEXP_GENERAL_ENV
     script:
@@ -86,19 +83,24 @@ rule diffexp_report:
         outdir=REPORTS_OUTDIR,
         dir_structure=_ds,
         species=config["species"],
-        ids_in=config['diffexp']["input_gene_ids"],
-        fdr=config['diffexp']["fdr"],
-        report_layout=config["report"]["layout"],
-        individual=config["report"]["individual"],
-        pca_groups=config["report"]["pca"]["groups"],
-        heatmap_mode=config["report"]["sample_heatmap"]["mode"],
-        heatmap_n_genes=config["report"]["sample_heatmap"]["n_genes"],
-        heatmap_cluster_metric_col=config["report"]["sample_heatmap"]["cluster_metric_col"],
-        heatmap_cluster_metric_row=config["report"]["sample_heatmap"]["cluster_metric_row"],
-        annotation_heatmap=config["report"]["sample_heatmap"]["annotation"],
-        annotation_sts=config["report"]["sample_distances_heatmap"]["annotation"],
-        upset_maxgroups=config["report"]["upset"]["max_groups"],
-        upset_min_group_size=config["report"]["upset"]["min_group_size"]
+        diffexp=config["diffexp"],
+        report=config["report"],
+        diffexp_extra=config_extra["diffexp"],
+        report_extra=config_extra["report"]
+        
+        # ids_in=config['diffexp']["input_gene_ids"],
+        # fdr=config['diffexp']["fdr"],
+        # report_layout=config["report"]["layout"],
+        # individual=config["report"]["individual"],
+        # pca_groups=config["report"]["pca"]["groups"],
+        # heatmap_mode=config["report"]["sample_heatmap"]["mode"],
+        # heatmap_n_genes=config["report"]["sample_heatmap"]["n_genes"],
+        # heatmap_cluster_metric_col=config["report"]["sample_heatmap"]["cluster_metric_col"],
+        # heatmap_cluster_metric_row=config["report"]["sample_heatmap"]["cluster_metric_row"],
+        # annotation_heatmap=config["report"]["sample_heatmap"]["annotation"],
+        # annotation_sts=config["report"]["sample_distances_heatmap"]["annotation"],
+        # upset_maxgroups=config["report"]["upset"]["max_groups"],
+        # upset_min_group_size=config["report"]["upset"]["min_group_size"]
     conda:
         CONDA_DIFFEXP_GENERAL_ENV
     script:
@@ -114,13 +116,18 @@ rule diffexp_report_pca:
         outdir=REPORTS_OUTDIR,
         dir_structure=_ds,
         species=config['species'],
-        ids_in=config['diffexp']["input_gene_ids"],
-        group=config['report']["pca"]['groups'],
-        top_pcas=config['report']["pca"]['top_pcas'],
-        ngenes=config['report']["pca"]['ngenes'],
-        top_gene_loadings=config['report']["pca"]['top_gene_loadings'],
-        pca2go_ngenes=config['report']["pca"]['pca2go_ngenes'],
-        pca2go_loadings_ngenes=config['report']["pca"]['pca2go_loadings_ngenes']
+        diffexp=config["diffexp"],
+        report=config["report"],
+        diffexp_extra=config_extra["diffexp"],
+        report_extra=config_extra["report"]
+
+        # ids_in=config['diffexp']["input_gene_ids"],
+        # group=config['report']["pca"]['groups'],
+        # top_pcas=config['report']["pca"]['top_pcas'],
+        # ngenes=config['report']["pca"]['ngenes'],
+        # top_gene_loadings=config['report']["pca"]['top_gene_loadings'],
+        # pca2go_ngenes=config['report']["pca"]['pca2go_ngenes'],
+        # pca2go_loadings_ngenes=config['report']["pca"]['pca2go_loadings_ngenes']
     conda:
         CONDA_DIFFEXP_GENERAL_ENV
     script:
@@ -138,9 +145,14 @@ rule diffexp_report_glimma:
     params:
         outdir=REPORTS_OUTDIR,
         species=config['species'],
-        ids_in=config['diffexp']["input_gene_ids"],
-        group=config["report"]["mdplot_group"],
-        fdr=config['diffexp']["fdr"]
+        diffexp=config["diffexp"],
+        report=config["report"],
+        diffexp_extra=config_extra["diffexp"],
+        report_extra=config_extra["report"]
+
+        # ids_in=config['diffexp']["input_gene_ids"],
+        # fdr=config['diffexp']["fdr"],
+        # group=config["report"]["mdplot_group"]
     conda:
         CONDA_DIFFEXP_GENERAL_ENV
     script:

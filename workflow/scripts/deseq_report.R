@@ -14,20 +14,26 @@ experiment_name <- snakemake@params[["experiment_name"]]
 dir_structure <- snakemake@params[["dir_structure"]]
 outdir <- snakemake@params[["outdir"]]
 species <- snakemake@params[["species"]]
-ids_in <- snakemake@params[["ids_in"]]
-fdr <- snakemake@params[["fdr"]]
-report_layout <- snakemake@params[["report_layout"]]
-individual <- snakemake@params[["individual"]]
-pca_groups <- snakemake@params[["pca_groups"]]
-heatmap_mode <- snakemake@params[["heatmap_mode"]]
-heatmap_n_genes <- snakemake@params[["heatmap_n_genes"]]
-heatmap_cluster_metric_col <- snakemake@params[["heatmap_cluster_metric_col"]]
-heatmap_cluster_metric_row <- snakemake@params[["heatmap_cluster_metric_row"]]
-annotation_heatmap <- snakemake@params[["annotation_heatmap"]]
-annotation_sts <- snakemake@params[["annotation_sts"]]
-upset_maxgroups <- snakemake@params[["upset_maxgroups"]]
-upset_min_group_size <- snakemake@params[["upset_min_group_size"]]
 
+ids_in <- snakemake@params[["diffexp"]][["ids_in"]]
+fdr <- snakemake@params[["diffexp"]][["fdr"]]
+
+report_params <- snakemake@params[["report"]]
+report_layout <- report_params[["report_layout"]]
+individual <- report_params[["individual"]]
+self_contained <- report_params[["self_contained"]]
+pca_groups <- report_params[["pca_groups"]]
+heatmap_mode <- report_params[["sample_heatmap"]][["mode"]]
+heatmap_n_genes <- report_params[["sample_heatmap"]][["ngenes"]]
+heatmap_cluster_metric_col <- report_params[["sample_heatmap"]][["cluster_metric_col"]]
+heatmap_cluster_metric_row <- report_params[["sample_heatmap"]][["cluster_metric_row"]]
+annotation_heatmap <- report_params[["sample_heatmap"]][["annotation"]]
+annotation_sts <- report_params[["sample_distance_heatmap"]][["annotation"]]
+upset_maxgroups <- report_params[["upset"]][["maxgroups"]]
+upset_min_group_size <- report_params[["upset"]][["min_group_size"]]
+
+diffexp_extra <- snakemake@params[["diffexp_extra"]]
+report_extra <- snakemake@params[["report_extra"]]
 # Run --------------------------------------------------------------------------
 rld <- DESeq2::rlog(dds, blind = FALSE)
 
@@ -45,7 +51,7 @@ relative_outdir <- paste0(dir_structure[["CD3UP"]], outdir)
 
 knitr_output_options <- list(
   mathjax = NULL,
-  self_contained = FALSE,
+  self_contained = self_contained, # FALSE,
   lib_dir = paste0(relative_outdir, "/libs")
 )
 
