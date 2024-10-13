@@ -8,7 +8,7 @@ def get_coverage_files(wildcards):
 if config['coverage']['split_strands'] == "no"
     rule bam_coverage:
         input:
-            rules.rename_bam.output[0]
+            rules.align_out.output[0]
         output:
             COVERAGE_OUTDIR + "{sample}.bedgraph"
         params:
@@ -29,7 +29,7 @@ if config['coverage']['split_strands'] == "no"
 elif config['coverage']['split_strands'] == "yes":
     rule bam_coverage:
         input:
-            rules.rename_bam.output[0]
+            rules.align_out.output[0]
         output:
             forward=COVERAGE_OUTDIR + "{sample}_forward.bedgraph",
             reverse=COVERAGE_OUTDIR + "{sample}_reverse.bedgraph"

@@ -8,6 +8,7 @@ source("workflow/scripts/script_functions.R", local = TRUE)
 dds <- readRDS(snakemake@input[["dds"]])
 ## output
 result_array_out <- snakemake@output[["result_array"]]
+contrasts_out <- snakemake@output[["contrasts"]]
 ## params
 contrasts <- snakemake@params[["diffexp"]][["contrasts"]]
 contrast_names <- names(contrasts)
@@ -38,6 +39,7 @@ if (contrast_type == "A") {
   stop("Incorrect contrast type specified.")
 }
 
+
 result_array <- purrr::map(selected_contrasts, function(x) {
   sc <- x
   res <- DESeq2::results(dds, contrast = sc, alpha = fdr)
@@ -60,5 +62,16 @@ result_array <- purrr::map(selected_contrasts, function(x) {
 }) %>%
   setNames(contrast_names)
 
+print(selected_contrasts)
+print(contrast_names)
+
 # Save -------------------------------------------------------------------------
+write.table(
+  selected_contrasts,
+  contrasts_out,
+  sep = "\t",
+  quote = FALSE,
+  row.names = FALSE
+)
+
 saveRDS(result_array, file = result_array_out)

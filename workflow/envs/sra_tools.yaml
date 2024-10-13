@@ -5,4 +5,4 @@ channels:
  - bioconda
 dependencies:
  - pigz=2.6
- - sra-tools=2.9
+ - sra-tools=3.1

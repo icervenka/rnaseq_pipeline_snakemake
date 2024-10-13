@@ -2,16 +2,24 @@
  - `star_only` - star, skip_count, skip_diffexp
  - `hisat_only` - hisat, skip_count, skip_diffexp
  - `tophat_only` - tophat, skip_count, skip_diffexp
- - `bowtie2_only` - bowtie2, skip_count, skip_diffexp
  - `salmon_only` - salmon, skip_count, skip_diffexp
  - `kallisto_only` - kallisto, skip_count, skip_diffexp
  - `featurecounts_only` - skip_align, featurecounts, skip_diffexp
  - `htseq_only` - skip_align, htseq, skip_diffexp
  - `stringtie_only` - skip_align, stringtie, skip_diffexp
- - `stringtie_abundance_only` - skip_align, stringtie_abundance, skip_diffexp
  - `cufflinks_only` - skip_align, cufflinks, skip_diffexp
- - `cufflinks_abundance_only` - skip_align, cufflinks_abundance, skip_diffexp
- - `cufflinks_abundance_cuffdiff` - skip_align, cufflinks_abundance, cuffdiff
- - `deseq_only` - skip_align, featurecounts, deseq
- - `deseq` - star, featurecounts, deseq
+ - `deseq_only` - skip_align, skip_count, deseq
+ - `cuffdiff_only` - skip_align, skip_count, deseq
+ - `featurecounts_deseq` - skip_align, featurecounts, deseq
+ - `htseq_deseq` - skip_align, htseq, deseq
+ - `stringtie_deseq` - skip_align, stringtie, deseq
  - `cufflinks_cuffdiff` - skip_align, cufflinks, cuffdiff
+ - `stringtie_cuffdiff` - skip_align, stringtie, cuffdiff
+ - `deseq` - hisat, htseq, deseq
+ - `edger` - star, featurecounts, edger
+ - `edger_alt` - hisat, htseq, edger
+ - `limma` - star, featurecounts, limma
+ - `limma_alt` - hisat, htseq, limma
+ - `stringtie` - hisat, stringtie, ballgown
+ - `kallisto` - kallisto, sleuth
+ - `cufflinks` - tophat, cufflinks, cuffdiff

@@ -53,4 +53,4 @@ rule compress_fastq:
     conda:
         CONDA_SRA_TOOLS_ENV
     shell:
-        "pigz --best {threads} {input}"
+        "pigz --best -p {threads} {input}"

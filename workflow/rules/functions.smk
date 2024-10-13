@@ -112,7 +112,7 @@ def get_metadata(what, paired = 1):
 def get_strandedness(stranded, outtool):
     d = {
         "featurecounts": ["0", "1", "2"],
-        "htseq": ["yes", "no", "reverse"],
+        "htseq": ["no", "yes", "reverse"],
         "cufflinks": ["fr-unstranded", "fr-secondstrand", "fr-firststrand"],
         "stringtie": ["", "--fr", "--rf"],
         # "rsem": ["0.5", "1", "0"],

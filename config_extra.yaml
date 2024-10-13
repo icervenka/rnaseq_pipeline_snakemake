@@ -6,8 +6,7 @@
 
 #┌─────────────────────────────────────────────────────────────────────────────┐
 #│ ===== Trim config =====                                                     │
-#└─────────────────────────────────────────────────────────────────────────────┘
-trim:
+#└─────────────────────────────────────────────────────────────────────────────┘ trim:
   fastp_default: ""
   cutadapt_default: ""
   trimmomatic_default: ""
@@ -84,3 +83,9 @@ diffexp:
   deseq_lfc_shrink: "ashr"
   # classic or glm contrasts approach
   edger_analysis_type: "classic"
+  # Some tools identify a group of genes being differentially expressed rather
+  # then one gene per statistics. Should these be split into separate rows
+  split_multi_symbols: TRUE
+  # Controls whether duplicate gene entries be removed from diffexp table.
+  # Ones with highest lowest adjusted p-value are kept
+  remove_duplicate_genes: TRUE

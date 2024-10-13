@@ -35,13 +35,13 @@ rule diffexp_init:
         "../scripts/deseq_init.R"
 
 
-# TODO save file with all the contrasts to read by save and gsea
 rule diffexp_results:
     input:
         dds=rules.diffexp_init.output.dds,
         col_data=ancient(config["metadata"])
     output:
         result_array=opj(RDS_OUTDIR, "result_array.rds"),
+        contrasts=opj(DEGFILES_OUTDIR, "contrasts.txt"),
     params:
         diffexp=config["diffexp"],
         diffexp_extra=config_extra["diffexp"]
@@ -51,8 +51,6 @@ rule diffexp_results:
         "../scripts/deseq_results.R"
 
 
-# TODO solve the issue with diffexp csv files
-# currently they are created as s side effect
 rule diffexp_save:
     input:
         dds=rules.diffexp_init.output.dds,
@@ -134,7 +132,7 @@ rule diffexp_report_pca:
         "../scripts/deseq_report_pca.R"
 
 
-# TODO the expression plots are created based on contrasts and are created as a
+# The expression plots are created based on contrasts and are created as a
 ## side effect
 rule diffexp_report_glimma:
     input:

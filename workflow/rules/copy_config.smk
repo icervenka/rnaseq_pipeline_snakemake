@@ -1,3 +1,4 @@
+# TODO add actual runconfig and extra config referenced in that file
 rule diffexp_copy_config:
     input:
         config="config.yaml",

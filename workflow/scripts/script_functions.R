@@ -199,7 +199,7 @@ remove_ens_gene_version <- function(vec) {
 }
 
 set_tximport_type <- function(tool) {
-  supported_types <- c("kallisto", "stringtie", "rsem") # cufflinks?
+  supported_types <- c("kallisto", "stringtie", "rsem")
 
   type_lgl <- purrr::map_lgl(supported_types, function(s, t) {
     any(stringr::str_detect(t, s))

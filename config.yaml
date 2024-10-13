@@ -134,7 +134,7 @@ diffexp:
   output_gene_ids: "SYMBOL"
   # drop genes from output that don't map to any gene symbol
   # otherwise they will be replaced by gene id
-  drop_no_sybmol: TRUE
+  drop_no_symbol: TRUE
   extra: ""
 
 
