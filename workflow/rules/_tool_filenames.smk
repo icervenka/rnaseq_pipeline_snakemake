@@ -34,6 +34,7 @@ _tf = {
 
     ## Salmon
     "SALMON_QUANT_FILE": "quant.sf",
+    "SALMON_CMDLOG_FILES": ['salmon.log'],
     "SALMON_LOG_FILES": ['cmd_info.json', 'lib_format_counts.json'],
 
 

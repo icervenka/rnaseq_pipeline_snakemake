@@ -27,7 +27,7 @@ rule align:
         extra=has_extra_config(config["align"]["extra"], config_extra["align"]),
     log:
         quantlog=expand(opj(ALIGN_OUTDIR, "{{sample}}", "logs", "{log}"), log=["salmon_quant.log"]),
-        runlog=expand(opj(ALIGN_OUTDIR, "{{sample}}", "{log}"), log=SALMON_LOG_FILES)
+        runlog=expand(opj(ALIGN_OUTDIR, "{{sample}}", "{log}"), log=SALMON_CMDLOG_FILES)
     threads:
         config["threads"]
     conda:
@@ -52,15 +52,15 @@ rule move_align_log:
         runlog=rules.align.log.runlog
     output:
         quantlog=expand(opj(ALIGN_LOG_OUTDIR, "{{sample}}", "{log}"), log=["salmon_quant.log"]),
-        runlog=expand(opj(ALIGN_LOG_OUTDIR, "{{sample}}", "{log}"), log=SALMON_LOG_FILES)
+        runlog=expand(opj(ALIGN_OUTDIR, "{{sample}}", "{log}"), log=SALMON_CMDLOG_FILES)
     params:
         logdir=opj(ALIGN_OUTDIR, "{sample}", "logs"),
         outdir=opj(ALIGN_LOG_OUTDIR, "{sample}")
     shell:
         """
-        mv {input.runlog} {params.outdir}
-        cp {input.quantlog} {params.outdir}
-        rm -rf {params.logdir}
+        mv {input.runlog} {params.outdir};
+        cp {input.quantlog} {params.outdir};
+        rm -rf {params.logdir};
         """
 
 
