@@ -59,13 +59,16 @@ rule scatter_diffexp:
         opj(DEGFILES_OUTDIR, "cuffdiff_contrasts.txt")
     params:
         outdir=DEGFILES_OUTDIR,
-        fdr=config["diffexp"]["fdr"]
+        fdr=config["diffexp"]["fdr"],
+        drop_no_symbol=config["diffexp"]["drop_no_symbol"],
+        split_multi_symbols=config_extra["diffexp"]["split_multi_symbols"],
+        remove_duplicate_genes=config_extra["diffexp"]["remove_duplicate_genes"]
     threads:
         1
     conda:
         CONDA_DIFFEXP_GENERAL_ENV
     script:
-        opj(CD2UP, WRAPPER_DIR, "cuffdiff_separate.R")
+        opj(CD2UP, SCRIPT_DIR, "cuffdiff_separate.R")
 
 
 include: "copy_config.smk"
